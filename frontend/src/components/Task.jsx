@@ -56,9 +56,11 @@ function Task() {
             </div>
                 <ul className="tasks">
                     {taskList.map((task) => (
-                        <li key={task.id}>
-                        <p>{ task.name }</p>
-                        <button>Del</button>
+                        <li className="task-card" key={task.id}>
+                        <h2>{ task.name }</h2>
+                        <p>Description: </p>
+                        <button>Complete</button>
+                        <button>Delete</button>
 
                     </li>
                     ))}
