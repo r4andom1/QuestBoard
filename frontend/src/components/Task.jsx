@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import supabase from "../../database/supabase-client"
+import "../css/Task.css"
 
 function Task() {
     const [newTask, setNewTask] = useState("")
@@ -42,9 +43,9 @@ function Task() {
 }
 
     return (
-        <div className="create-task">
+        <div className="task-content">
             <h2>Create new quest</h2>
-            <div>
+            <div className="create-task">
                 <input
                     type="text"
                     placeholder="New quest..."
@@ -53,11 +54,11 @@ function Task() {
                 />
                 <button onClick={addTask}>Submit</button>
             </div>
-                <ul>
+                <ul className="tasks">
                     {taskList.map((task) => (
                         <li key={task.id}>
                         <p>{ task.name }</p>
-                        <button></button>
+                        <button>Del</button>
 
                     </li>
                     ))}

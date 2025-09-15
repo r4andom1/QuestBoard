@@ -1,0 +1,20 @@
+* {
+    list-style: none;
+}
+
+.tasks {
+    border-style: solid;
+    border-radius: 10px;
+    border-color: rgb(104, 104, 25);
+    padding: 2em;
+    gap: 4em;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.tasks li {
+    border-style: solid;
+    border-color: rgb(187, 187, 36);
+    border-radius: 10px;
+}

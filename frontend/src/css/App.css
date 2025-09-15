@@ -1,8 +1,10 @@
-.main-content {
-  flex: 1;
-  padding: 2rem;
-  box-sizing: border-box;
-  width: 100%;
+/* .main-content {
+  max-width: 75vh;
   display: flex;
   flex-direction: column;
-}
+  justify-content: center;
+  gap: 2em;
+  padding: 2em;
+
+
+} */
