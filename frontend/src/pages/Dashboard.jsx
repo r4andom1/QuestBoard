@@ -1,12 +1,11 @@
 import Task from "../components/Task"
+import "../css/Dashboard.css"
 
 function Dashboard() {
 
         return (
-        <div>
-            <br></br>
-            <br></br>
-            <br></br>
+        <div className="main-content">
+
             <Task/>
 
         </div>
