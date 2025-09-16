@@ -1,9 +1,13 @@
+import Task from "../components/Task"
+import "../css/Dashboard.css"
+
 function Dashboard() {
 
-
         return (
-        <div>
-            <h1>Dashboard</h1>
+        <div className="main-content">
+
+            <Task/>
+
         </div>
     )
 

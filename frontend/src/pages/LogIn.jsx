@@ -1,4 +1,5 @@
 import {useState, useEffect} from "react"
+import Navbar from "../components/Navbar";
 
 function LogIn() {
     const [login, SetLogin] = useState("");
@@ -10,6 +11,7 @@ function LogIn() {
     }
 
     return (
+        <>
         <div className="login">
             <h1>Log in</h1>
             <p>Please enter your information to log in</p>
@@ -24,6 +26,7 @@ function LogIn() {
                 />
             </form>
         </div>
+        </>
     )
 }
 

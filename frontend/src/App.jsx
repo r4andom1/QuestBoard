@@ -1,16 +1,15 @@
 import "./css/App.css"
-import {Routes, Route} from "react-router-dom"
 import Dashboard from "./pages/Dashboard"
 import LogIn from "./pages/LogIn"
+import Navbar from "./components/Navbar"
+
 
 function App() {
   return (
-    <main className="main-content">
-      <Routes>
-        <Route path="/" element={<Dashboard/>}></Route>
-        <Route path="/log-in" element={<LogIn/>}></Route>
-      </Routes>
-    </main>
+    <>
+      <Navbar/>
+      <Dashboard/>
+    </>
   )
 }
 
