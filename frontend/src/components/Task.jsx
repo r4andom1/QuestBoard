@@ -58,7 +58,7 @@ function Task() {
                     }
                 })
                 setTaskList(toggledTaskList)
-                console.log("complete-btn toggled")
+                
             }
     }
 
@@ -79,7 +79,7 @@ function Task() {
                         <li className="task-card" key={task.id}>
                         <h2>{ task.name }</h2>
                         <p>Description: </p>
-                        <button onClick={() => toggleTask(task.id, task.is_completed)}> {task.is_completed ? "✓" : "↺"}</button>
+                        <button onClick={() => toggleTask(task.id, task.is_completed)}> {task.is_completed ? "↺" : "✓"}</button>
                         <button>🗑</button>
 
                     </li>

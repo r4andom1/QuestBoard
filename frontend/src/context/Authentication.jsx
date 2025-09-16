@@ -1,0 +1,67 @@
+import { createContext, useEffect, useState, useContext } from "react";
+import supabase from "../../database/supabase-client";
+
+const AuthContext = createContext()
+
+export const AuthContextProvider = ({children}) => {
+    const [session, setSession] = useState(undefined)
+
+    useEffect(() => {
+        supabase.auth.getSession().then(({data : { session } }) => {
+            setSession(session)
+        })
+        supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session)
+        })
+    }, [])
+
+    const signUpUser = async () => {
+        const { data, error } = await supabase.auth.signUp({
+            email: email,
+            password: password
+        })
+
+        if (error) {
+            console.log("Error signing up new user: ", error)
+            return { success: false }
+        } else {
+            return { success: true, data} // remove before deploy
+        }
+    }
+
+    const signInUser = async () => {
+        try {
+            const { data, error } = await supabase.auth.signIn({
+                email: email,
+                password: password
+            })
+            if (error) {
+                console.log("Error signing in user: ", error)
+                return { success : false }
+            } else {
+                console.log("Signed in successfully: ", data) // remove before deploy
+                return { success : true, data }
+            }
+        } catch (error) {
+            console.log("Error with signing in user: ", error)
+        }
+
+    }
+
+    const signOutUser = async () => {
+        const { error } = await supabase.auth.signOut()
+        if (error) {
+            console.log("Error signing out user: ", error)
+        }
+    }
+
+    return (
+        <AuthContext.Provider value={{ session, signUpUser, signOutUser, signInUser }}>
+            {children}
+        </AuthContext.Provider>
+    )
+}
+
+export const UserAuth = () => {
+    return useContext(AuthContext)
+}
