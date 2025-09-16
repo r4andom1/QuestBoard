@@ -1,6 +1,11 @@
-* {
+.task-card ul, ol, li {
     list-style: none;
+}
 
+.task-card h2 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .tasks {
