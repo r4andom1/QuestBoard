@@ -16,3 +16,8 @@
     font-size: 1.2rem;
 
 }
+
+.error {
+    color: red;
+    font-weight: bold;
+}

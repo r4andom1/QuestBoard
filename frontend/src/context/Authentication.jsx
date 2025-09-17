@@ -15,21 +15,23 @@ export const AuthContextProvider = ({children}) => {
         })
     }, [])
 
-    const signUpUser = async () => {
+    const signUpUser = async (email, password) => {
         const { data, error } = await supabase.auth.signUp({
             email: email,
             password: password
         })
 
+        console.log(data) // debug
+
         if (error) {
             console.log("Error signing up new user: ", error)
-            return { success: false }
+            return { success: false, error }
         } else {
             return { success: true, data} // remove before deploy
         }
     }
 
-    const signInUser = async () => {
+    const signInUser = async ( email, password ) => {
         try {
             const { data, error } = await supabase.auth.signIn({
                 email: email,
@@ -37,7 +39,7 @@ export const AuthContextProvider = ({children}) => {
             })
             if (error) {
                 console.log("Error signing in user: ", error)
-                return { success : false }
+                return { success : false, error }
             } else {
                 console.log("Signed in successfully: ", data) // remove before deploy
                 return { success : true, data }

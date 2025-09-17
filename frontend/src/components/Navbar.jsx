@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom"
 
 import "../css/Navbar.css"
-import Dashboard from "../pages/Dashboard"
-
 
 function Navbar() {
 
