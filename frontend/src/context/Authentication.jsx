@@ -1,6 +1,10 @@
 import { createContext, useEffect, useState, useContext } from "react";
 import supabase from "../../database/supabase-client";
 
+
+// A lot of authentication code was borrowed from supabase documentation
+// And i borrowed elements from this guide to make it work: https://www.youtube.com/watch?v=1KBV8M0mpYI&ab_channel=CodeCommerce
+
 const AuthContext = createContext()
 
 export const AuthContextProvider = ({children}) => {
@@ -15,7 +19,7 @@ export const AuthContextProvider = ({children}) => {
         })
     }, [])
 
-    const signUpUser = async (email, password) => {
+    const signUpUser = async ( email, password ) => {
         const { data, error } = await supabase.auth.signUp({
             email: email,
             password: password
@@ -33,7 +37,7 @@ export const AuthContextProvider = ({children}) => {
 
     const signInUser = async ( email, password ) => {
         try {
-            const { data, error } = await supabase.auth.signIn({
+            const { data, error } = await supabase.auth.signInWithPassword({
                 email: email,
                 password: password
             })

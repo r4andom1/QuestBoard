@@ -3,7 +3,6 @@ import "../css/SignUp.css"
 import { Link, useNavigate } from "react-router-dom"
 import { UserAuth } from "../context/Authentication"
 
-
 function SignUp() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
@@ -40,7 +39,7 @@ function SignUp() {
                     <input onChange={(event) => setEmail(event.target.value)} type="email" name="email" placeholder="Email"/>
                     <input onChange={(event) => setPassword(event.target.value)} type="password" name="password" placeholder="Password"/>
                     <button type="submit" disabled={loading}>Sign Up</button>
-                    {/* {error ? <p className="error">{error}</p> : <p></p>} */}
+                    {error ? <p className="error">{error}</p> : <p></p>}
                 </div>
             </form>
         </div>
