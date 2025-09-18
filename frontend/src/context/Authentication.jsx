@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState, useContext } from "react";
-import supabase from "../../database/supabase-client";
+import supabase from "../../services/supabase-client";
 
 
 // A lot of authentication code was borrowed from supabase documentation

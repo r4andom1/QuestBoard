@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import supabase from "../../database/supabase-client"
+import supabase from "../../services/supabase-client"
 import "../css/Task.css"
 
 function Task() {

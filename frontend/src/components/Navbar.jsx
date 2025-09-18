@@ -4,7 +4,6 @@ import "../css/Navbar.css"
 
 function Navbar() {
 
-
     return (
         <header className="header">
 
@@ -15,12 +14,8 @@ function Navbar() {
                 <Link to="/About">About</Link>
                 <SignOut/>
             </nav>
-
-                
-
         </header>
     )
-    
 }
 
 export default Navbar
