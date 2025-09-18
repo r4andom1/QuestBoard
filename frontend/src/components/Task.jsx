@@ -20,7 +20,6 @@ function Task() {
             setTaskList(data)
         }
     }
-
     
     const addTask = async () => {
         const newTaskData = {
@@ -37,7 +36,6 @@ function Task() {
             } else {
                 setTaskList((prev) => [...prev, ...data])
                 setNewTask("") 
-    
             }
     }
 
@@ -58,9 +56,10 @@ function Task() {
                     }
                 })
                 setTaskList(toggledTaskList)
-                
             }
     }
+
+    
 
     return (
         <div className="task-content">

@@ -18,7 +18,7 @@ function SignIn() {
         setLoading(true)
         try {
             const result = await signInUser(email, password)
-            console.log(result)
+            
             if (result.success) {
                 navigate("/")
             }

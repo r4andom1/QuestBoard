@@ -4,6 +4,7 @@ import ErrorPage from "./pages/ErrorPage";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import RestrictedRoute from "./components/RestrictedRoute";
+import Profile from "./components/Profile";
 
 export const router = createBrowserRouter([
   {
@@ -19,6 +20,10 @@ export const router = createBrowserRouter([
     path: "/sign-in",
     element: <SignIn/>
   },
+  {
+    path: "/profile",
+    element: <Profile/>
+  }
 
 ])
 
