@@ -18,7 +18,7 @@ function SignIn() {
         setLoading(true)
         try {
             const result = await signInUser(email, password)
-            
+
             if (result.success) {
                 navigate("/")
             }
@@ -32,7 +32,7 @@ function SignIn() {
     return (
         <div className="sign-in">
             <form onSubmit={handleSignIn} className="sign-in-form">
-                <h2>Login!</h2>
+                <h2>Sign in to continue your quest!</h2>
                 <p>Not signed up? <Link to="/sign-up" >Click here to sign up!</Link></p>
                 <div className="sign-in-inputs">
                     <input onChange={(event) => setEmail(event.target.value)} type="email" name="email" placeholder="Email"/>
