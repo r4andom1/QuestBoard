@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import supabase from "../../database/supabase-client"
+import supabase from "../../services/supabase-client"
 import "../css/Task.css"
 
 function Task() {
@@ -20,7 +20,6 @@ function Task() {
             setTaskList(data)
         }
     }
-
     
     const addTask = async () => {
         const newTaskData = {
@@ -37,7 +36,6 @@ function Task() {
             } else {
                 setTaskList((prev) => [...prev, ...data])
                 setNewTask("") 
-    
             }
     }
 
@@ -58,9 +56,10 @@ function Task() {
                     }
                 })
                 setTaskList(toggledTaskList)
-                console.log("complete-btn toggled")
             }
     }
+
+    
 
     return (
         <div className="task-content">
@@ -79,7 +78,7 @@ function Task() {
                         <li className="task-card" key={task.id}>
                         <h2>{ task.name }</h2>
                         <p>Description: </p>
-                        <button onClick={() => toggleTask(task.id, task.is_completed)}> {task.is_completed ? "✓" : "↺"}</button>
+                        <button onClick={() => toggleTask(task.id, task.is_completed)}> {task.is_completed ? "↺" : "✓"}</button>
                         <button>🗑</button>
 
                     </li>

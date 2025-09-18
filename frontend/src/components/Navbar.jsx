@@ -1,8 +1,6 @@
 import { Link } from "react-router-dom"
-
+import SignOut from "./SignOut"
 import "../css/Navbar.css"
-import Dashboard from "../pages/Dashboard"
-
 
 function Navbar() {
 
@@ -11,9 +9,10 @@ function Navbar() {
 
             <nav className="navbar">
                 <Link to="/">Dashboard</Link>
-                <Link to="/Profile">Profile</Link>
-                <Link to="/Shop">Shop</Link>
-                <Link to="/About">About</Link>
+                <Link to="/profile">Profile</Link>
+                <Link to="/shop">Shop</Link>
+                <Link to="/about">About</Link>
+                <SignOut/>
             </nav>
         </header>
     )
