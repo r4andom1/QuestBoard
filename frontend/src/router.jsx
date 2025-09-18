@@ -3,11 +3,12 @@ import App from "./App";
 import ErrorPage from "./pages/ErrorPage";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
+import RestrictedRoute from "./components/RestrictedRoute";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App/>,
+    element: <RestrictedRoute><App/></RestrictedRoute>,
     errorElement: <ErrorPage/>
   },
   {
