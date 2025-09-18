@@ -4,8 +4,7 @@ import "../css/Dashboard.css"
 
 function Dashboard() {
     const { session } = UserAuth()
-    // console.log(session)
-
+    
     return (
         <div className="main-content">
             <Task/>

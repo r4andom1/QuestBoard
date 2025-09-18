@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react"
 import supabase from "../../services/supabase-client"
 import "../css/Task.css"
+import { UserAuth } from "../context/Authentication"
+
 
 function Task() {
     const [newTask, setNewTask] = useState("")
     const [taskList, setTaskList] = useState([])
+    const session = UserAuth()
+    console.log(session.id)
 
     useEffect(() => {
         fetchTasks()
@@ -14,6 +18,8 @@ function Task() {
         const {data, error } = await supabase
             .from(`task`)
             .select(`*`)
+            // .eq('user_id', user.id) // test
+            // console.log(data)
         if (error) {
             console.log("Error fetching tasks: ", error)
         } else {
@@ -25,6 +31,7 @@ function Task() {
         const newTaskData = {
             name: newTask,
             is_completed: false
+
         }
         const { data, error } = await supabase
             .from(`task`)
