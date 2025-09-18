@@ -3,7 +3,8 @@ import { UserAuth } from "../context/Authentication"
 import "../css/Dashboard.css"
 
 function Dashboard() {
-    const { session } = UserAuth()
+    const currentUserData = UserAuth().session.user
+    console.log(currentUserData)
     
     return (
         <div className="main-content">

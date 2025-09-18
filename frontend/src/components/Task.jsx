@@ -3,12 +3,14 @@ import supabase from "../../services/supabase-client"
 import "../css/Task.css"
 import { UserAuth } from "../context/Authentication"
 
+// const { data: { user }  } = await supabase.auth.getUser() // does not get local session
 
 function Task() {
     const [newTask, setNewTask] = useState("")
     const [taskList, setTaskList] = useState([])
-    const session = UserAuth()
-    console.log(session.id)
+    const currentUserData = UserAuth().session.user
+
+    // console.log(currentUserData)
 
     useEffect(() => {
         fetchTasks()
@@ -18,7 +20,7 @@ function Task() {
         const {data, error } = await supabase
             .from(`task`)
             .select(`*`)
-            // .eq('user_id', user.id) // test
+            // .eq('user_id', user.id)
             // console.log(data)
         if (error) {
             console.log("Error fetching tasks: ", error)
@@ -31,7 +33,6 @@ function Task() {
         const newTaskData = {
             name: newTask,
             is_completed: false
-
         }
         const { data, error } = await supabase
             .from(`task`)
