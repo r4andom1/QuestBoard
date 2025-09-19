@@ -1,32 +1,31 @@
 .header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background: rgb(226, 226, 6);
-    
-    z-index: 100;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: rgb(226, 226, 6);
+
+  z-index: 100;
 }
 
 .navbar {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    padding: 5px 5%;
-    align-items: center;
-
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 5%;
+  align-items: center;
 }
 
 .navbar a {
-    color: black;
-    font-weight: 500;
-    font-size: 20px;
+  color: black;
+  font-weight: 500;
+  font-size: 20px;
 }
 
 a:active {
-    color: rgb(112, 70, 70);
+  color: rgb(112, 70, 70);
 }
 
 a:hover {
-    color: rgb(148, 138, 138);
+  color: rgb(148, 138, 138);
 }

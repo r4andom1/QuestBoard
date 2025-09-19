@@ -9,21 +9,23 @@ import Profile from "./components/Profile";
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <RestrictedRoute><App/></RestrictedRoute>,
-    errorElement: <ErrorPage/>
+    element: (
+      <RestrictedRoute>
+        <App />
+      </RestrictedRoute>
+    ),
+    errorElement: <ErrorPage />,
   },
   {
     path: "/sign-up",
-    element: <SignUp/>
+    element: <SignUp />,
   },
   {
     path: "/sign-in",
-    element: <SignIn/>
+    element: <SignIn />,
   },
   {
     path: "/profile",
-    element: <Profile/>
-  }
-
-])
-
+    element: <Profile />,
+  },
+]);
