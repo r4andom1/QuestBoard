@@ -1,23 +1,23 @@
 .sign-up {
-    text-align: center;
+  margin-top: 200px;
+  text-align: center;
 }
 
 .sign-up-inputs {
-    display: flex;
-    flex-direction: column;
-    width: 500px;
-    justify-content: center;
-    margin: 24px auto;
-    gap: 5px;
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  justify-content: center;
+  margin: 24px auto;
+  gap: 5px;
 }
 
 .sign-up-inputs input {
-    height: 42px;
-    font-size: 1.2rem;
-
+  height: 42px;
+  font-size: 1.2rem;
 }
 
 .error {
-    color: red;
-    font-weight: bold;
+  color: red;
+  font-weight: bold;
 }

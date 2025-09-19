@@ -19,7 +19,8 @@
   box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
   overflow-x: hidden;
 }
 
@@ -70,15 +71,41 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+@media (max-width: 600px) {
+  body {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
   }
-  a:hover {
-    color: #747bff;
+
+  h1 {
+    font-size: 2em;
   }
+
+  .navbar {
+    flex-direction: column;
+    padding: 8px 2%;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  input,
+  textarea,
+  select,
   button {
-    background-color: #f9f9f9;
+    font-size: 1em;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .task-content,
+  .create-task,
+  .input-fields,
+  .tasks {
+    max-width: 100%;
+    padding: 8px;
   }
 }
