@@ -7,7 +7,7 @@ function SignUp() {
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [error, setError] = useState("")
-    const [loading, setLoading] = useState("") // to avoid multiple submits
+    const [loading, setLoading] = useState("") // to avoid multiple submits we disable the submit btn while the data is being proccesed
 
     const { session, signUpUser } = UserAuth()
     const navigate = useNavigate()
