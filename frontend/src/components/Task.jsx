@@ -8,6 +8,7 @@ import { UserAuth } from "../context/Authentication"
 function Task() {
     const [newTask, setNewTask] = useState("")
     const [taskList, setTaskList] = useState([])
+
     const currentUserData = UserAuth().session.user
 
     // console.log(currentUserData)
@@ -67,7 +68,18 @@ function Task() {
             }
     }
 
-    
+    const deleteTask = async (taskId) => {
+        const { data, error } = await supabase
+            .from(`task`)
+            .delete()
+            .eq('id', taskId)
+
+        if (error) {
+            console.log("Error deleting task: ", error)
+        } else {
+            setTaskList((prev) => prev.filter((task) => task.id !== taskId))
+        }
+    }
 
     return (
         <div className="task-content">
@@ -87,7 +99,7 @@ function Task() {
                         <h2>{ task.name }</h2>
                         <p>Description: </p>
                         <button onClick={() => toggleTask(task.id, task.is_completed)}> {task.is_completed ? "↺" : "✓"}</button>
-                        <button>🗑</button>
+                        <button onClick={() => deleteTask(task.id)}>🗑</button>
 
                     </li>
                     ))}
