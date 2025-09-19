@@ -31,7 +31,7 @@ export const AuthContextProvider = ({children}) => {
             console.log("Error signing up new user: ", error)
             return { success: false, error }
         } else {
-            // return { success: true, data} // remove before deploy
+            return { success: true, data} // remove before deploy
         }
     }
 
