@@ -1,18 +1,31 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import LogIn from "./pages/LogIn";
 import ErrorPage from "./pages/ErrorPage";
+import SignUp from "./pages/SignUp";
+import SignIn from "./pages/SignIn";
+import RestrictedRoute from "./components/RestrictedRoute";
+import Profile from "./components/Profile";
 
 export const router = createBrowserRouter([
   {
     path: "/",
-    element: <App/>,
-    errorElement: <ErrorPage/>
+    element: (
+      <RestrictedRoute>
+        <App />
+      </RestrictedRoute>
+    ),
+    errorElement: <ErrorPage />,
   },
   {
-    path: "/log-in",
-    element: <LogIn/>
-  }
-
-])
-
+    path: "/sign-up",
+    element: <SignUp />,
+  },
+  {
+    path: "/sign-in",
+    element: <SignIn />,
+  },
+  {
+    path: "/profile",
+    element: <Profile />,
+  },
+]);
