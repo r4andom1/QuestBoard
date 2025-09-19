@@ -85,12 +85,14 @@ function Task() {
         <div className="task-content">
             <h2>Create new quest</h2>
             <div className="create-task">
-                <input
-                    type="text"
-                    placeholder="Enter quest name..."
-                    value={newTask}
-                    onChange={(event) => setNewTask(event.target.value)}
-                />
+                <div className="input-fields">
+                    <input
+                        type="text"
+                        placeholder="Enter quest name..."
+                        value={newTask}
+                        onChange={(event) => setNewTask(event.target.value)}
+                    />
+                </div>
                 <button onClick={addTask}>Submit</button>
             </div>
                 <ul className="tasks">

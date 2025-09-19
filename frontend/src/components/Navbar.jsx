@@ -8,11 +8,14 @@ function Navbar() {
         <header className="header">
 
             <nav className="navbar">
-                <Link to="/">Dashboard</Link>
-                <Link to="/profile">Profile</Link>
-                <Link to="/shop">Shop</Link>
-                <Link to="/about">About</Link>
+                <div className="nav-links">
+                    <Link to="/">Dashboard</Link>
+                    <Link to="/profile">Profile</Link>
+                    <Link to="/shop">Shop</Link>
+                    <Link to="/about">About</Link>
+                </div>
                 <SignOut/>
+                
             </nav>
         </header>
     )
