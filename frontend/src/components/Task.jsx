@@ -33,7 +33,8 @@ function Task() {
     const addTask = async () => {
         const newTaskData = {
             name: newTask,
-            is_completed: false
+            is_completed: false,
+            description: "test"
         }
         const { data, error } = await supabase
             .from(`task`)
@@ -99,7 +100,6 @@ function Task() {
                     {taskList.map((task) => (
                         <li className="task-card" key={task.id}>
                         <h2>{ task.name }</h2>
-                        <p>Description: </p>
                         <button onClick={() => toggleTask(task.id, task.is_completed)}> {task.is_completed ? "↺" : "✓"}</button>
                         <button onClick={() => deleteTask(task.id)}>🗑</button>
 
