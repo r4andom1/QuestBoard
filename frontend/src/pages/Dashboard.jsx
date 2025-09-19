@@ -4,7 +4,7 @@ import "../css/Dashboard.css"
 
 function Dashboard() {
     const currentUserData = UserAuth().session.user
-    console.log(currentUserData)
+    // console.log(currentUserData)
     
     return (
         <div className="main-content">
