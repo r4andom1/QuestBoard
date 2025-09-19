@@ -9,7 +9,7 @@ function Task() {
   const [newTaskName, setNewTaskName] = useState("");
   const [taskList, setTaskList] = useState([]);
   const [newDescription, setNewDescription] = useState("");
-  const [newType, setNewType] = useState("");
+  const [newType, setNewType] = useState("one-time");
 
   const currentUserData = UserAuth().session.user;
 
