@@ -80,8 +80,8 @@ function Task() {
 
   return (
     <div className="task-content">
-      <h2>Create new quest</h2>
       <div className="create-task">
+        <h2>Create new quest</h2>
         <div className="input-fields">
           <input
             type="text"
