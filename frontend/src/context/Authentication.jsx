@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState, useContext } from "react";
 import supabase from "../../services/supabase-client";
+import { createUserProfile } from "../utils/createUserProfile";
 
 // A lot of authentication code was borrowed from supabase documentation
 // And i borrowed elements from this guide to make it work: https://www.youtube.com/watch?v=1KBV8M0mpYI&ab_channel=CodeCommerce
@@ -19,6 +20,8 @@ export const AuthContextProvider = ({ children }) => {
   }, []);
 
   const signUpUser = async (email, password) => {
+    // Signs up a new user by adding them to the supabase auth table
+    // Also creats a corresponding user_stats table thats linked with the auth table
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
@@ -30,6 +33,12 @@ export const AuthContextProvider = ({ children }) => {
       console.log("Error signing up new user: ", error);
       return { success: false, error };
     } else {
+      if (data.user) {
+        const result = await createUserProfile(data.user.id);
+        if (!result.success) {
+          console.log("Failed to create user profile: ", error);
+        }
+      }
       return { success: true, data };
     }
   };

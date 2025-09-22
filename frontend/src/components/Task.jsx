@@ -3,6 +3,7 @@ import supabase from "../../services/supabase-client";
 import "../css/Task.css";
 import { UserAuth } from "../context/Authentication";
 import { Trash2, Check, Undo } from "lucide-react";
+import { awardCoins } from "../utils/progression.js";
 
 // const { data: { user }  } = await supabase.auth.getUser() // does not get local session
 
@@ -12,9 +13,8 @@ function Task() {
   const [newDescription, setNewDescription] = useState("");
   const [newType, setNewType] = useState("one-time");
 
-  const currentUserData = UserAuth().session.user;
-
-  // console.log(currentUserData)
+  const currentUserData = UserAuth().session.user; // gets current user session, use it to get ID
+  const currentUserID = currentUserData.id;
 
   useEffect(() => {
     fetchTasks();
@@ -49,17 +49,20 @@ function Task() {
     }
   };
 
-  const toggleTask = async (taskId, is_completed) => {
-    const { error } = await supabase
+  const toggleTask = async (taskID, is_completed) => {
+    const { data, error } = await supabase
       .from(`task`)
       .update({ is_completed: !is_completed })
-      .eq("id", taskId);
+      .eq("id", taskID)
+      .select();
 
     if (error) {
       console.log("Error toggling compelete task: ", error);
     } else {
+      await awardCoins(currentUserID, 2, taskID);
+
       const toggledTaskList = taskList.map((task) => {
-        if (task.id === taskId) {
+        if (task.id === taskID) {
           return { ...task, is_completed: !is_completed };
         } else {
           return task;
