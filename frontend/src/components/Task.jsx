@@ -108,6 +108,7 @@ function Task() {
   }
 
   function listTaskCards() {
+    // Iterates through every task in database and displays them
     return <ul className="tasks">{taskList.map((task) => taskCard(task))}</ul>;
   }
 
@@ -125,6 +126,7 @@ function Task() {
   }
 
   function createTask() {
+    // Main function for creating a task
     return (
       <div className="create-task">
         <h2>Create new quest</h2>
