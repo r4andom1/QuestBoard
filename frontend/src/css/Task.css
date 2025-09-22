@@ -36,6 +36,14 @@ p {
   padding: 2px 16px;
 }
 
+.task-card h2 {
+  font-size: 1rem;
+}
+
+.task-card p {
+  font-size: 1rem;
+}
+
 .task-card:hover {
   box-shadow: 0 2px 10px rgba(187, 187, 36, 0.5);
 }

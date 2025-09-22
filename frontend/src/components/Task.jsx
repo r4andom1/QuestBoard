@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import supabase from "../../services/supabase-client";
 import "../css/Task.css";
 import { UserAuth } from "../context/Authentication";
+import { Trash2, Check, Undo } from "lucide-react";
 
 // const { data: { user }  } = await supabase.auth.getUser() // does not get local session
 
@@ -100,9 +101,15 @@ function Task() {
         <p>{task.type}</p>
         <button onClick={() => toggleTask(task.id, task.is_completed)}>
           {" "}
-          {task.is_completed ? "↺" : "✓"}
+          {task.is_completed ? (
+            <Undo size={15} strokeWidth={3} />
+          ) : (
+            <Check size={15} strokeWidth={3} />
+          )}
         </button>
-        <button onClick={() => deleteTask(task.id)}>🗑</button>
+        <button onClick={() => deleteTask(task.id)}>
+          <Trash2 size={15} strokeWidth={2} />
+        </button>
       </li>
     );
   }
