@@ -78,54 +78,72 @@ function Task() {
     }
   };
 
-  return (
-    <div className="task-content">
+  function taskInput(type, placeholder, value, onChangeFunc, require = false) {
+    return (
+      <input
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={(event) => onChangeFunc(event.target.value)}
+        required={require}
+      />
+    );
+  }
+
+  function taskCard(task) {
+    return (
+      <li
+        className={`task-card${task.is_completed ? "-completed" : ""}`} // if task is completed, change look in css
+        key={task.id}>
+        <h2>{task.name}</h2>
+        <p>{task.description}</p>
+        <p>{task.type}</p>
+        <button onClick={() => toggleTask(task.id, task.is_completed)}>
+          {" "}
+          {task.is_completed ? "↺" : "✓"}
+        </button>
+        <button onClick={() => deleteTask(task.id)}>🗑</button>
+      </li>
+    );
+  }
+
+  function listTaskCards() {
+    return <ul className="tasks">{taskList.map((task) => taskCard(task))}</ul>;
+  }
+
+  function chooseTaskType() {
+    return (
+      <>
+        <label>Choose type</label>
+        <select id="task-type" value={newType} onChange={(event) => setNewType(event.target.value)}>
+          <option value={"one-time"}>One-time</option>
+          <option value={"daily"}>Daily</option>
+          <option value={"weekly"}>Weekly</option>
+        </select>
+      </>
+    );
+  }
+
+  function createTask() {
+    return (
       <div className="create-task">
         <h2>Create new quest</h2>
         <div className="input-fields">
-          <input
-            type="text"
-            placeholder="Enter name..."
-            value={newTaskName}
-            onChange={(event) => setNewTaskName(event.target.value)}
-            required
-          />
-          <input
-            type="text"
-            placeholder="Enter description..."
-            value={newDescription}
-            onChange={(event) => setNewDescription(event.target.value)}
-          />
-          <label>Choose type</label>
-          <select
-            id="task-type"
-            value={newType}
-            onChange={(event) => setNewType(event.target.value)}>
-            <option value={"one-time"}>One-time</option>
-            <option value={"daily"}>Daily</option>
-            <option value={"weekly"}>Weekly</option>
-          </select>
+          {taskInput("text", "Enter name...", newTaskName, setNewTaskName, true)}
+          {taskInput("text", "Enter description...", newDescription, setNewDescription)}
+          {chooseTaskType()}
         </div>
         <button onClick={addTask} disabled={!newTaskName}>
           Add quest
         </button>
       </div>
-      <ul className="tasks">
-        {taskList.map((task) => (
-          <li
-            className={`task-card${task.is_completed ? "-completed" : ""}`} // if task is completed, change look in css
-            key={task.id}>
-            <h2>{task.name}</h2>
-            <p>{task.description}</p>
-            <p>{task.type}</p>
-            <button onClick={() => toggleTask(task.id, task.is_completed)}>
-              {" "}
-              {task.is_completed ? "↺" : "✓"}
-            </button>
-            <button onClick={() => deleteTask(task.id)}>🗑</button>
-          </li>
-        ))}
-      </ul>
+    );
+  }
+
+  return (
+    <div className="task-content">
+      {createTask()}
+      {listTaskCards()}
     </div>
   );
 }
