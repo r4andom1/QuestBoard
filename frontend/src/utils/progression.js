@@ -65,4 +65,18 @@ async function setHasAwardedToTrue(taskID) {
   }
 }
 
+// async function getNrOfCoins(userID) {
+//   const { data, error } = await supabase
+//     .from("user_stats")
+//     .select("coins")
+//     .eq("user_id", userID)
+//     .single();
+
+//   if (error) {
+//     console.log("Error fetching current amount of coins: ", error);
+//   }
+//   console.log(data);
+//   return data;
+// }
+
 export { awardCoins };

@@ -1,3 +1,4 @@
+/* This runs everytime a user signs up, so that the auth.user table gets linked with the user_stats table */
 import supabase from "../../services/supabase-client";
 
 async function createUserProfile(userID) {

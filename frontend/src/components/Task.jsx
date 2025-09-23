@@ -22,7 +22,6 @@ function Task() {
 
   const fetchTasks = async () => {
     const { data, error } = await supabase.from(`task`).select(`*`);
-    // .eq('user_id', user.id)
     // console.log(data)
     if (error) {
       console.log("Error fetching tasks: ", error);

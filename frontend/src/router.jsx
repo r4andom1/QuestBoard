@@ -4,7 +4,7 @@ import ErrorPage from "./pages/ErrorPage";
 import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import RestrictedRoute from "./components/RestrictedRoute";
-import Profile from "./components/Profile";
+import ProfilePage from "./pages/ProfilePage";
 
 export const router = createBrowserRouter([
   {
@@ -28,7 +28,7 @@ export const router = createBrowserRouter([
     path: "/profile",
     element: (
       <RestrictedRoute>
-        <Profile />
+        <ProfilePage />
       </RestrictedRoute>
     ),
   },
