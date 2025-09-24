@@ -186,7 +186,8 @@ p {
   .task-card-completed h2,
   .task-card-completed h3,
   .task-card-completed p {
-    margin: 0.5em;
+    font-size: 1.2rem;
+    margin: 0.5rem;
     padding: 0.5em;
   }
 }
