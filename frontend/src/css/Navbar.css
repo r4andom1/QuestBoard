@@ -8,11 +8,18 @@
   z-index: 100;
 }
 
+.navbar h2 {
+  color: black;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
 .navbar {
   position: relative;
   display: flex;
   justify-content: space-between;
-  padding: 5px 5%;
+  padding: 1px 5%;
   align-items: center;
 }
 
@@ -28,4 +35,7 @@ a:active {
 
 a:hover {
   color: rgb(148, 138, 138);
+}
+
+@media (max-width: 768px) {
 }

@@ -1,5 +1,5 @@
 .user-stats {
-  margin-top: 120px;
+  margin-top: 50%;
   border-style: solid;
   border-radius: 10px;
   width: 100%;
@@ -38,6 +38,7 @@
   .user-stats {
     max-width: 500px;
     padding: 0 2rem;
+    margin-top: 15%;
   }
 
   .user-stats h1 {

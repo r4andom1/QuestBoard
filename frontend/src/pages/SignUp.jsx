@@ -31,6 +31,7 @@ function SignUp() {
 
   return (
     <div className="sign-up">
+      <h1>QuestBoard</h1>
       <form onSubmit={handleSignUp} className="sign-up-form">
         <h2>Start Questing Today!</h2>
         <p>Already signed up?</p>

@@ -104,13 +104,13 @@ function Task() {
         <button onClick={() => toggleTask(task.id, task.is_completed)}>
           {" "}
           {task.is_completed ? (
-            <Undo size={15} strokeWidth={3} />
+            <Undo size={25} strokeWidth={3} />
           ) : (
-            <Check size={15} strokeWidth={3} />
+            <Check size={25} strokeWidth={3} />
           )}
         </button>
         <button onClick={() => deleteTask(task.id)}>
-          <Trash2 size={15} strokeWidth={2} />
+          <Trash2 size={25} strokeWidth={2} />
         </button>
       </li>
     );
@@ -125,7 +125,10 @@ function Task() {
     return (
       <>
         <label>Choose type</label>
-        <select id="task-type" value={newType} onChange={(event) => setNewType(event.target.value)}>
+        <select
+          className="task-type"
+          value={newType}
+          onChange={(event) => setNewType(event.target.value)}>
           <option value={"one-time"}>One-time</option>
           <option value={"daily"}>Daily</option>
           <option value={"weekly"}>Weekly</option>
