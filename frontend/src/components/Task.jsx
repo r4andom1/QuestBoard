@@ -101,17 +101,19 @@ function Task() {
         <h2>{task.name}</h2>
         <p>{task.description}</p>
         <p>{task.type}</p>
-        <button onClick={() => toggleTask(task.id, task.is_completed)}>
-          {" "}
-          {task.is_completed ? (
-            <Undo size={25} strokeWidth={3} />
-          ) : (
-            <Check size={25} strokeWidth={3} />
-          )}
-        </button>
-        <button onClick={() => deleteTask(task.id)}>
-          <Trash2 size={25} strokeWidth={2} />
-        </button>
+        <div className="task-card-buttons">
+          <button onClick={() => toggleTask(task.id, task.is_completed)}>
+            {" "}
+            {task.is_completed ? (
+              <Undo size={25} strokeWidth={3} />
+            ) : (
+              <Check size={25} strokeWidth={3} />
+            )}
+          </button>
+          <button onClick={() => deleteTask(task.id)}>
+            <Trash2 size={25} strokeWidth={2} />
+          </button>
+        </div>
       </li>
     );
   }
