@@ -20,6 +20,8 @@ p {
   gap: 2rem;
   padding: 1rem;
   margin-top: 20%;
+
+  border: solid;
 }
 
 .create-task {
