@@ -21,6 +21,8 @@ function SignIn() {
 
       if (result.success) {
         navigate("/");
+      } else {
+        setError("Error signing in");
       }
     } catch (error) {
       setError("Error signing in");

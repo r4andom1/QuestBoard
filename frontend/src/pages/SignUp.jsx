@@ -7,7 +7,7 @@ function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(""); // to avoid multiple submits we disable the submit btn while the data is being proccesed
+  const [loading, setLoading] = useState(""); // to avoid multiple submits, disable the submit btn while the data is being proccesed
 
   const { session, signUpUser } = UserAuth();
   const navigate = useNavigate();
@@ -16,11 +16,14 @@ function SignUp() {
   const handleSignUp = async (event) => {
     event.preventDefault();
     setLoading(true);
+
     try {
       const result = await signUpUser(email, password);
-      // console.log(result)
+      // console.log(result);
       if (result.success) {
         navigate("/");
+      } else {
+        setError("Error signing up");
       }
     } catch (error) {
       setError("Error signing up");

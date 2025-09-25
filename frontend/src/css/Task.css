@@ -21,7 +21,7 @@ p {
   padding: 1rem;
   margin-top: 20%;
 
-  border: solid;
+  /* border: solid; */
 }
 
 .create-task {
