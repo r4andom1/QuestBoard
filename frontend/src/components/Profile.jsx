@@ -31,10 +31,10 @@ function Profile() {
     return (
       <div className="user-stats">
         <h1>User Stats</h1>
-        <h2>ID: {userStats.user_id}</h2>
-        <p>Coins: {userStats.coins}</p>
+        {/* <h2>ID: {userStats.user_id}</h2> */}
         <p>Level: {userStats.level}</p>
         <p>XP: {userStats.xp}</p>
+        <p>Coins: {userStats.coins}</p>
       </div>
     );
   }

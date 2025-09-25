@@ -32,8 +32,8 @@
 
 .navbar a {
   color: black;
-  font-weight: 500;
-  font-size: 20px;
+  font-weight: bolder;
+  font-size: x-large;
 }
 
 a:active {
@@ -51,5 +51,9 @@ a:hover {
 
   .nav-links {
     gap: 1rem;
+  }
+
+  .navbar a {
+    font-size: 20px;
   }
 }
