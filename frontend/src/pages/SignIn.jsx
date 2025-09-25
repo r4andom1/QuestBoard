@@ -21,6 +21,8 @@ function SignIn() {
 
       if (result.success) {
         navigate("/");
+      } else {
+        setError("Error signing in");
       }
     } catch (error) {
       setError("Error signing in");
@@ -31,6 +33,7 @@ function SignIn() {
 
   return (
     <div className="sign-in">
+      <h1>QuestBoard</h1>
       <form onSubmit={handleSignIn} className="sign-in-form">
         <h2>Sign in to continue your quest!</h2>
         <p>

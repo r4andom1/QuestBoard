@@ -1,23 +1,61 @@
 .sign-up {
-  margin-top: 200px;
+  margin-top: 25%;
   text-align: center;
+  /* border: solid; */
+  padding: 1rem;
+}
+
+h2,
+h3,
+p {
+  margin: 1rem;
+}
+
+.sign-up * {
+  white-space: normal;
+  word-wrap: break-word;
 }
 
 .sign-up-inputs {
   display: flex;
   flex-direction: column;
-  width: 500px;
+  width: 100%;
+  max-width: 400px;
   justify-content: center;
   margin: 24px auto;
-  gap: 5px;
+  gap: 1rem;
+}
+
+.sign-up-form {
+  /* border: solid; */
+  padding: 1rem;
 }
 
 .sign-up-inputs input {
   height: 42px;
   font-size: 1.2rem;
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
 .error {
   color: red;
   font-weight: bold;
+}
+
+.sign-up h1 {
+  color: rgb(223, 223, 82);
+}
+
+@media (min-width: 768px) {
+  .sign-up {
+    margin-top: 200px;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .sign-up-inputs {
+    width: 50%;
+  }
 }

@@ -6,6 +6,9 @@ function Navbar() {
   return (
     <header className="header">
       <nav className="navbar">
+        <Link to="/">
+          <h2>QuestBoard</h2>
+        </Link>
         <div className="nav-links">
           <Link to="/">Dashboard</Link>
           <Link to="/profile">Profile</Link>
