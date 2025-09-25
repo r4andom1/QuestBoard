@@ -4,6 +4,7 @@ import "../css/Task.css";
 import { UserAuth } from "../context/Authentication";
 import { Trash2, Check, Undo } from "lucide-react";
 import { awardCoins } from "../utils/progression.js";
+import { calculateTimeLeft, formatTime, timeLeft } from "../utils/timeBasedTask.js";
 
 // const { data: { user }  } = await supabase.auth.getUser() // does not get local session
 
@@ -12,9 +13,19 @@ function Task() {
   const [taskList, setTaskList] = useState([]);
   const [newDescription, setNewDescription] = useState("");
   const [newType, setNewType] = useState("one-time");
+  const [newExpirationTime, setExpirationTime] = useState(null);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   const currentUserData = UserAuth().session.user; // gets current user session, use it to get ID
   const currentUserID = currentUserData.id;
+
+  useEffect(() => {
+    const intervalID = setInterval(() => {
+      setCurrentTime(new Date()); // triggers the refresh
+    }, 1000); // every second
+
+    return () => clearInterval(intervalID); // cleanup to prevent memory leaking
+  }, []);
 
   useEffect(() => {
     fetchTasks();
@@ -36,6 +47,7 @@ function Task() {
       is_completed: false,
       description: newDescription,
       type: newType,
+      expiration_time: newExpirationTime,
     };
     const { data, error } = await supabase.from(`task`).insert([newTaskData]).select();
 
@@ -45,6 +57,36 @@ function Task() {
       setTaskList((prev) => [...prev, ...data]);
       setNewTaskName("");
       setNewDescription("");
+      await setCountdown(data[0].id, newType);
+    }
+  };
+
+  const setCountdown = async (taskID, taskType) => {
+    // sets expiration time in the tasks expiration time column so we can calculate how much time is left
+    let expirationTime;
+
+    if (taskType === "daily") {
+      expirationTime = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+    } else if (taskType === "weekly") {
+      expirationTime = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    } else {
+      expirationTime = null;
+    }
+
+    const { data, error } = await supabase
+      .from("task")
+      .update({ expiration_time: expirationTime })
+      .eq("id", taskID)
+      .select();
+
+    if (error) {
+      console.log("error updating expiration time", error);
+    } else {
+      setTaskList((prev) =>
+        prev.map((task) =>
+          task.id === taskID ? { ...task, expiration_time: expirationTime } : task
+        )
+      );
     }
   };
 
@@ -101,6 +143,11 @@ function Task() {
         <h2>{task.name}</h2>
         <p>{task.description}</p>
         <p>{task.type}</p>
+        <div>
+          {task.expiration_time ? (
+            <div>time left: {timeLeft(task.expiration_time, currentTime)}</div>
+          ) : null}
+        </div>
         <div className="task-card-buttons">
           <button onClick={() => toggleTask(task.id, task.is_completed)}>
             {" "}
