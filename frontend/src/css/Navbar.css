@@ -8,18 +8,32 @@
   z-index: 100;
 }
 
+.navbar h2 {
+  color: black;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
 .navbar {
   position: relative;
   display: flex;
   justify-content: space-between;
-  padding: 5px 5%;
+  padding: 1px 5%;
   align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  flex-direction: row;
+  padding: 1rem;
+  gap: 2rem;
 }
 
 .navbar a {
   color: black;
-  font-weight: 500;
-  font-size: 20px;
+  font-weight: bolder;
+  font-size: x-large;
 }
 
 a:active {
@@ -28,4 +42,18 @@ a:active {
 
 a:hover {
   color: rgb(148, 138, 138);
+}
+
+@media (max-width: 768px) {
+  .header {
+    /* gap: 1rem; */
+  }
+
+  .nav-links {
+    gap: 1rem;
+  }
+
+  .navbar a {
+    font-size: 20px;
+  }
 }

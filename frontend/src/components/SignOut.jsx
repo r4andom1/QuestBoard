@@ -2,8 +2,14 @@ import { UserAuth } from "../context/Authentication";
 import { useNavigate } from "react-router-dom";
 
 function SignOut() {
-  const { session, signOutUser } = UserAuth();
   const navigate = useNavigate();
+  const authContext = UserAuth();
+
+  // prevents crashing if context not ready
+  if (!authContext) {
+    return null;
+  }
+  const { session, signOutUser } = authContext;
 
   const handleSignOut = async (event) => {
     event.preventDefault();
