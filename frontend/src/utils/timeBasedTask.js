@@ -15,11 +15,15 @@ const formatTime = (seconds) => {
   if (seconds <= 0) {
     return "Expired";
   }
+  const days = Math.floor(seconds / 86400);
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const secs = seconds % 60;
 
-  return `${hours}h ${minutes}m ${secs}s`;
+  if (days > 0) {
+    return `${days} days`;
+  }
+  return `${hours}h ${minutes}m`;
 };
 
 const timeLeft = (expirationTime, currentTime) => {
