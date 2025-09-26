@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import supabase from "../../services/supabase-client";
 import "../css/Task.css";
 import { UserAuth } from "../context/Authentication";
-import { Trash2, Check, Undo } from "lucide-react";
+import { Trash2, Check, Undo, SquarePen } from "lucide-react";
 import { awardCoins } from "../utils/progression.js";
 import { calculateTimeLeft, formatTime, timeLeft } from "../utils/timeBasedTask.js";
 
@@ -135,6 +135,7 @@ function Task() {
     );
   }
 
+  // implement so that taskCard can either be viewed in edit mode or as view mode
   function taskCard(task) {
     return (
       <li
@@ -159,6 +160,9 @@ function Task() {
           </button>
           <button onClick={() => deleteTask(task.id)}>
             <Trash2 size={25} strokeWidth={2} />
+          </button>
+          <button>
+            <SquarePen />
           </button>
         </div>
       </li>
@@ -185,6 +189,8 @@ function Task() {
       </>
     );
   }
+
+  function editTask() {}
 
   function createTask() {
     // Main function for creating a task
