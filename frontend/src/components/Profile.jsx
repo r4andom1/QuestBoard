@@ -23,7 +23,7 @@ function Profile() {
       console.log("Error fetching user", error);
     } else {
       setUserStats(data);
-      console.log(data);
+      // console.log(data);
     }
   };
 
@@ -33,7 +33,7 @@ function Profile() {
         <h1>User Stats</h1>
         {/* <h2>ID: {userStats.user_id}</h2> */}
         <p>Level: {userStats.level}</p>
-        <p>XP: {userStats.xp}</p>
+        <p>XP: {userStats.current_xp}/20</p>
         <p>Coins: {userStats.coins}</p>
       </div>
     );

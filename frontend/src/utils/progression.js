@@ -1,44 +1,30 @@
 import supabase from "../../services/supabase-client";
 
 async function awardUser(userID, taskID) {
-  // should check which type of task it is give rewards according to scope of quest. Also give XP
-  // check if task already has awarded coins
-
   const alreadyAwarded = await hasAwarded(taskID);
   if (alreadyAwarded) {
     return { success: false, error: "User already awarded from this task" };
   }
 
-  // fetch current nrOfCoins
-  const { data: currentData, error: fetchError } = await supabase
+  let { newNrOfCoins, awardedXP } = await decideAwards(taskID);
+
+  await awardCoins(userID, newNrOfCoins);
+  await checkForLevelUp(userID, awardedXP);
+  await setHasAwardedToTrue(taskID);
+  return { success: true };
+}
+
+async function awardCoins(userID, newNrOfCoins) {
+  const { data: coinData, error: coinError } = await supabase
     .from("user_stats")
-    .select("*")
+    .select("coins")
     .eq("user_id", userID)
     .single();
 
-  if (fetchError) {
-    console.log("Error fetching coins from user_stats table: ", fetchError);
-    return { success: false, error: fetchError };
-  }
-
-  // console.log(decideAwards(taskID));
-  const { newNrOfCoins, newXP } = await decideAwards(taskID);
-
-  // console.log(taskNrOfCoins, taskXP);
-  // then add the new coins to the current amount and update the column
-  const updatedCoins = currentData.coins + newNrOfCoins;
-  const updatedXP = currentData.xp + newXP;
-  const { error: updateError } = await supabase
+  const { data: updatedData, error: updateError } = await supabase
     .from("user_stats")
-    .update({ coins: updatedCoins, xp: updatedXP })
+    .update({ coins: coinData.coins + newNrOfCoins })
     .eq("user_id", userID);
-
-  if (updateError) {
-    console.log("Error updating nrOfCoins to user_stats table: ", updateError);
-    return { success: false, error: updateError };
-  }
-  await setHasAwardedToTrue(taskID);
-  return { success: true };
 }
 
 async function hasAwarded(taskID) {
@@ -78,33 +64,38 @@ async function decideAwards(taskID) {
   const taskType = await getTaskType(taskID);
   // console.log(taskType);
   let newNrOfCoins;
-  let newXP;
+  let awardedXP;
   if (taskType === "daily") {
     newNrOfCoins = 2;
-    newXP = 2;
+    awardedXP = 2;
   } else if (taskType === "weekly") {
     newNrOfCoins = 4;
-    newXP = 4;
+    awardedXP = 4;
   } else if (taskType === "one-time") {
     newNrOfCoins = 1;
-    newXP = 1;
+    awardedXP = 1;
   }
-  console.log("coins: ", newNrOfCoins, "xp: ", newXP);
-  return { newNrOfCoins, newXP };
+  return { newNrOfCoins, awardedXP };
 }
 
-// async function getNrOfCoins(userID) {
-//   const { data, error } = await supabase
-//     .from("user_stats")
-//     .select("coins")
-//     .eq("user_id", userID)
-//     .single();
+async function checkForLevelUp(userID, awardedXP) {
+  // Checks if the level up threshhold is met, if it is, level up.
+  const xpRequiredForLevel = 20;
 
-//   if (error) {
-//     console.log("Error fetching current amount of coins: ", error);
-//   }
-//   console.log(data);
-//   return data;
-// }
+  const { data: userData } = await supabase
+    .from("user_stats")
+    .select("total_xp, level, current_xp")
+    .eq("user_id", userID)
+    .single();
+
+  const newTotalXP = userData.total_xp + awardedXP;
+  const newCurrentXP = newTotalXP % xpRequiredForLevel;
+  const newLevel = Math.floor(newTotalXP / xpRequiredForLevel) + 1;
+
+  await supabase
+    .from("user_stats")
+    .update({ total_xp: newTotalXP, level: newLevel, current_xp: newCurrentXP })
+    .eq("user_id", userID);
+}
 
 export { awardUser };
