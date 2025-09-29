@@ -66,7 +66,7 @@ function Task() {
     let expirationTime;
 
     if (taskType === "daily") {
-      expirationTime = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+      expirationTime = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // ISOString so that its the correct type for database timestampz
     } else if (taskType === "weekly") {
       expirationTime = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     } else {
@@ -91,6 +91,7 @@ function Task() {
   };
 
   const toggleTask = async (taskID, is_completed) => {
+    // Can be toggled many times, but completed and get rewards from once.
     const { data, error } = await supabase
       .from(`task`)
       .update({ is_completed: !is_completed })

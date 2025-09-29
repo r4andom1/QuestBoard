@@ -1,7 +1,9 @@
 import supabase from "../../services/supabase-client";
 
 async function awardCoins(userID, nrOfCoins, taskID) {
+  // should check which type of task it is give rewards according to scope of quest. Also give XP
   // check if task already has awarded coins
+
   const alreadyAwarded = await hasAwarded(taskID);
   if (alreadyAwarded) {
     return { success: false, error: "User already awarded from this task" };
