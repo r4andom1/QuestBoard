@@ -3,7 +3,7 @@ import supabase from "../../services/supabase-client";
 import "../css/Task.css";
 import { UserAuth } from "../context/Authentication";
 import { Trash2, Check, Undo, SquarePen } from "lucide-react";
-import { awardCoins } from "../utils/progression.js";
+import { awardUser } from "../utils/progression.js";
 import { calculateTimeLeft, formatTime, timeLeft } from "../utils/timeBasedTask.js";
 
 // const { data: { user }  } = await supabase.auth.getUser() // does not get local session
@@ -101,7 +101,7 @@ function Task() {
     if (error) {
       console.log("Error toggling compelete task: ", error);
     } else {
-      await awardCoins(currentUserID, 2, taskID);
+      await awardUser(currentUserID, taskID);
 
       const toggledTaskList = taskList.map((task) => {
         if (task.id === taskID) {

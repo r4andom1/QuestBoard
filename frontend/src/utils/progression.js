@@ -1,6 +1,6 @@
 import supabase from "../../services/supabase-client";
 
-async function awardCoins(userID, nrOfCoins, taskID) {
+async function awardUser(userID, taskID) {
   // should check which type of task it is give rewards according to scope of quest. Also give XP
   // check if task already has awarded coins
 
@@ -21,17 +21,16 @@ async function awardCoins(userID, nrOfCoins, taskID) {
     return { success: false, error: fetchError };
   }
 
-  // check if user exists
-  if (!currentData) {
-    console.log("User not found");
-    return { success: false, error: "user not found" };
-  }
+  // console.log(decideAwards(taskID));
+  const { newNrOfCoins, newXP } = await decideAwards(taskID);
 
+  // console.log(taskNrOfCoins, taskXP);
   // then add the new coins to the current amount and update the column
-  const newTotal = currentData.coins + nrOfCoins;
+  const updatedCoins = currentData.coins + newNrOfCoins;
+  const updatedXP = currentData.xp + newXP;
   const { error: updateError } = await supabase
     .from("user_stats")
-    .update({ coins: newTotal })
+    .update({ coins: updatedCoins, xp: updatedXP })
     .eq("user_id", userID);
 
   if (updateError) {
@@ -67,6 +66,33 @@ async function setHasAwardedToTrue(taskID) {
   }
 }
 
+async function getTaskType(taskID) {
+  const { data, error } = await supabase.from("task").select("type").eq("id", taskID).single();
+  if (error) {
+    console.log("error fetching task type", error);
+  }
+  return data.type;
+}
+
+async function decideAwards(taskID) {
+  const taskType = await getTaskType(taskID);
+  // console.log(taskType);
+  let newNrOfCoins;
+  let newXP;
+  if (taskType === "daily") {
+    newNrOfCoins = 2;
+    newXP = 2;
+  } else if (taskType === "weekly") {
+    newNrOfCoins = 4;
+    newXP = 4;
+  } else if (taskType === "one-time") {
+    newNrOfCoins = 1;
+    newXP = 1;
+  }
+  console.log("coins: ", newNrOfCoins, "xp: ", newXP);
+  return { newNrOfCoins, newXP };
+}
+
 // async function getNrOfCoins(userID) {
 //   const { data, error } = await supabase
 //     .from("user_stats")
@@ -81,4 +107,4 @@ async function setHasAwardedToTrue(taskID) {
 //   return data;
 // }
 
-export { awardCoins };
+export { awardUser };
