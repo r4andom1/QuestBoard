@@ -26,14 +26,32 @@ const formatTime = (seconds) => {
   return `${hours}h ${minutes}m`;
 };
 
-const timeLeft = (expirationTime, currentTime) => {
+const timeLeft = (expirationTime, currentTime, taskID, onExpired) => {
   const seconds = calculateTimeLeft(expirationTime, currentTime);
+  if (seconds === 0) {
+    updateToExpired(taskID);
+    onExpired(taskID);
+  }
 
   if (seconds === null) {
+    // if not time-based
     return null;
   } else {
     return formatTime(seconds);
   }
 };
+
+async function updateToExpired(taskID) {
+  const { data, error } = await supabase
+    .from("task")
+    .update({ has_expired: true })
+    .eq("id", taskID)
+    .single();
+
+  if (error) {
+    console.log("Error updating the tasks has_expired", error);
+  }
+  return data.has_expired;
+}
 
 export { calculateTimeLeft, formatTime, timeLeft };

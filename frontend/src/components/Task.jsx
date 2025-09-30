@@ -6,8 +6,6 @@ import { Trash2, Check, Undo, SquarePen } from "lucide-react";
 import { awardUser } from "../utils/progression.js";
 import { calculateTimeLeft, formatTime, timeLeft } from "../utils/timeBasedTask.js";
 
-// const { data: { user }  } = await supabase.auth.getUser() // does not get local session
-
 function Task() {
   const [newTaskName, setNewTaskName] = useState("");
   const [taskList, setTaskList] = useState([]);
@@ -90,6 +88,13 @@ function Task() {
     }
   };
 
+  const handleExpired = (taskID) => {
+    // update state when task becomes expired
+    setTaskList((prev) =>
+      prev.map((task) => (task.id === taskID ? { ...task, has_expired: true } : task))
+    );
+  };
+
   const toggleTask = async (taskID, is_completed) => {
     // Can be toggled many times, but completed and get rewards from once.
     const { data, error } = await supabase
@@ -147,7 +152,9 @@ function Task() {
         <p>{task.type}</p>
         <div>
           {task.expiration_time ? (
-            <div>time left: {timeLeft(task.expiration_time, currentTime)}</div>
+            <div>
+              time left: {timeLeft(task.expiration_time, currentTime, task.id, handleExpired)}
+            </div>
           ) : null}
         </div>
         <div className="task-card-buttons">
