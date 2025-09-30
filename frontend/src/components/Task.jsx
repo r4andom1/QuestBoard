@@ -177,9 +177,16 @@ function Task() {
     );
   }
 
+  // const words = ["spray", "elite", "exuberant", "destruction", "present"];
+  // const result = words.filter((word) => word.length > 6);
+
   function listTaskCards() {
     // Iterates through every task in database and displays them
     return <ul className="tasks">{taskList.map((task) => taskCard(task))}</ul>;
+  }
+
+  function listActiveCards() {
+    return <ul className="tasks">{taskList.filter((task) => taskCard(task))}</ul>;
   }
 
   function chooseTaskType() {
@@ -221,6 +228,7 @@ function Task() {
     <div className="task-content">
       {createTask()}
       {listTaskCards()}
+      {/* List active, completed and expired */}
     </div>
   );
 }
