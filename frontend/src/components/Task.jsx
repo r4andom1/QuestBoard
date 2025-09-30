@@ -149,10 +149,10 @@ function Task() {
         key={task.id}>
         <h2>{task.name}</h2>
         <p>{task.description}</p>
-        <p>{task.type}</p>
+        <p className="card-task-type">{task.type}</p>
         <div>
           {task.expiration_time ? (
-            <div>
+            <div className="time-left">
               time left: {timeLeft(task.expiration_time, currentTime, task.id, handleExpired)}
             </div>
           ) : null}
@@ -185,8 +185,24 @@ function Task() {
     return <ul className="tasks">{taskList.map((task) => taskCard(task))}</ul>;
   }
 
-  function listActiveCards() {
-    return <ul className="tasks">{taskList.filter((task) => taskCard(task))}</ul>;
+  function listCompletedTasks() {
+    return (
+      <ul className="tasks-completed">
+        {taskList.filter((task) => task.is_completed === true).map((task) => taskCard(task))}
+      </ul>
+    );
+  }
+
+  function listExpiredTasks() {
+    return (
+      <ul className="tasks-expired">
+        {taskList.filter((task) => task.is_expired === true).map((task) => taskCard(task))}
+      </ul>
+    );
+  }
+
+  function listDeletedTasks() {
+    return <ul className="tasks-deleted">{taskList.filter((task) => taskCard(task))}</ul>;
   }
 
   function chooseTaskType() {
@@ -228,7 +244,8 @@ function Task() {
     <div className="task-content">
       {createTask()}
       {listTaskCards()}
-      {/* List active, completed and expired */}
+      {listCompletedTasks()}
+      {listExpiredTasks()}
     </div>
   );
 }

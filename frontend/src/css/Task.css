@@ -69,6 +69,18 @@ p {
   width: 100%;
 }
 
+.tasks-active {
+}
+
+.tasks-completed {
+}
+
+.tasks-deleted {
+}
+
+.tasks-expired {
+}
+
 .task-card,
 .task-card-completed {
   width: 100%;
@@ -95,7 +107,8 @@ p {
 
 .task-card h2,
 .task-card-completed h2 {
-  font-size: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .task-card p,
@@ -145,8 +158,21 @@ p {
     margin: 0 auto;
     justify-content: center;
     padding: 0;
+    border: solid;
     /* gap: 1rem; */
     /* width: 75%; */
+  }
+
+  .tasks-active {
+  }
+
+  .tasks-completed {
+  }
+
+  .tasks-deleted {
+  }
+
+  .tasks-expired {
   }
 
   .task-card button,
@@ -190,5 +216,17 @@ p {
     font-size: 1.2rem;
     margin: 0.5rem;
     padding: 0.5em;
+  }
+
+  .task-card h2,
+  .task-card-completed h2 {
+    font-size: 1.5rem;
+  }
+
+  .time-left {
+    font-size: 0.8rem;
+  }
+  p.card-task-type {
+    font-size: 0.8rem;
   }
 }
