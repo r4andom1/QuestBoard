@@ -21,7 +21,7 @@ p {
   padding: 1rem;
   margin-top: 20%;
 
-  /* border: solid; */
+  border: solid;
 }
 
 .create-task {
@@ -60,7 +60,7 @@ p {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  /* border-style: solid; */
+  border-style: solid;
   justify-content: center;
   border-radius: 10px;
   border-color: rgb(104, 104, 25);
@@ -73,6 +73,16 @@ p {
 }
 
 .tasks-completed {
+    display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border-style: solid;
+  justify-content: center;
+  border-radius: 10px;
+  border-color: rgb(104, 104, 25);
+  padding: 1rem;
+  gap: 1rem;
+  width: 100%;
 }
 
 .tasks-deleted {
@@ -133,6 +143,7 @@ p {
 
 @media (min-width: 768px) {
   .task-content {
+    display: flex;
     margin-top: 0;
     flex-direction: row;
     align-items: flex-start;
@@ -163,7 +174,29 @@ p {
     /* width: 75%; */
   }
 
+  .tasks-active, 
+  .tasks-completed, 
+  .tasks-deleted, 
+  .tasks-expired {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: wrap;
+      border-style: solid;
+      justify-content: center;
+      border-radius: 10px;
+      border-color: rgb(104, 104, 25);
+      padding: 1rem;
+      gap: 1rem;
+      width: 100%;
+  }
+
   .tasks-active {
+    margin-top: 0;
+  }
+
+  .task-section-heading {
+    width: 100%;
+    text-align: center;
   }
 
   .tasks-completed {

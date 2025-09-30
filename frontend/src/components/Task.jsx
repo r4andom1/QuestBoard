@@ -119,13 +119,24 @@ function Task() {
     }
   };
 
-  const deleteTask = async (taskId) => {
-    const { data, error } = await supabase.from(`task`).delete().eq("id", taskId);
+  const deleteTask = async (taskID, is_deleted) => {
+    const { data, error } = await supabase
+    .from("task")
+    .update({is_deleted : !is_deleted})
+    .eq("id", taskID)
+    .single();
 
     if (error) {
       console.log("Error deleting task: ", error);
     } else {
-      setTaskList((prev) => prev.filter((task) => task.id !== taskId));
+      const updatedTaskList = taskList.map((task) => {
+        if (task.id === taskID) {
+          return {...task, is_deleted: !is_deleted}
+        } else {
+          return task;
+        }
+      })
+      setTaskList(updatedTaskList)
     }
   };
 
@@ -166,7 +177,7 @@ function Task() {
               <Check size={25} strokeWidth={3} />
             )}
           </button>
-          <button onClick={() => deleteTask(task.id)}>
+          <button onClick={() => deleteTask(task.id, task.is_deleted)}>
             <Trash2 size={25} strokeWidth={2} />
           </button>
           <button>
@@ -182,13 +193,28 @@ function Task() {
 
   function listTaskCards() {
     // Iterates through every task in database and displays them
-    return <ul className="tasks">{taskList.map((task) => taskCard(task))}</ul>;
+    return (
+      <ul className="tasks">
+        {<h2>All</h2>}
+        {taskList.map((task) => taskCard(task))}
+        </ul>
+    );
+  }
+
+  function listActiveTasks() {
+        return (
+      <ul className="tasks-active">
+        <li className="task-section-heading"><h2>Active Quests</h2></li>
+        {taskList.filter((task) => task.is_active === true && !task.is_completed && !task.is_deleted && !task.has_awarded).map((task) => taskCard(task))}
+      </ul>
+    );
   }
 
   function listCompletedTasks() {
     return (
       <ul className="tasks-completed">
-        {taskList.filter((task) => task.is_completed === true).map((task) => taskCard(task))}
+        <li className="task-section-heading"><h2>Completed Quests</h2></li>
+        {taskList.filter((task) => task.has_awarded === true && !task.is_deleted && !task.is_expired).map((task) => taskCard(task))}
       </ul>
     );
   }
@@ -196,13 +222,19 @@ function Task() {
   function listExpiredTasks() {
     return (
       <ul className="tasks-expired">
+        <li className="task-section-heading"><h2>Expired Quests</h2></li>
         {taskList.filter((task) => task.is_expired === true).map((task) => taskCard(task))}
       </ul>
     );
   }
 
   function listDeletedTasks() {
-    return <ul className="tasks-deleted">{taskList.filter((task) => taskCard(task))}</ul>;
+        return (
+      <ul className="tasks-deleted">
+        <li className="task-section-heading"><h2>Deleted Quests</h2></li>
+        {taskList.filter((task) => task.is_deleted === true).map((task) => taskCard(task))}
+      </ul>
+    );
   }
 
   function chooseTaskType() {
@@ -240,12 +272,23 @@ function Task() {
     );
   }
 
+  function listAllTasks() {
+    return (
+      <>
+        {listActiveTasks()}
+        {listCompletedTasks()}
+        {listExpiredTasks()}
+        {listDeletedTasks()}
+      </>
+    )
+  }
+
   return (
     <div className="task-content">
       {createTask()}
-      {listTaskCards()}
-      {listCompletedTasks()}
-      {listExpiredTasks()}
+      <div className="all-tasks">
+        {listAllTasks()}
+      </div>
     </div>
   );
 }
