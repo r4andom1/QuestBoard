@@ -190,6 +190,10 @@ p {
       width: 100%;
   }
 
+  .hidden {
+    display: none;
+  }
+
   .tasks-active {
     margin-top: 0;
   }
