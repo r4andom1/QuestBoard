@@ -13,11 +13,10 @@ function Task() {
   const [newType, setNewType] = useState("one-time");
   const [newExpirationTime, setExpirationTime] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [showActiveTasks, setShowActiveTasks] = useState(true)
-  const [showCompletedTasks, setShowCompletedTasks] = useState(false)
-  const [showExpiredTasks, setShowExpiredTasks] = useState(false)
-  const [showDeletedTasks, setShowDeletedTasks] = useState(false)
-  
+  const [showActiveTasks, setShowActiveTasks] = useState(true);
+  const [showCompletedTasks, setShowCompletedTasks] = useState(false);
+  const [showExpiredTasks, setShowExpiredTasks] = useState(false);
+  const [showDeletedTasks, setShowDeletedTasks] = useState(false);
 
   const currentUserData = UserAuth().session.user; // gets current user session, use it to get ID
   const currentUserID = currentUserData.id;
@@ -126,22 +125,22 @@ function Task() {
 
   const deleteTask = async (taskID, is_deleted) => {
     const { data, error } = await supabase
-    .from("task")
-    .update({is_deleted : !is_deleted})
-    .eq("id", taskID)
-    .single();
+      .from("task")
+      .update({ is_deleted: !is_deleted })
+      .eq("id", taskID)
+      .single();
 
     if (error) {
       console.log("Error deleting task: ", error);
     } else {
       const updatedTaskList = taskList.map((task) => {
         if (task.id === taskID) {
-          return {...task, is_deleted: !is_deleted}
+          return { ...task, is_deleted: !is_deleted };
         } else {
           return task;
         }
-      })
-      setTaskList(updatedTaskList)
+      });
+      setTaskList(updatedTaskList);
     }
   };
 
@@ -199,15 +198,26 @@ function Task() {
       <ul className="tasks">
         {<h2>All</h2>}
         {taskList.map((task) => taskCard(task))}
-        </ul>
+      </ul>
     );
   }
 
   function listActiveTasks() {
-        return (
+    return (
       <ul className="tasks-active">
-        <li className="task-section-heading"><button onClick={() => setShowActiveTasks((prev) => !prev)}>Active Quests</button></li>
-        {showActiveTasks && taskList.filter((task) => task.is_active === true && !task.is_completed && !task.is_deleted && !task.has_awarded).map((task) => taskCard(task))}
+        <li className="task-section-heading">
+          <button onClick={() => setShowActiveTasks((prev) => !prev)}>Active Quests</button>
+        </li>
+        {showActiveTasks &&
+          taskList
+            .filter(
+              (task) =>
+                task.is_active === true &&
+                !task.is_completed &&
+                !task.is_deleted &&
+                !task.has_awarded
+            )
+            .map((task) => taskCard(task))}
       </ul>
     );
   }
@@ -215,8 +225,13 @@ function Task() {
   function listCompletedTasks() {
     return (
       <ul className="tasks-completed">
-        <li className="task-section-heading"><button onClick={() => setShowCompletedTasks((prev) => !prev)}>Completed Quests</button></li>
-        {showCompletedTasks && taskList.filter((task) => task.has_awarded === true && !task.is_deleted && !task.is_expired).map((task) => taskCard(task))}
+        <li className="task-section-heading">
+          <button onClick={() => setShowCompletedTasks((prev) => !prev)}>Completed Quests</button>
+        </li>
+        {showCompletedTasks &&
+          taskList
+            .filter((task) => task.has_awarded === true && !task.is_deleted && !task.is_expired)
+            .map((task) => taskCard(task))}
       </ul>
     );
   }
@@ -224,17 +239,23 @@ function Task() {
   function listExpiredTasks() {
     return (
       <ul className="tasks-expired">
-        <li className="task-section-heading"><button onClick={() => setShowExpiredTasks((prev) => !prev)}>Expired Quests</button></li>
-        {showExpiredTasks && taskList.filter((task) => task.is_expired === true).map((task) => taskCard(task))}
+        <li className="task-section-heading">
+          <button onClick={() => setShowExpiredTasks((prev) => !prev)}>Expired Quests</button>
+        </li>
+        {showExpiredTasks &&
+          taskList.filter((task) => task.is_expired === true).map((task) => taskCard(task))}
       </ul>
     );
   }
 
   function listDeletedTasks() {
-        return (
+    return (
       <ul className="tasks-deleted">
-        <li className="task-section-heading"><button onClick={() => setShowDeletedTasks((prev) => !prev)}>Deleted Quests</button></li>
-        {showDeletedTasks && taskList.filter((task) => task.is_deleted === true).map((task) => taskCard(task))}
+        <li className="task-section-heading">
+          <button onClick={() => setShowDeletedTasks((prev) => !prev)}>Deleted Quests</button>
+        </li>
+        {showDeletedTasks &&
+          taskList.filter((task) => task.is_deleted === true).map((task) => taskCard(task))}
       </ul>
     );
   }
@@ -242,15 +263,35 @@ function Task() {
   function chooseTaskType() {
     return (
       <>
-        <label>Choose type</label>
-        <select
-          className="task-type"
-          value={newType}
-          onChange={(event) => setNewType(event.target.value)}>
-          <option value={"one-time"}>One-time</option>
-          <option value={"daily"}>Daily</option>
-          <option value={"weekly"}>Weekly</option>
-        </select>
+        <div className="radio-buttons">
+          <label>
+            <input
+              type="radio"
+              value="one-time"
+              checked={newType === "one-time"}
+              onChange={(event) => setNewType(event.target.value)}
+            />
+            One-time
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="daily"
+              checked={newType === "daily"}
+              onChange={(event) => setNewType(event.target.value)}
+            />
+            Daily
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="weekly"
+              checked={newType === "weekly"}
+              onChange={(event) => setNewType(event.target.value)}
+            />
+            Weekly
+          </label>
+        </div>
       </>
     );
   }
@@ -282,15 +323,13 @@ function Task() {
         {listExpiredTasks()}
         {listDeletedTasks()}
       </>
-    )
+    );
   }
 
   return (
     <div className="task-content">
       {createTask()}
-      <div className="all-tasks">
-        {listAllTasks()}
-      </div>
+      <div className="all-tasks">{listAllTasks()}</div>
     </div>
   );
 }
