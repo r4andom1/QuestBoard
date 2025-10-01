@@ -233,7 +233,9 @@ function Task() {
     return (
       <ul className="tasks-completed">
         <li className="task-section-heading">
-          <button onClick={() => setShowCompletedTasks((prev) => !prev)}>Completed Quests</button>
+          <button className="show-button" onClick={() => setShowCompletedTasks((prev) => !prev)}>
+            Completed Quests
+          </button>
         </li>
         {showCompletedTasks &&
           taskList
@@ -247,7 +249,9 @@ function Task() {
     return (
       <ul className="tasks-expired">
         <li className="task-section-heading">
-          <button onClick={() => setShowExpiredTasks((prev) => !prev)}>Expired Quests</button>
+          <button className="show-button" onClick={() => setShowExpiredTasks((prev) => !prev)}>
+            Expired Quests
+          </button>
         </li>
         {showExpiredTasks &&
           taskList
@@ -261,7 +265,9 @@ function Task() {
     return (
       <ul className="tasks-deleted">
         <li className="task-section-heading">
-          <button onClick={() => setShowDeletedTasks((prev) => !prev)}>Deleted Quests</button>
+          <button className="show-button" onClick={() => setShowDeletedTasks((prev) => !prev)}>
+            Deleted Quests
+          </button>
         </li>
         {showDeletedTasks &&
           taskList.filter((task) => task.is_deleted === true).map((task) => taskCard(task))}
