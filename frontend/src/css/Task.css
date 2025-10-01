@@ -207,6 +207,21 @@ p.card-task-type {
   height: 30px;
 }
 
+.create-task .add-quest-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  border-radius: 15px;
+  width: 45%;
+  height: 20%;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  border: none;
+}
+
 @media (min-width: 768px) {
   .task-content {
     display: flex;
@@ -230,6 +245,7 @@ p.card-task-type {
   .all-tasks {
     width: 75%;
   }
+
   .tasks {
     display: flex;
     flex-direction: row;
@@ -346,9 +362,42 @@ p.card-task-type {
   .radio-buttons {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    width: 100%;
-    gap: 0.5rem;
+    justify-content: center;
+    width: 50%;
+    gap: 2rem;
     text-align: center;
+    margin: 0 auto;
+  }
+
+  .create-task .add-quest-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    border-radius: 20px;
+    width: 25%;
+    height: 10%;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    border: none;
+    /* background-color: red; */
+  }
+
+  .all-tasks .show-button {
+    /* display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    border-radius: 20px;
+    width: 15%;
+    height: 20%;
+    text-align: center;
+    color: white;
+    font-weight: bold; */
+
+    /* background-color: red; */
   }
 }

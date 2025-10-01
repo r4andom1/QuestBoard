@@ -154,6 +154,7 @@ function Task() {
         value={value}
         onChange={(event) => onChangeFunc(event.target.value)}
         required={require}
+        name="input"
       />
     );
   }
@@ -210,7 +211,9 @@ function Task() {
     return (
       <ul className="tasks-active">
         <li className="task-section-heading">
-          <button onClick={() => setShowActiveTasks((prev) => !prev)}>Active Quests</button>
+          <button className="show-button" onClick={() => setShowActiveTasks((prev) => !prev)}>
+            Active Quests
+          </button>
         </li>
         {showActiveTasks &&
           taskList
@@ -314,7 +317,7 @@ function Task() {
           {taskInput("text", "Enter description...", newDescription, setNewDescription)}
           {chooseTaskType()}
         </div>
-        <button onClick={addTask} disabled={!newTaskName}>
+        <button className="add-quest-button" onClick={addTask} disabled={!newTaskName}>
           Add quest
         </button>
       </div>
