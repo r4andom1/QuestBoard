@@ -2,7 +2,8 @@ import supabase from "../../services/supabase-client";
 
 async function awardUser(userID, taskID) {
   const alreadyAwarded = await hasAwarded(taskID);
-  if (alreadyAwarded) {
+  const eligibleForReward = await checkIfEligibleForReward(taskID);
+  if (alreadyAwarded || !eligibleForReward) {
     return { success: false, error: "User already awarded from this task" };
   }
 
@@ -12,6 +13,24 @@ async function awardUser(userID, taskID) {
   await checkForLevelUp(userID, awardedXP);
   await setHasAwardedToTrue(taskID);
   return { success: true };
+}
+
+async function checkIfEligibleForReward(taskID) {
+  // Checks if the task is expired or deleted, if they are the user should not be rewarded
+  const { data, error } = await supabase
+    .from("task")
+    .select("has_expired, is_deleted")
+    .eq("id", taskID)
+    .single();
+  if (error) {
+    console.log("Error checking task eligibllity: ", error);
+    return false; // if we can't check, probably not eligible
+  }
+
+  if (data.has_expired || data.is_deleted) {
+    return false;
+  }
+  return true;
 }
 
 async function awardCoins(userID, newNrOfCoins) {

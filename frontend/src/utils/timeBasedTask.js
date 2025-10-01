@@ -51,7 +51,7 @@ async function updateToExpired(taskID) {
   if (error) {
     console.log("Error updating the tasks has_expired", error);
   }
-  return data.has_expired;
+  return data;
 }
 
 export { calculateTimeLeft, formatTime, timeLeft };

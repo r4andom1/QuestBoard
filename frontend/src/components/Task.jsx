@@ -23,7 +23,7 @@ function Task() {
 
   useEffect(() => {
     const intervalID = setInterval(() => {
-      setCurrentTime(new Date()); // triggers the refresh
+      setCurrentTime(new Date());
     }, 1000); // every second
 
     return () => clearInterval(intervalID); // cleanup to prevent memory leaking
@@ -111,15 +111,17 @@ function Task() {
       console.log("Error toggling compelete task: ", error);
     } else {
       await awardUser(currentUserID, taskID);
+      await fetchTasks();
 
-      const toggledTaskList = taskList.map((task) => {
-        if (task.id === taskID) {
-          return { ...task, is_completed: !is_completed };
-        } else {
-          return task;
-        }
-      });
-      setTaskList(toggledTaskList);
+      // add back this if scaling is an issue
+      //   const toggledTaskList = taskList.map((task) => {
+      //     if (task.id === taskID) {
+      //       return { ...task, is_completed: !is_completed };
+      //     } else {
+      //       return task;
+      //     }
+      //   });
+      //   setTaskList(toggledTaskList);
     }
   };
 
@@ -168,7 +170,9 @@ function Task() {
         <div>
           {task.expiration_time ? (
             <div className="time-left">
-              time left: {timeLeft(task.expiration_time, currentTime, task.id, handleExpired)}
+              {task.is_deleted || task.has_expired || task.is_completed
+                ? ""
+                : timeLeft(task.expiration_time, currentTime, task.id, handleExpired)}
             </div>
           ) : null}
         </div>
@@ -230,7 +234,7 @@ function Task() {
         </li>
         {showCompletedTasks &&
           taskList
-            .filter((task) => task.has_awarded === true && !task.is_deleted && !task.is_expired)
+            .filter((task) => task.has_awarded === true && !task.is_deleted && !task.has_expired)
             .map((task) => taskCard(task))}
       </ul>
     );
@@ -243,7 +247,9 @@ function Task() {
           <button onClick={() => setShowExpiredTasks((prev) => !prev)}>Expired Quests</button>
         </li>
         {showExpiredTasks &&
-          taskList.filter((task) => task.is_expired === true).map((task) => taskCard(task))}
+          taskList
+            .filter((task) => task.has_expired === true && !task.is_deleted)
+            .map((task) => taskCard(task))}
       </ul>
     );
   }
