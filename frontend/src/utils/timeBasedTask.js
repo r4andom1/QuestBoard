@@ -54,4 +54,22 @@ async function updateToExpired(taskID) {
   return data;
 }
 
-export { calculateTimeLeft, formatTime, timeLeft };
+const removeExpirationTime = async (taskID) => {
+  // Sets the current expiration time to now (so that it is expired) when a task is completed
+  // also updates the task to be expired (in column)
+  const newExpirationTime = new Date().toISOString();
+  // console.log(newExpirationTime);
+  const { data, error } = await supabase
+    .from("task")
+    .update({ expiration_time: newExpirationTime })
+    .eq("id", taskID)
+    .single();
+
+  if (error) {
+    console.log("Error updating the expiration time to current time", error);
+  } else {
+    updateToExpired(taskID);
+  }
+};
+
+export { calculateTimeLeft, formatTime, timeLeft, removeExpirationTime };

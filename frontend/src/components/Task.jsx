@@ -4,7 +4,12 @@ import "../css/Task.css";
 import { UserAuth } from "../context/Authentication";
 import { Trash2, Check, Undo, SquarePen } from "lucide-react";
 import { awardUser } from "../utils/progression.js";
-import { calculateTimeLeft, formatTime, timeLeft } from "../utils/timeBasedTask.js";
+import {
+  calculateTimeLeft,
+  formatTime,
+  timeLeft,
+  removeExpirationTime,
+} from "../utils/timeBasedTask.js";
 
 function Task() {
   const [newTaskName, setNewTaskName] = useState("");
@@ -20,6 +25,8 @@ function Task() {
 
   const currentUserData = UserAuth().session.user; // gets current user session, use it to get ID
   const currentUserID = currentUserData.id;
+  // console.log(taskList); // test
+  // taskList.forEach((task) => console.log(task.id));
 
   useEffect(() => {
     const intervalID = setInterval(() => {
@@ -51,7 +58,10 @@ function Task() {
       type: newType,
       expiration_time: newExpirationTime,
     };
-    const { data, error } = await supabase.from(`task`).insert([newTaskData]).select();
+    const { data, error } = await supabase
+      .from(`task`)
+      .insert([newTaskData])
+      .select();
 
     if (error) {
       console.log("Error adding new task: ", error);
@@ -70,7 +80,9 @@ function Task() {
     if (taskType === "daily") {
       expirationTime = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // ISOString so that its the correct type for database timestampz
     } else if (taskType === "weekly") {
-      expirationTime = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+      expirationTime = new Date(
+        Date.now() + 7 * 24 * 60 * 60 * 1000
+      ).toISOString();
     } else {
       expirationTime = null;
     }
@@ -86,7 +98,9 @@ function Task() {
     } else {
       setTaskList((prev) =>
         prev.map((task) =>
-          task.id === taskID ? { ...task, expiration_time: expirationTime } : task
+          task.id === taskID
+            ? { ...task, expiration_time: expirationTime }
+            : task
         )
       );
     }
@@ -95,7 +109,9 @@ function Task() {
   const handleExpired = (taskID) => {
     // update state when task becomes expired
     setTaskList((prev) =>
-      prev.map((task) => (task.id === taskID ? { ...task, has_expired: true } : task))
+      prev.map((task) =>
+        task.id === taskID ? { ...task, has_expired: true } : task
+      )
     );
   };
 
@@ -111,6 +127,7 @@ function Task() {
       console.log("Error toggling compelete task: ", error);
     } else {
       await awardUser(currentUserID, taskID);
+      await removeExpirationTime(taskID);
       await fetchTasks();
 
       // add back this if scaling is an issue
@@ -164,7 +181,8 @@ function Task() {
     return (
       <li
         className={`task-card${task.is_completed ? "-completed" : ""}`} // if task is completed, change look in css
-        key={task.id}>
+        key={task.id}
+      >
         <h2>{task.name}</h2>
         <p>{task.description}</p>
         <p className="card-task-type">{task.type}</p>
@@ -173,7 +191,12 @@ function Task() {
             <div className="time-left">
               {task.is_deleted || task.has_expired || task.is_completed
                 ? ""
-                : timeLeft(task.expiration_time, currentTime, task.id, handleExpired)}
+                : timeLeft(
+                    task.expiration_time,
+                    currentTime,
+                    task.id,
+                    handleExpired
+                  )}
             </div>
           ) : null}
         </div>
@@ -211,7 +234,10 @@ function Task() {
     return (
       <ul className="tasks-active">
         <li className="task-section-heading">
-          <button className="show-button" onClick={() => setShowActiveTasks((prev) => !prev)}>
+          <button
+            className="show-button"
+            onClick={() => setShowActiveTasks((prev) => !prev)}
+          >
             Active Quests
           </button>
         </li>
@@ -224,6 +250,7 @@ function Task() {
                 !task.is_deleted &&
                 !task.has_awarded
             )
+            .sort((a, b) => a.id - b.id)
             .map((task) => taskCard(task))}
       </ul>
     );
@@ -233,13 +260,20 @@ function Task() {
     return (
       <ul className="tasks-completed">
         <li className="task-section-heading">
-          <button className="show-button" onClick={() => setShowCompletedTasks((prev) => !prev)}>
+          <button
+            className="show-button"
+            onClick={() => setShowCompletedTasks((prev) => !prev)}
+          >
             Completed Quests
           </button>
         </li>
         {showCompletedTasks &&
           taskList
-            .filter((task) => task.has_awarded === true && !task.is_deleted && !task.has_expired)
+            .filter(
+              (task) => task.has_awarded === true && !task.is_deleted
+              // !task.has_expired
+            )
+            .sort((a, b) => a.id - b.id)
             .map((task) => taskCard(task))}
       </ul>
     );
@@ -249,13 +283,20 @@ function Task() {
     return (
       <ul className="tasks-expired">
         <li className="task-section-heading">
-          <button className="show-button" onClick={() => setShowExpiredTasks((prev) => !prev)}>
+          <button
+            className="show-button"
+            onClick={() => setShowExpiredTasks((prev) => !prev)}
+          >
             Expired Quests
           </button>
         </li>
         {showExpiredTasks &&
           taskList
-            .filter((task) => task.has_expired === true && !task.is_deleted)
+            .filter(
+              (task) =>
+                task.has_expired && !task.is_deleted && !task.is_completed
+            )
+            .sort((a, b) => a.id - b.id)
             .map((task) => taskCard(task))}
       </ul>
     );
@@ -265,12 +306,18 @@ function Task() {
     return (
       <ul className="tasks-deleted">
         <li className="task-section-heading">
-          <button className="show-button" onClick={() => setShowDeletedTasks((prev) => !prev)}>
+          <button
+            className="show-button"
+            onClick={() => setShowDeletedTasks((prev) => !prev)}
+          >
             Deleted Quests
           </button>
         </li>
         {showDeletedTasks &&
-          taskList.filter((task) => task.is_deleted === true).map((task) => taskCard(task))}
+          taskList
+            .filter((task) => task.is_deleted === true)
+            .sort((a, b) => a.id - b.id)
+            .map((task) => taskCard(task))}
       </ul>
     );
   }
@@ -319,11 +366,26 @@ function Task() {
       <div className="create-task">
         <h2>Create new quest</h2>
         <div className="input-fields">
-          {taskInput("text", "Enter name...", newTaskName, setNewTaskName, true)}
-          {taskInput("text", "Enter description...", newDescription, setNewDescription)}
+          {taskInput(
+            "text",
+            "Enter name...",
+            newTaskName,
+            setNewTaskName,
+            true
+          )}
+          {taskInput(
+            "text",
+            "Enter description...",
+            newDescription,
+            setNewDescription
+          )}
           {chooseTaskType()}
         </div>
-        <button className="add-quest-button" onClick={addTask} disabled={!newTaskName}>
+        <button
+          className="add-quest-button"
+          onClick={addTask}
+          disabled={!newTaskName}
+        >
           Add quest
         </button>
       </div>
