@@ -3,7 +3,7 @@ import supabase from "../../services/supabase-client";
 import "../css/Task.css";
 import { UserAuth } from "../context/Authentication";
 import { Trash2, Check, Undo, SquarePen } from "lucide-react";
-import { awardUser } from "../utils/progression.js";
+import { awardUser, setHasAwardedToTrue } from "../utils/progression.js";
 import {
   calculateTimeLeft,
   formatTime,
@@ -152,6 +152,7 @@ function Task() {
     if (error) {
       console.log("Error deleting task: ", error);
     } else {
+      await setHasAwardedToTrue(taskID);
       const updatedTaskList = taskList.map((task) => {
         if (task.id === taskID) {
           return { ...task, is_deleted: !is_deleted };
@@ -245,7 +246,7 @@ function Task() {
           taskList
             .filter(
               (task) =>
-                task.is_active === true &&
+                task.is_active &&
                 !task.is_completed &&
                 !task.is_deleted &&
                 !task.has_awarded
@@ -269,10 +270,7 @@ function Task() {
         </li>
         {showCompletedTasks &&
           taskList
-            .filter(
-              (task) => task.has_awarded === true && !task.is_deleted
-              // !task.has_expired
-            )
+            .filter((task) => task.has_awarded === true && !task.is_deleted)
             .sort((a, b) => a.id - b.id)
             .map((task) => taskCard(task))}
       </ul>
@@ -294,7 +292,7 @@ function Task() {
           taskList
             .filter(
               (task) =>
-                task.has_expired && !task.is_deleted && !task.is_completed
+                task.has_expired && !task.is_deleted && !task.has_awarded
             )
             .sort((a, b) => a.id - b.id)
             .map((task) => taskCard(task))}

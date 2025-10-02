@@ -1,4 +1,5 @@
 import supabase from "../../services/supabase-client";
+import { setHasAwardedToTrue } from "./progression";
 
 const calculateTimeLeft = (expirationTime, currentTime) => {
   if (!expirationTime) {
@@ -67,9 +68,11 @@ const removeExpirationTime = async (taskID) => {
 
   if (error) {
     console.log("Error updating the expiration time to current time", error);
-  } else {
-    updateToExpired(taskID);
   }
+  await setHasAwardedToTrue(taskID);
+  // else {
+  //   updateToExpired(taskID);
+  // }
 };
 
 export { calculateTimeLeft, formatTime, timeLeft, removeExpirationTime };
