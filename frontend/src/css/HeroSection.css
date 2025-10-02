@@ -1,0 +1,10 @@
+.hero-section {
+  display: flex;
+  border: solid;
+  margin-top: 15rem;
+  margin-bottom: 0;
+  width: 96%;
+  justify-content: center;
+  border-radius: 10px;
+  margin: auto;
+}

@@ -10,6 +10,7 @@ import {
   timeLeft,
   removeExpirationTime,
 } from "../utils/timeBasedTask.js";
+import HeroSection from "./HeroSection.jsx";
 
 function Task() {
   const [newTaskName, setNewTaskName] = useState("");
@@ -404,6 +405,7 @@ function Task() {
   return (
     <div className="task-content">
       {createTask()}
+      {/* <HeroSection /> */}
       <div className="all-tasks">{listAllTasks()}</div>
     </div>
   );
