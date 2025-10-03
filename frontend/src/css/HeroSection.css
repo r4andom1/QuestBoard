@@ -1,6 +1,7 @@
 .hero-container {
   display: flex;
   border: solid;
+  border-color: rgb(187, 187, 36);
   flex-direction: column;
   margin-top: 15rem;
   margin-bottom: 0;
