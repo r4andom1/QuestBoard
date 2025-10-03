@@ -7,7 +7,9 @@ import { Coins, SquareCheckBig } from "lucide-react";
 export default function HeroSection() {
   const [userStats, setUserStats] = useState({});
   const { currentUserID, currentUserData } = getCurrentUserData();
-  // const authContext = UserAuth();
+  const [questsCompleted, setQuestsCompleted] = useState(
+    userStats.quests_completed
+  );
 
   useEffect(() => {
     fetchUserData();
@@ -33,7 +35,7 @@ export default function HeroSection() {
         <div className="info-and-picture-container">
           <div className="user-stats-container">
             <p>Lv | {user.level}</p>
-            <p>XP | {user.current_xp}</p>
+            <p>XP | {user.current_xp}/20</p>
             <p>
               <Coins size={20} /> | {user.coins}
             </p>

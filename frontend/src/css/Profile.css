@@ -5,12 +5,18 @@
   /* margin: 0 auto; */
   align-items: center;
   width: 100%;
+  gap: 2rem;
 }
 
 .progression-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 1rem;
+  justify-content: space-evenly;
+  /* margin: 0 auto; */
+  /* text-align: center; */
+  width: 100%;
 }
 
 @media (min-width: 768px) {
@@ -19,5 +25,6 @@
   }
 
   .progression-container {
+    flex-direction: row;
   }
 }

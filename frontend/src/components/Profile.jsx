@@ -33,7 +33,7 @@ export default function HeroSection() {
         <div className="info-and-picture-container">
           <div className="user-stats-container">
             <p>Lv | {user.level}</p>
-            <p>XP | {user.current_xp}</p>
+            <p>XP | {user.current_xp}/20</p>
             <p>
               <Coins size={20} /> | {user.coins}
             </p>
@@ -48,11 +48,26 @@ export default function HeroSection() {
           />
         </div>
         <div className="progression-container">
-          <div className="streaks">Streaks</div>
-          <div className="quests">Quests created, quests completed</div>
-          <div className="badges">Badges</div>
+          <div className="streaks">
+            <h2>Streaks</h2>
+            <p>Login streak:</p>
+            <p>Quests completed for X nr of days</p>
+          </div>
+          <div className="quest-data">
+            <h2>Quests</h2>
+            <p>Quests created: {user.quests_created}</p>{" "}
+            <p> quests completed: {user.quests_completed}</p>
+          </div>
+          <div className="badges">
+            <h2>Badges</h2>
+            <p>7-day streak badge</p>
+            <p>Completing 10 quests</p>
+            <p>Finish a weekly quest</p>
+          </div>
         </div>
-        <div className="customize-character">Customize your character!</div>
+        <div className="customize-character">
+          <h2>Customize your character!</h2>
+        </div>
       </div>
     );
   }
