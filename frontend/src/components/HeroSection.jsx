@@ -23,24 +23,28 @@ export default function HeroSection() {
       console.log("Error fetching user", error);
     } else {
       setUserStats(data);
-      //   console.log(data);
     }
   };
 
   function userDetails(user) {
     return (
-      <section className="hero-section">
-        <div>
-          <h1>Welcome back, user!</h1>
-          <p>Here is some text about the user</p>
-          <p>Level {user.level}</p>
-          <p>XP: {user.current_xp}</p>
-          <p>
-            <Coins /> {user.coins}
-          </p>
-          <img></img>
+      <div className="hero-container">
+        <h1>Welcome back, user!</h1>
+        <div className="info-and-picture-container">
+          <div className="user-stats-container">
+            <p>Lvl: {user.level}</p>
+            <p>XP: {user.current_xp}</p>
+            <p>
+              <Coins /> {user.coins}
+            </p>
+          </div>
+          <img
+            src="/images/adventurer-guy-1.png"
+            alt="Adventurer-guy-1"
+            className="image-adventurer"
+          />
         </div>
-      </section>
+      </div>
     );
   }
 
