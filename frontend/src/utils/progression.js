@@ -63,10 +63,7 @@ async function hasAwarded(taskID) {
 async function setHasAwardedToTrue(taskID) {
   const alreadyAwarded = await hasAwarded(taskID);
   if (!alreadyAwarded) {
-    const { error } = await supabase
-      .from("task")
-      .update({ has_awarded: true })
-      .eq("id", taskID);
+    const { error } = await supabase.from("task").update({ has_awarded: true }).eq("id", taskID);
 
     if (error) {
       console.log("Error setting has_awarded: ", error);
@@ -75,11 +72,7 @@ async function setHasAwardedToTrue(taskID) {
 }
 
 async function getTaskType(taskID) {
-  const { data, error } = await supabase
-    .from("task")
-    .select("type")
-    .eq("id", taskID)
-    .single();
+  const { data, error } = await supabase.from("task").select("type").eq("id", taskID).single();
   if (error) {
     console.log("error fetching task type", error);
   }

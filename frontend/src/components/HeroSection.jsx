@@ -37,6 +37,7 @@ export default function HeroSection() {
             <p>
               <Coins /> {user.coins}
             </p>
+            <p>Quests: {user.quests_completed}</p>
           </div>
           <img
             src="/images/adventurer-guy-1.png"
