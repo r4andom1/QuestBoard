@@ -1,10 +1,10 @@
-import { UserAuth } from "../context/Authentication";
+import "../css/HeroSection.css";
 import { useState, useEffect } from "react";
 import supabase from "../../services/supabase-client";
 import { getCurrentUserData } from "../utils/getCurrentUser.js";
-import "../css/Profile.css";
+import { Coins } from "lucide-react";
 
-function Profile() {
+export default function HeroSection() {
   const [userStats, setUserStats] = useState({});
   const { currentUserID, currentUserData } = getCurrentUserData();
   // const authContext = UserAuth();
@@ -23,23 +23,30 @@ function Profile() {
       console.log("Error fetching user", error);
     } else {
       setUserStats(data);
-      // console.log(data);
     }
   };
 
-  function listUserStats(userStats) {
+  function userDetails(user) {
     return (
-      <div className="user-stats">
-        <h1>User Stats</h1>
-        {/* <h2>ID: {userStats.user_id}</h2> */}
-        <p>Level: {userStats.level}</p>
-        <p>XP: {userStats.current_xp}/20</p>
-        <p>Coins: {userStats.coins}</p>
+      <div className="hero-container">
+        <h1>Welcome back, user!</h1>
+        <div className="info-and-picture-container">
+          <div className="user-stats-container">
+            <p>Lvl: {user.level}</p>
+            <p>XP: {user.current_xp}</p>
+            <p>
+              <Coins /> {user.coins}
+            </p>
+          </div>
+          <img
+            src="/images/adventurer-guy-1.png"
+            alt="Adventurer-guy-1"
+            className="image-adventurer"
+          />
+        </div>
       </div>
     );
   }
 
-  return <div className="profile-component">{listUserStats(userStats)}</div>;
+  return userDetails(userStats);
 }
-
-export default Profile;

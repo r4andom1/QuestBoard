@@ -12,16 +12,18 @@ export const AuthContextProvider = ({ children }) => {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
+      // checks if user is logged in already
       setSession(session);
     });
     supabase.auth.onAuthStateChange((_event, session) => {
+      // listens to any changes (if user logs in, out, token refreshes etc and updates session)
       setSession(session);
     });
   }, []);
 
   const signUpUser = async (email, password) => {
     // Signs up a new user by adding them to the supabase auth table
-    // Also creats a corresponding user_stats table thats linked with the auth table
+    // Also creats a corresponding the custom user_stats table thats linked with the auth table (so that we can give a user coins, xp etc)
     const { data, error } = await supabase.auth.signUp({
       email: email,
       password: password,
@@ -62,6 +64,7 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   const signOutUser = async () => {
+    // Removes current session, JWTs
     const { error } = await supabase.auth.signOut();
     if (error) {
       console.log("Error signing out user: ", error);
