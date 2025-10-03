@@ -2,7 +2,7 @@ import "../css/HeroSection.css";
 import { useState, useEffect } from "react";
 import supabase from "../../services/supabase-client";
 import { getCurrentUserData } from "../utils/getCurrentUser.js";
-import { Coins } from "lucide-react";
+import { Coins, SquareCheckBig } from "lucide-react";
 
 export default function HeroSection() {
   const [userStats, setUserStats] = useState({});
@@ -32,15 +32,17 @@ export default function HeroSection() {
         <h1>Welcome back, user!</h1>
         <div className="info-and-picture-container">
           <div className="user-stats-container">
-            <p>Lvl: {user.level}</p>
-            <p>XP: {user.current_xp}</p>
+            <p>Lv | {user.level}</p>
+            <p>XP | {user.current_xp}</p>
             <p>
-              <Coins /> {user.coins}
+              <Coins size={20} /> | {user.coins}
             </p>
-            <p>Quests: {user.quests_completed}</p>
+            <p>
+              <SquareCheckBig size={20} /> | {user.quests_completed}
+            </p>
           </div>
           <img
-            src="/images/adventurer-guy-1.png"
+            src="/images/adventurer-girl-1.png"
             alt="Adventurer-guy-1"
             className="image-adventurer"
           />

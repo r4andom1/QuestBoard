@@ -36,7 +36,7 @@
   align-items: flex-start;
   gap: 2rem;
   /* border-right: 2px solid; */
-  text-align: center;
+  text-align: left;
 }
 
 @media (max-width: 768px) {
