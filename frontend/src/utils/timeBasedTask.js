@@ -1,4 +1,5 @@
 import supabase from "../../services/supabase-client";
+import { setHasAwardedToTrue } from "./progression";
 
 const calculateTimeLeft = (expirationTime, currentTime) => {
   if (!expirationTime) {
@@ -15,21 +16,63 @@ const formatTime = (seconds) => {
   if (seconds <= 0) {
     return "Expired";
   }
+  const days = Math.floor(seconds / 86400);
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const secs = seconds % 60;
 
-  return `${hours}h ${minutes}m ${secs}s`;
+  if (days > 0) {
+    return `${days} days`;
+  }
+  return `${hours}h ${minutes}m`;
 };
 
-const timeLeft = (expirationTime, currentTime) => {
+const timeLeft = (expirationTime, currentTime, taskID, onExpired) => {
   const seconds = calculateTimeLeft(expirationTime, currentTime);
+  if (seconds === 0) {
+    updateToExpired(taskID);
+    onExpired(taskID);
+  }
 
   if (seconds === null) {
+    // if not time-based
     return null;
   } else {
     return formatTime(seconds);
   }
 };
 
-export { calculateTimeLeft, formatTime, timeLeft };
+async function updateToExpired(taskID) {
+  const { data, error } = await supabase
+    .from("task")
+    .update({ has_expired: true })
+    .eq("id", taskID)
+    .single();
+
+  if (error) {
+    console.log("Error updating the tasks has_expired", error);
+  }
+  return data;
+}
+
+const removeExpirationTime = async (taskID) => {
+  // Sets the current expiration time to now (so that it is expired) when a task is completed
+  // also updates the task to be expired (in column)
+  const newExpirationTime = new Date().toISOString();
+  // console.log(newExpirationTime);
+  const { data, error } = await supabase
+    .from("task")
+    .update({ expiration_time: newExpirationTime })
+    .eq("id", taskID)
+    .single();
+
+  if (error) {
+    console.log("Error updating the expiration time to current time", error);
+  }
+  await setHasAwardedToTrue(taskID);
+  // else {
+  //   updateToExpired(taskID);
+  // }
+};
+
+export { calculateTimeLeft, formatTime, timeLeft, removeExpirationTime };

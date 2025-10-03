@@ -19,7 +19,7 @@ p {
   align-items: center;
   gap: 2rem;
   padding: 1rem;
-  margin-top: 20%;
+  margin-top: 0;
 
   /* border: solid; */
 }
@@ -60,7 +60,63 @@ p {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  /* border-style: solid; */
+  border-style: solid;
+  justify-content: center;
+  border-radius: 10px;
+  border-color: rgb(104, 104, 25);
+  padding: 1rem;
+  gap: 1rem;
+  width: 100%;
+}
+
+.all-tasks {
+  width: 100%;
+}
+
+.tasks-active {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border-style: solid;
+  justify-content: center;
+  border-radius: 10px;
+  border-color: rgb(104, 104, 25);
+  padding: 1rem;
+  gap: 1rem;
+  width: 100%;
+}
+
+.tasks-completed {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border-style: solid;
+  justify-content: center;
+  border-radius: 10px;
+  border-color: rgb(104, 104, 25);
+  padding: 1rem;
+  gap: 1rem;
+  width: 100%;
+}
+
+.tasks-deleted {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border-style: solid;
+  justify-content: center;
+  border-radius: 10px;
+  border-color: rgb(104, 104, 25);
+  padding: 1rem;
+  gap: 1rem;
+  width: 100%;
+}
+
+.tasks-expired {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  border-style: solid;
   justify-content: center;
   border-radius: 10px;
   border-color: rgb(104, 104, 25);
@@ -95,7 +151,8 @@ p {
 
 .task-card h2,
 .task-card-completed h2 {
-  font-size: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
 .task-card p,
@@ -118,8 +175,61 @@ p {
   border-radius: 20px;
 }
 
+p.card-task-type {
+  display: inline-block;
+  font-size: 0.8rem;
+  border-radius: 1rem;
+  border: solid 1px #3f3e3e;
+  background-color: #3f3e3e;
+  margin: 0 auto;
+  text-align: center;
+  padding: 0.4rem;
+}
+
+.radio-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  gap: 0.5rem;
+}
+
+.radio-buttons label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.radio-buttons input {
+  width: 30px;
+  height: 30px;
+}
+
+.create-task .add-quest-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  border-radius: 15px;
+  width: 45%;
+  height: 20%;
+  text-align: center;
+  color: white;
+  font-weight: bold;
+  border: none;
+}
+
+.all-tasks .show-button {
+  font-size: 1.4rem;
+  width: 100%;
+}
+
 @media (min-width: 768px) {
   .task-content {
+    display: flex;
     margin-top: 0;
     flex-direction: row;
     align-items: flex-start;
@@ -134,7 +244,11 @@ p {
   }
 
   .create-task input {
-    width: 20vw;
+    width: 100%;
+  }
+
+  .all-tasks {
+    width: 75%;
   }
 
   .tasks {
@@ -144,8 +258,48 @@ p {
     width: 75%;
     margin: 0 auto;
     justify-content: center;
+    padding: 0;
+    /* border: solid; */
     /* gap: 1rem; */
     /* width: 75%; */
+  }
+
+  .tasks-active,
+  .tasks-completed,
+  .tasks-deleted,
+  .tasks-expired {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-style: solid;
+    justify-content: center;
+    border-radius: 10px;
+    border-color: rgb(104, 104, 25);
+    padding: 1rem;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .hidden {
+    display: none;
+  }
+
+  .tasks-active {
+    margin-top: 0;
+  }
+
+  .task-section-heading {
+    width: 100%;
+    text-align: center;
+  }
+
+  .tasks-completed {
+  }
+
+  .tasks-deleted {
+  }
+
+  .tasks-expired {
   }
 
   .task-card button,
@@ -189,5 +343,55 @@ p {
     font-size: 1.2rem;
     margin: 0.5rem;
     padding: 0.5em;
+  }
+
+  .task-card h2,
+  .task-card-completed h2 {
+    font-size: 1.5rem;
+  }
+
+  .time-left {
+    font-size: 0.8rem;
+  }
+  p.card-task-type {
+    display: inline-block;
+    font-size: 0.8rem;
+    border-radius: 1rem;
+    border: solid 1px #3f3e3e;
+    background-color: #3f3e3e;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0.4rem;
+  }
+
+  .radio-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 50%;
+    gap: 2rem;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .create-task .add-quest-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    border-radius: 20px;
+    width: 25%;
+    height: 10%;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+    border: none;
+    /* background-color: red; */
+  }
+
+  .all-tasks .show-button {
+    font-size: 1.3rem;
+    width: 20%;
   }
 }
