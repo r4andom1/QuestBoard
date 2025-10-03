@@ -42,7 +42,7 @@ export default function HeroSection() {
             </p>
           </div>
           <img
-            src="/images/adventurer-girl-1.png"
+            src="/images/adventurer-guy-1.png"
             alt="Adventurer-guy-1"
             className="image-adventurer"
           />

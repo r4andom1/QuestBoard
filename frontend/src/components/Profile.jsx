@@ -1,10 +1,10 @@
-import { UserAuth } from "../context/Authentication";
+import "../css/Profile.css";
 import { useState, useEffect } from "react";
 import supabase from "../../services/supabase-client";
 import { getCurrentUserData } from "../utils/getCurrentUser.js";
-import "../css/Profile.css";
+import { Coins, SquareCheckBig } from "lucide-react";
 
-function Profile() {
+export default function HeroSection() {
   const [userStats, setUserStats] = useState({});
   const { currentUserID, currentUserData } = getCurrentUserData();
   // const authContext = UserAuth();
@@ -23,23 +23,39 @@ function Profile() {
       console.log("Error fetching user", error);
     } else {
       setUserStats(data);
-      // console.log(data);
     }
   };
 
-  function listUserStats(userStats) {
+  function userDetails(user) {
     return (
-      <div className="user-stats">
-        <h1>User Stats</h1>
-        {/* <h2>ID: {userStats.user_id}</h2> */}
-        <p>Level: {userStats.level}</p>
-        <p>XP: {userStats.current_xp}/20</p>
-        <p>Coins: {userStats.coins}</p>
+      <div className="user-container">
+        <h1>User details</h1>
+        <div className="info-and-picture-container">
+          <div className="user-stats-container">
+            <p>Lv | {user.level}</p>
+            <p>XP | {user.current_xp}</p>
+            <p>
+              <Coins size={20} /> | {user.coins}
+            </p>
+            <p>
+              <SquareCheckBig size={20} /> | {user.quests_completed}
+            </p>
+          </div>
+          <img
+            src="/images/adventurer-guy-1.png"
+            alt="Adventurer-guy-1"
+            className="image-adventurer"
+          />
+        </div>
+        <div className="progression-container">
+          <div className="streaks">Streaks</div>
+          <div className="quests">Quests created, quests completed</div>
+          <div className="badges">Badges</div>
+        </div>
+        <div className="customize-character">Customize your character!</div>
       </div>
     );
   }
 
-  return <div className="profile-component">{listUserStats(userStats)}</div>;
+  return userDetails(userStats);
 }
-
-export default Profile;
