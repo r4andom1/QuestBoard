@@ -110,11 +110,12 @@ function Task() {
     );
   };
 
-  const toggleTask = async (taskID, is_completed) => {
+  const toggleTask = async (task) => {
     // Can be toggled many times, but completed and get rewards from once.
-    // Optimize this later on with doing a optimistic update and reduce nr of database calls in awarduser
+    const { id: taskID, is_completed } = task; // from refactoring
+
     const { data, error } = await supabase
-      .from(`task`)
+      .from("task")
       .update({ is_completed: !is_completed })
       .eq("id", taskID)
       .select();
@@ -123,7 +124,7 @@ function Task() {
       console.log("Error toggling compelete task: ", error);
     } else {
       await Promise.all([
-        awardUser(currentUserID, taskID),
+        awardUser(currentUserID, task),
         removeExpirationTime(taskID),
         incrementQuestsCompleted(currentUserID),
       ]);
@@ -196,7 +197,7 @@ function Task() {
           ) : null}
         </div>
         <div className="task-card-buttons">
-          <button onClick={() => toggleTask(task.id, task.is_completed)}>
+          <button onClick={() => toggleTask(task)}>
             {" "}
             {task.is_completed ? (
               <Undo size={25} strokeWidth={3} />
