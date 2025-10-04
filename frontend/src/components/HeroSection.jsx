@@ -3,30 +3,15 @@ import { useState, useEffect } from "react";
 import supabase from "../../services/supabase-client";
 import { getCurrentUserData } from "../utils/getCurrentUser.js";
 import { Coins, SquareCheckBig } from "lucide-react";
+import { useUser } from "../context/UserContext.jsx";
 
 export default function HeroSection() {
-  const [userStats, setUserStats] = useState({});
   const { currentUserID, currentUserData } = getCurrentUserData();
-  const [questsCompleted, setQuestsCompleted] = useState(
-    userStats.quests_completed
-  );
+  const { userStats } = useUser();
 
-  useEffect(() => {
-    fetchUserData();
-  }, []);
-
-  const fetchUserData = async () => {
-    const { data, error } = await supabase
-      .from("user_stats")
-      .select("*")
-      .eq("user_id", currentUserID)
-      .single();
-    if (error) {
-      console.log("Error fetching user", error);
-    } else {
-      setUserStats(data);
-    }
-  };
+  if (!userStats) {
+    return;
+  }
 
   function userDetails(user) {
     return (
