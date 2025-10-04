@@ -50,7 +50,8 @@ export default function HeroSection() {
         <div className="progression-container">
           <div className="streaks">
             <h2>Streaks</h2>
-            <p>Login streak:</p>
+            <p>Current Login streak:</p>
+            <p>Longest login streak: </p>
             <p>Quests completed for X nr of days</p>
           </div>
           <div className="quest-data">

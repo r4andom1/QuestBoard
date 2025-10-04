@@ -13,9 +13,9 @@
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  justify-content: space-evenly;
+  justify-content: center;
   /* margin: 0 auto; */
-  /* text-align: center; */
+  text-align: center;
   width: 100%;
 }
 
@@ -26,5 +26,6 @@
 
   .progression-container {
     flex-direction: row;
+    justify-content: space-evenly;
   }
 }
