@@ -112,7 +112,7 @@ function Task() {
 
   const toggleTask = async (taskID, is_completed) => {
     // Can be toggled many times, but completed and get rewards from once.
-    // Optimize this later on with doing a optimistic update
+    // Optimize this later on with doing a optimistic update and reduce nr of database calls in awarduser
     const { data, error } = await supabase
       .from(`task`)
       .update({ is_completed: !is_completed })
@@ -237,7 +237,11 @@ function Task() {
           taskList
             .filter(
               (task) =>
-                task.is_active && !task.is_completed && !task.is_deleted && !task.has_awarded
+                task.is_active &&
+                !task.is_completed &&
+                !task.is_deleted &&
+                !task.has_awarded &&
+                !task.has_expired
             )
             .sort((a, b) => a.id - b.id)
             .map((task) => taskCard(task))}
