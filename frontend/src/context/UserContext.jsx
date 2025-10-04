@@ -5,7 +5,7 @@ import { getCurrentUserData } from "../utils/getCurrentUser";
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [userStats, setUserStats] = useState(null);
+  const [userStats, setUserStats] = useState(null); // will refresh affected components
   const { currentUserID } = getCurrentUserData();
 
   const fetchUserData = async () => {
@@ -23,7 +23,7 @@ export const UserProvider = ({ children }) => {
     if (error) {
       console.log("Error fetching user data", error);
     } else {
-      setUserStats(data);
+      setUserStats(data); // triggers the refresh when calling function manually
       return data;
     }
   };

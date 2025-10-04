@@ -122,11 +122,14 @@ function Task() {
     if (error) {
       console.log("Error toggling compelete task: ", error);
     } else {
-      await awardUser(currentUserID, taskID);
-      await fetchUserData();
-      await removeExpirationTime(taskID);
-      await incrementQuestsCompleted(currentUserID);
-      await fetchTasks();
+      await Promise.all([
+        awardUser(currentUserID, taskID),
+        removeExpirationTime(taskID),
+        incrementQuestsCompleted(currentUserID),
+      ]);
+
+      await Promise.all([fetchUserData(), fetchTasks()]);
+
       // add back this if scaling is an issue
       //   const toggledTaskList = taskList.map((task) => {
       //     if (task.id === taskID) {
