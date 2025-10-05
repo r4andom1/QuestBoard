@@ -50,7 +50,7 @@ export default function HeroSection() {
           /> */}
           <img
             src="/images/profile-pictures/adventurer-girl-1.png"
-            alt="Adventurer-guy-1"
+            alt="Adventurer-girl-1"
             className="profile-picture-option"
           />
           {/* <img
