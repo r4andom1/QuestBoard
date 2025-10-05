@@ -26,10 +26,52 @@ export default function HeroSection() {
     }
   };
 
+  const customizeCharacter = () => {
+    return (
+      <div className="customize-character">
+        <h2>Customize your character!</h2>
+        <h3>Choose a profile picture:</h3>
+        <div className="character-pictures">
+          <img
+            src="/images/profile-pictures/adventurer-guy-1.png"
+            alt="Adventurer-guy-1"
+            className="profile-picture-option"
+            onClick={() => console.log("clicked")}
+          />
+          {/* <img
+            src="/images/profile-pictures/adventurer-guy-2.png"
+            alt="Adventurer-guy-1"
+            className="profile-picture-option"
+          />
+          <img
+            src="/images/profile-pictures/adventurer-guy-3.png"
+            alt="Adventurer-guy-1"
+            className="profile-picture-option"
+          /> */}
+          <img
+            src="/images/profile-pictures/adventurer-girl-1.png"
+            alt="Adventurer-guy-1"
+            className="profile-picture-option"
+          />
+          {/* <img
+            src="/images/profile-pictures/adventurer-girl-2.png"
+            alt="Adventurer-guy-1"
+            className="profile-picture-option"
+          />
+          <img
+            src="/images/profile-pictures/adventurer-girl-3.png"
+            alt="Adventurer-guy-1"
+            className="profile-picture-option"
+          /> */}
+        </div>
+      </div>
+    );
+  };
+
   function userDetails(user) {
     return (
       <div className="user-container">
-        <h1>User details</h1>
+        <h1 className="main-heading">User details</h1>
         <div className="info-and-picture-container">
           <div className="user-stats-container">
             <p>Lv | {user.level}</p>
@@ -42,7 +84,7 @@ export default function HeroSection() {
             </p>
           </div>
           <img
-            src="/images/adventurer-guy-1.png"
+            src="/images/profile-pictures/adventurer-guy-1.png"
             alt="Adventurer-guy-1"
             className="image-adventurer"
           />
@@ -66,9 +108,7 @@ export default function HeroSection() {
             <p>Finish a weekly quest</p>
           </div>
         </div>
-        <div className="customize-character">
-          <h2>Customize your character!</h2>
-        </div>
+        {customizeCharacter()}
       </div>
     );
   }
