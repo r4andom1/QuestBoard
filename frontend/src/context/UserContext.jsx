@@ -42,7 +42,7 @@ export const UserProvider = ({ children }) => {
     } else {
       setProfilePicture(picture);
       updateUserStats({ profile_picture: picture });
-      console.log("Profile picture changed to: ", picture);
+      // console.log("Profile picture changed to: ", picture);
     }
   };
 

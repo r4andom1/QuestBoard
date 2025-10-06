@@ -15,12 +15,15 @@
 .progression-container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  /* align-items: flex-start; */
   gap: 1rem;
-  justify-content: center;
+  justify-content: flex-start;
   /* margin: 0 auto; */
   text-align: center;
   width: 100%;
+  border: solid rgb(187, 187, 36);
+  border-radius: 20px;
+  padding: 1rem;
 }
 
 .info-and-picture-container {
@@ -34,6 +37,9 @@
   max-width: 100vw;
   justify-content: center;
   margin: 0 auto;
+  border: solid rgb(187, 187, 36);
+  border-radius: 20px;
+  padding: 1rem;
 }
 
 .customize-character h2 {

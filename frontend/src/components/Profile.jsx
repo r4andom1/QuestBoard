@@ -96,7 +96,7 @@ export default function HeroSection() {
             </p>
           </div>
           <img
-            src={`/images/profile-pictures/${profilePicture}.png`}
+            src={`/images/profile-pictures/${user.profile_picture}.png`}
             alt="Adventurer-guy-1"
             className="image-adventurer"
           />
