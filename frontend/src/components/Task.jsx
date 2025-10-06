@@ -74,7 +74,7 @@ function Task() {
     }
   };
 
-  const setCountdown = async (taskID, taskType) => {
+  const setCountdown = async (taskID, taskType, customExpirationTime = null) => {
     // sets expiration time in the tasks expiration time column so we can calculate how much time is left
     let expirationTime;
 
@@ -82,6 +82,8 @@ function Task() {
       expirationTime = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // ISOString so that its the correct type for database timestampz
     } else if (taskType === "weekly") {
       expirationTime = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    } else if (taskType === "one-time" && customExpirationTime) {
+      expirationTime = new Date(customExpirationTime).toISOString();
     } else {
       expirationTime = null;
     }
@@ -333,6 +335,18 @@ function Task() {
             Weekly
           </label>
         </div>
+        {newType === "one-time" && (
+          <div className="custom-expiration">
+            <label htmlFor="expiration-datetime">Set expiration time</label>
+            <input
+              id="expiration-datetime"
+              type="datetime-local"
+              value={newExpirationTime || ""}
+              onChange={(event) => setExpirationTime(event.target.value)}
+              min={new Date().toISOString().slice(0, 16)} // adds a min so user cant pick a date before today and use slice to format for html
+            />
+          </div>
+        )}
       </>
     );
   }
