@@ -7,7 +7,7 @@ import { useUser } from "../context/UserContext.jsx";
 
 export default function HeroSection() {
   const { currentUserID, currentUserData } = getCurrentUserData();
-  const { userStats } = useUser();
+  const { userStats, profilePicture } = useUser();
 
   if (!userStats) {
     return;
@@ -29,7 +29,7 @@ export default function HeroSection() {
             </p>
           </div>
           <img
-            src="/images/profile-pictures/adventurer-guy-1.png"
+            src={`/images/profile-pictures/${profilePicture}.png`}
             alt="Adventurer-guy-1"
             className="image-adventurer"
           />

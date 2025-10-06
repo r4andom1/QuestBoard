@@ -6,6 +6,8 @@ const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
   const [userStats, setUserStats] = useState(null); // will refresh affected components
+  const [profilePicture, setProfilePicture] = useState("");
+
   const { currentUserID } = getCurrentUserData();
 
   const fetchUserData = async () => {
@@ -28,6 +30,22 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const updateProfilePicture = async (picture) => {
+    const { data, error } = await supabase
+      .from("user_stats")
+      .update({ profile_picture: picture })
+      .eq("user_id", currentUserID)
+      .single();
+
+    if (error) {
+      console.log("error updating profile picture", error);
+    } else {
+      setProfilePicture(picture);
+      updateUserStats({ profile_picture: picture });
+      console.log("Profile picture changed to: ", picture);
+    }
+  };
+
   const updateUserStats = (newStats) => {
     setUserStats((prev) => ({ ...prev, ...newStats }));
   };
@@ -43,9 +61,12 @@ export const UserProvider = ({ children }) => {
     <UserContext.Provider
       value={{
         userStats,
+        profilePicture,
+        updateProfilePicture,
         updateUserStats,
         fetchUserData,
-      }}>
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

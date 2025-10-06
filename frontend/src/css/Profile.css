@@ -51,15 +51,18 @@
 }
 
 .character-pictures {
+  display: flex;
   gap: 1rem;
+  flex-direction: column;
 }
 
 .profile-picture-option {
-  width: 200px;
-  height: 200px;
+  width: 125px;
+  height: 125px;
   object-fit: cover;
   border-radius: 50%;
   gap: 1rem;
+  cursor: pointer;
 }
 
 @media (min-width: 768px) {
@@ -76,6 +79,8 @@
     font-size: 3rem;
   }
 
-  profile-picture-option {
+  .profile-picture-option {
+    width: 175px;
+    height: 175px;
   }
 }

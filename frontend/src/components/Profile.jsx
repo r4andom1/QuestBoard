@@ -3,11 +3,14 @@ import { useState, useEffect } from "react";
 import supabase from "../../services/supabase-client";
 import { getCurrentUserData } from "../utils/getCurrentUser.js";
 import { Coins, SquareCheckBig } from "lucide-react";
+import { useUser } from "../context/UserContext.jsx";
 
 export default function HeroSection() {
-  const [userStats, setUserStats] = useState({});
+  // const [userStats, setUserStats] = useState({});
   const { currentUserID, currentUserData } = getCurrentUserData();
   // const authContext = UserAuth();
+  const { userStats, updateUserStats, profilePicture, updateProfilePicture } =
+    useUser();
 
   useEffect(() => {
     fetchUserData();
@@ -22,7 +25,7 @@ export default function HeroSection() {
     if (error) {
       console.log("Error fetching user", error);
     } else {
-      setUserStats(data);
+      updateUserStats(data);
     }
   };
 
@@ -32,37 +35,46 @@ export default function HeroSection() {
         <h2>Customize your character!</h2>
         <h3>Choose a profile picture:</h3>
         <div className="character-pictures">
-          <img
-            src="/images/profile-pictures/adventurer-guy-1.png"
-            alt="Adventurer-guy-1"
-            className="profile-picture-option"
-            onClick={() => console.log("clicked")}
-          />
-          {/* <img
-            src="/images/profile-pictures/adventurer-guy-2.png"
-            alt="Adventurer-guy-1"
-            className="profile-picture-option"
-          />
-          <img
-            src="/images/profile-pictures/adventurer-guy-3.png"
-            alt="Adventurer-guy-1"
-            className="profile-picture-option"
-          /> */}
-          <img
-            src="/images/profile-pictures/adventurer-girl-1.png"
-            alt="Adventurer-girl-1"
-            className="profile-picture-option"
-          />
-          {/* <img
-            src="/images/profile-pictures/adventurer-girl-2.png"
-            alt="Adventurer-guy-1"
-            className="profile-picture-option"
-          />
-          <img
-            src="/images/profile-pictures/adventurer-girl-3.png"
-            alt="Adventurer-guy-1"
-            className="profile-picture-option"
-          /> */}
+          <div className="guy-pictures">
+            <img
+              src="/images/profile-pictures/adventurer-guy-1.png"
+              alt="Adventurer-guy-1"
+              className="profile-picture-option"
+              onClick={() => updateProfilePicture("adventurer-guy-1")}
+            />
+            <img
+              src="/images/profile-pictures/adventurer-guy-2.png"
+              alt="Adventurer-guy-1"
+              className="profile-picture-option"
+              onClick={() => updateProfilePicture("adventurer-guy-2")}
+            />
+            <img
+              src="/images/profile-pictures/adventurer-guy-3.png"
+              alt="Adventurer-guy-1"
+              className="profile-picture-option"
+              onClick={() => updateProfilePicture("adventurer-guy-3")}
+            />
+          </div>
+          <div className="girl_pictures">
+            <img
+              src="/images/profile-pictures/adventurer-girl-1.png"
+              alt="Adventurer-girl-1"
+              className="profile-picture-option"
+              onClick={() => updateProfilePicture("adventurer-girl-1")}
+            />
+            <img
+              src="/images/profile-pictures/adventurer-girl-2.png"
+              alt="Adventurer-guy-1"
+              className="profile-picture-option"
+              onClick={() => updateProfilePicture("adventurer-girl-2")}
+            />
+            <img
+              src="/images/profile-pictures/adventurer-girl-3.png"
+              alt="Adventurer-guy-1"
+              className="profile-picture-option"
+              onClick={() => updateProfilePicture("adventurer-girl-3")}
+            />
+          </div>
         </div>
       </div>
     );
@@ -84,7 +96,7 @@ export default function HeroSection() {
             </p>
           </div>
           <img
-            src="/images/profile-pictures/adventurer-guy-1.png"
+            src={`/images/profile-pictures/${profilePicture}.png`}
             alt="Adventurer-guy-1"
             className="image-adventurer"
           />

@@ -1,6 +1,6 @@
 // Functions for calculating and setting up rewards for user when completing certain tasks
 
-import { useUser } from "../context/UserContext";
+import { useUser } from "../context/UserContext.jsx";
 const { fetchUserData, userStats } = useUser();
 
 const incrementDailyStreak = async (user) => {
