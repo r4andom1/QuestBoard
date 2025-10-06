@@ -4,12 +4,11 @@ import "../css/ProfilePage.css";
 
 function ProfilePage() {
   return (
-    <div className="profile-page">
+    <>
       <Navbar />
-      <div className="profile-page-content">
-        <Profile />
-      </div>
-    </div>
+
+      <Profile />
+    </>
   );
 }
 

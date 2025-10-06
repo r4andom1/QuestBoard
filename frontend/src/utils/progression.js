@@ -1,33 +1,22 @@
 import supabase from "../../services/supabase-client";
 
-async function awardUser(userID, taskID) {
-  const alreadyAwarded = await hasAwarded(taskID);
-  const eligibleForReward = await checkIfEligibleForReward(taskID);
-  if (alreadyAwarded || !eligibleForReward) {
+async function awardUser(userID, task) {
+  const eligibleForReward = checkIfEligibleForReward(task);
+  if (!eligibleForReward) {
     return { success: false, error: "User already awarded from this task" };
   }
 
-  let { newNrOfCoins, awardedXP } = await decideAwards(taskID);
+  let { newNrOfCoins, awardedXP } = decideAwards(task);
 
   await awardCoins(userID, newNrOfCoins);
   await checkForLevelUp(userID, awardedXP);
-  await setHasAwardedToTrue(taskID);
+  await setHasAwardedToTrue(task.id);
   return { success: true };
 }
 
-async function checkIfEligibleForReward(taskID) {
+function checkIfEligibleForReward(task) {
   // Checks if the task is expired or deleted, if they are the user should not be rewarded
-  const { data, error } = await supabase
-    .from("task")
-    .select("has_expired, is_deleted")
-    .eq("id", taskID)
-    .single();
-  if (error) {
-    console.log("Error checking task eligibllity: ", error);
-    return false; // if we can't check, probably not eligible
-  }
-
-  if (data.has_expired || data.is_deleted) {
+  if (task.has_awarded || task.has_expired || task.is_deleted) {
     return false;
   }
   return true;
@@ -46,58 +35,24 @@ async function awardCoins(userID, newNrOfCoins) {
     .eq("user_id", userID);
 }
 
-async function hasAwarded(taskID) {
-  const { data, error } = await supabase
-    .from("task")
-    .select("has_awarded")
-    .eq("id", taskID)
-    .single();
-
-  if (error) {
-    console.log("Error fetching has_awarded column from task table", error);
-    return false;
-  }
-  return data.has_awarded === true;
-}
-
 async function setHasAwardedToTrue(taskID) {
-  const alreadyAwarded = await hasAwarded(taskID);
-  if (!alreadyAwarded) {
-    const { error } = await supabase
-      .from("task")
-      .update({ has_awarded: true })
-      .eq("id", taskID);
+  const { error } = await supabase.from("task").update({ has_awarded: true }).eq("id", taskID);
 
-    if (error) {
-      console.log("Error setting has_awarded: ", error);
-    }
-  }
-}
-
-async function getTaskType(taskID) {
-  const { data, error } = await supabase
-    .from("task")
-    .select("type")
-    .eq("id", taskID)
-    .single();
   if (error) {
-    console.log("error fetching task type", error);
+    console.log("Error setting has_awarded: ", error);
   }
-  return data.type;
 }
 
-async function decideAwards(taskID) {
-  const taskType = await getTaskType(taskID);
-  // console.log(taskType);
+function decideAwards(task) {
   let newNrOfCoins;
   let awardedXP;
-  if (taskType === "daily") {
+  if (task.type === "daily") {
     newNrOfCoins = 2;
     awardedXP = 2;
-  } else if (taskType === "weekly") {
+  } else if (task.type === "weekly") {
     newNrOfCoins = 4;
     awardedXP = 4;
-  } else if (taskType === "one-time") {
+  } else if (task.type === "one-time") {
     newNrOfCoins = 1;
     awardedXP = 1;
   }
@@ -124,4 +79,4 @@ async function checkForLevelUp(userID, awardedXP) {
     .eq("user_id", userID);
 }
 
-export { awardUser, hasAwarded, setHasAwardedToTrue };
+export { awardUser, setHasAwardedToTrue };

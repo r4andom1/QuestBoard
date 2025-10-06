@@ -39,6 +39,13 @@ p {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
 }
 
+.create-task .add-quest-button:hover {
+  /* background-color: #819232; */
+  border: solid 1px #819232;
+  /* transform: scale(1.05);
+  transition: all 0.3s ease; */
+}
+
 .input-fields {
   display: flex;
   flex-direction: column;
@@ -63,7 +70,7 @@ p {
   border-style: solid;
   justify-content: center;
   border-radius: 10px;
-  border-color: rgb(104, 104, 25);
+  border-color: rgb(187, 187, 36);
   padding: 1rem;
   gap: 1rem;
   width: 100%;

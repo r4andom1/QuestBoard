@@ -5,6 +5,7 @@ import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import RestrictedRoute from "./components/RestrictedRoute";
 import ProfilePage from "./pages/ProfilePage";
+import ShopPage from "./pages/ShopPage";
 
 export const router = createBrowserRouter([
   {
@@ -29,6 +30,14 @@ export const router = createBrowserRouter([
     element: (
       <RestrictedRoute>
         <ProfilePage />
+      </RestrictedRoute>
+    ),
+  },
+  {
+    path: "/shop",
+    element: (
+      <RestrictedRoute>
+        <ShopPage />
       </RestrictedRoute>
     ),
   },
