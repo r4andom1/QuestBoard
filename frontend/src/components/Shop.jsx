@@ -8,11 +8,21 @@ function inventoryDisplay() {
   );
 }
 
+function displayShopKeeper() {
+  return (
+    <img
+      src="/images/shop/shopkeeper.png"
+      alt="shopkeeper"
+      className="shop-keeper"
+    />
+  );
+}
+
 function Shop() {
   return (
     <div className="shop-content">
       <h1 className="main-heading">Welcome to the shop, adventurer!</h1>
-      {/* img */}
+      {displayShopKeeper()}
       {inventoryDisplay()}
     </div>
   );

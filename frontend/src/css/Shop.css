@@ -10,8 +10,23 @@
   text-align: center;
 }
 
+.shop-keeper {
+  width: 100%;
+  height: 300px;
+  border-radius: 25px;
+}
+
 @media (min-width: 768px) {
   .shop-content {
     margin-top: 5rem;
+  }
+
+  .shop-keeper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 800px;
+    height: 400px;
+    margin: 0 auto;
   }
 }
