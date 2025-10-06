@@ -21,7 +21,7 @@ export const AuthContextProvider = ({ children }) => {
     });
   }, []);
 
-  const signUpUser = async (email, password) => {
+  const signUpUser = async (email, password, username) => {
     // Signs up a new user by adding them to the supabase auth table
     // Also creats a corresponding the custom user_stats table thats linked with the auth table (so that we can give a user coins, xp etc)
     const { data, error } = await supabase.auth.signUp({
@@ -36,7 +36,8 @@ export const AuthContextProvider = ({ children }) => {
       return { success: false, error };
     } else {
       if (data.user) {
-        const result = await createUserProfile(data.user.id);
+        // console.log("username: ", username);
+        const result = await createUserProfile(data.user.id, username);
         if (!result.success) {
           console.log("Failed to create user profile: ", error);
         }
@@ -72,7 +73,9 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ session, signUpUser, signOutUser, signInUser }}>
+    <AuthContext.Provider
+      value={{ session, signUpUser, signOutUser, signInUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

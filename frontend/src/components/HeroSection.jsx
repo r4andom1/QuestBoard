@@ -1,5 +1,4 @@
 import "../css/HeroSection.css";
-import { useState, useEffect } from "react";
 import supabase from "../../services/supabase-client";
 import { getCurrentUserData } from "../utils/getCurrentUser.js";
 import { Coins, SquareCheckBig } from "lucide-react";
@@ -16,7 +15,7 @@ export default function HeroSection() {
   function userDetails(user) {
     return (
       <div className="hero-container">
-        <h1>Welcome back, user!</h1>
+        <h1>Welcome back, {user.username}!</h1>
         <div className="info-and-picture-container">
           <div className="user-stats-container">
             <p>Lv | {user.level}</p>

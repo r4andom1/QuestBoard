@@ -8,6 +8,7 @@ function SignUp() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(""); // to avoid multiple submits, disable the submit btn while the data is being proccesed
+  const [username, setUsername] = useState("");
 
   const { session, signUpUser } = UserAuth();
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ function SignUp() {
     setLoading(true);
 
     try {
-      const result = await signUpUser(email, password);
+      const result = await signUpUser(email, password, username);
       // console.log(result);
       if (result.success) {
         navigate("/");
@@ -41,17 +42,27 @@ function SignUp() {
         <Link to="/sign-in">Sign in!</Link>
         <div className="sign-up-inputs">
           <input
+            onChange={(event) => setUsername(event.target.value)}
+            type="text"
+            name="username"
+            placeholder="Username"
+            required
+          />
+          <input
             onChange={(event) => setEmail(event.target.value)}
             type="email"
             name="email"
             placeholder="Email"
+            required
           />
           <input
             onChange={(event) => setPassword(event.target.value)}
             type="password"
             name="password"
             placeholder="Password"
+            required
           />
+
           <button type="submit" disabled={loading}>
             Sign Up
           </button>

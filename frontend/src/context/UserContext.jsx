@@ -1,6 +1,6 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import supabase from "../../services/supabase-client";
-import { getCurrentUserData } from "../utils/getCurrentUser";
+import { getCurrentUserData } from "../utils/getCurrentUser.js";
 
 const UserContext = createContext();
 

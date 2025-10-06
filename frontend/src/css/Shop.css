@@ -1,0 +1,17 @@
+.shop-content {
+  margin-top: 10rem;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+}
+
+.main-heading {
+  text-align: center;
+}
+
+@media (min-width: 768px) {
+  .shop-content {
+    margin-top: 5rem;
+  }
+}

@@ -45,12 +45,14 @@ function SignIn() {
             type="email"
             name="email"
             placeholder="Email"
+            required
           />
           <input
             onChange={(event) => setPassword(event.target.value)}
             type="password"
             name="password"
             placeholder="Password"
+            required
           />
           <button type="submit" disabled={loading}>
             Sign In
