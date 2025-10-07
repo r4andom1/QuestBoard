@@ -59,7 +59,7 @@ function Task() {
       is_completed: false,
       description: newDescription,
       type: newType,
-      expiration_time: newExpirationTime,
+      expiration_time: null,
     };
     const { data, error } = await supabase.from(`task`).insert([newTaskData]).select();
 
@@ -70,23 +70,31 @@ function Task() {
       setNewTaskName("");
       setNewDescription("");
       await incrementQuestsCreated(currentUserID);
-      await setCountdown(data[0].id, newType);
+      await setCountdown(data[0].id, newType, newExpirationTime);
+      setExpirationTime(null);
     }
   };
 
-  const setCountdown = async (taskID, taskType, customExpirationTime = null) => {
-    // sets expiration time in the tasks expiration time column so we can calculate how much time is left
-    let expirationTime;
+  const createExpirationTime = (customTime, taskType) => {
+    // Creates/calculates the correct expiration time depending on task type
+    let expirationTime = customTime;
 
-    if (taskType === "daily") {
-      expirationTime = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // ISOString so that its the correct type for database timestampz
+    if (taskType === "one-time" && customTime) {
+      expirationTime = new Date(customTime).toISOString();
+      return expirationTime;
+    } else if (taskType === "daily") {
+      // set expiration time to expire the custom time and extract the HH:SS so that we can format it back to a datetime and then calculate the correct expirationTime
+      let daysToAdd = 1;
     } else if (taskType === "weekly") {
-      expirationTime = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-    } else if (taskType === "one-time" && customExpirationTime) {
-      expirationTime = new Date(customExpirationTime).toISOString();
-    } else {
-      expirationTime = null;
+      // set expiration time to expire the custom time and date, this should be formatted with toISOString
+      let weeklyDate = new Date(customTime).toISOString();
+      console.log(weeklyDate);
     }
+  };
+
+  const setCountdown = async (taskID, taskType, customExpirationTime) => {
+    // sets expiration time in the tasks expiration time column so we can calculate how much time is left
+    const expirationTime = createExpirationTime(customExpirationTime, taskType);
 
     const { data, error } = await supabase
       .from("task")
@@ -128,7 +136,7 @@ function Task() {
       await Promise.all([
         awardUser(currentUserID, task),
         removeExpirationTime(taskID),
-        incrementQuestsCompleted(currentUserID),
+        !task.has_expired ? incrementQuestsCompleted(currentUserID) : "",
       ]);
 
       await Promise.all([fetchUserData(), fetchTasks()]);
@@ -304,18 +312,13 @@ function Task() {
   }
 
   function chooseTaskType() {
+    const today = new Date(); // to calculate min and max values so user cant choose a date other than current week
+    const monday = new Date(today.setDate(today.getDate() - today.getDay() + 1)); // Monday
+    const sunday = new Date(today.setDate(today.getDate() - today.getDay() + 7)); // Sunday
+
     return (
       <>
         <div className="radio-buttons">
-          <label>
-            <input
-              type="radio"
-              value="one-time"
-              checked={newType === "one-time"}
-              onChange={(event) => setNewType(event.target.value)}
-            />
-            One-time
-          </label>
           <label>
             <input
               type="radio"
@@ -324,6 +327,15 @@ function Task() {
               onChange={(event) => setNewType(event.target.value)}
             />
             Daily
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="one-time"
+              checked={newType === "one-time"}
+              onChange={(event) => setNewType(event.target.value)}
+            />
+            One-time
           </label>
           <label>
             <input
@@ -337,13 +349,37 @@ function Task() {
         </div>
         {newType === "one-time" && (
           <div className="custom-expiration">
-            <label htmlFor="expiration-datetime">Set expiration time</label>
+            <label htmlFor="expiration-datetime">Set expiration date & time</label>
             <input
               id="expiration-datetime"
               type="datetime-local"
               value={newExpirationTime || ""}
               onChange={(event) => setExpirationTime(event.target.value)}
               min={new Date().toISOString().slice(0, 16)} // adds a min so user cant pick a date before today and use slice to format for html
+            />
+          </div>
+        )}
+        {newType === "weekly" && (
+          <div className="custom-expiration">
+            <label htmlFor="expiration-datetime">Set expiration day & time</label>
+            <input
+              id="expiration-datetime"
+              type="datetime-local"
+              value={newExpirationTime || ""}
+              onChange={(event) => setExpirationTime(event.target.value)}
+              min={monday.toISOString().slice(0, 16)}
+              max={sunday.toISOString().slice(0, 16)}
+            />
+          </div>
+        )}
+        {newType === "daily" && (
+          <div className="custom-expiration">
+            <label htmlFor="expiration-time">Set expiration time</label>
+            <input
+              id="expiration-time"
+              type="time"
+              value={newExpirationTime || ""}
+              onChange={(event) => setExpirationTime(event.target.value)}
             />
           </div>
         )}

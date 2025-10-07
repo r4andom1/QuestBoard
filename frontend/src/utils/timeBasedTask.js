@@ -23,6 +23,8 @@ const formatTime = (seconds) => {
 
   if (days > 0) {
     return `${days} days`;
+  } else if (days <= 0 && hours <= 0) {
+    return `${minutes}m ${secs}s`;
   }
   return `${hours}h ${minutes}m`;
 };
