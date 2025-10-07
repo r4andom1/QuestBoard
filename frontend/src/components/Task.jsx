@@ -12,6 +12,7 @@ import {
 } from "../utils/timeBasedTask.js";
 import HeroSection from "./HeroSection.jsx";
 import { useUser } from "../context/UserContext.jsx";
+import dayjs from "dayjs";
 
 function Task() {
   const [newTaskName, setNewTaskName] = useState("");
@@ -28,6 +29,7 @@ function Task() {
 
   const currentUserData = UserAuth().session.user; // gets current user session, use it to get ID
   const currentUserID = currentUserData.id;
+
   // console.log(taskList); // test
   // console.log(userStats);
 
@@ -80,15 +82,23 @@ function Task() {
     let expirationTime = customTime;
 
     if (taskType === "one-time" && customTime) {
-      expirationTime = new Date(customTime).toISOString();
+      expirationTime = dayjs(customTime).toISOString();
       return expirationTime;
     } else if (taskType === "daily") {
       // set expiration time to expire the custom time and extract the HH:SS so that we can format it back to a datetime and then calculate the correct expirationTime
-      let daysToAdd = 1;
+      const [hours, minutes] = customTime.split(":");
+      const tomorrow = dayjs().add(1, "day").hour(hours).minute(minutes).second(0);
+      return tomorrow.toISOString();
     } else if (taskType === "weekly") {
       // set expiration time to expire the custom time and date, this should be formatted with toISOString
-      let weeklyDate = new Date(customTime).toISOString();
-      console.log(weeklyDate);
+      let currentDay = dayjs();
+      let weeklyDate = dayjs(customTime);
+      if (weeklyDate.isBefore(currentDay)) {
+        weeklyDate = weeklyDate.add(7, "day");
+      }
+      // first check the day difference, cause if customTime was yesterday it should be set up to 7 days from that day.
+
+      return weeklyDate.toISOString();
     }
   };
 
@@ -312,9 +322,10 @@ function Task() {
   }
 
   function chooseTaskType() {
-    const today = new Date(); // to calculate min and max values so user cant choose a date other than current week
-    const monday = new Date(today.setDate(today.getDate() - today.getDay() + 1)); // Monday
-    const sunday = new Date(today.setDate(today.getDate() - today.getDay() + 7)); // Sunday
+    const today = dayjs(); // to calculate min and max values so user cant choose a date other than current week
+    const monday = today.startOf("week").add(1, "day");
+    const sunday = today.endOf("week").subtract(-1, "day");
+    // console.log(monday);
 
     return (
       <>
@@ -367,8 +378,8 @@ function Task() {
               type="datetime-local"
               value={newExpirationTime || ""}
               onChange={(event) => setExpirationTime(event.target.value)}
-              min={monday.toISOString().slice(0, 16)}
-              max={sunday.toISOString().slice(0, 16)}
+              min={monday.format("YYYY-MM-DDTHH:mm")}
+              max={sunday.format("YYYY-MM-DDTHH:mm")}
             />
           </div>
         )}
