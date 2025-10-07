@@ -80,6 +80,7 @@ function Task() {
   const createExpirationTime = (customTime, taskType) => {
     // Creates/calculates the correct expiration time depending on task type
     let expirationTime = customTime;
+    let currentDay = dayjs();
 
     if (taskType === "one-time" && customTime) {
       expirationTime = dayjs(customTime).toISOString();
@@ -87,11 +88,14 @@ function Task() {
     } else if (taskType === "daily") {
       // set expiration time to expire the custom time and extract the HH:SS so that we can format it back to a datetime and then calculate the correct expirationTime
       const [hours, minutes] = customTime.split(":");
-      const tomorrow = dayjs().add(1, "day").hour(hours).minute(minutes).second(0);
+      let tomorrow = dayjs().hour(hours).minute(minutes).second(0); // for correct HH:SS format
+      if (tomorrow.isBefore(currentDay)) {
+        tomorrow = tomorrow.add(1, "day");
+      }
       return tomorrow.toISOString();
     } else if (taskType === "weekly") {
       // set expiration time to expire the custom time and date, this should be formatted with toISOString
-      let currentDay = dayjs();
+
       let weeklyDate = dayjs(customTime);
       if (weeklyDate.isBefore(currentDay)) {
         weeklyDate = weeklyDate.add(7, "day");
