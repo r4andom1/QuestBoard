@@ -190,7 +190,7 @@ function Task() {
 
     const { data, error } = await supabase
       .from("task")
-      .update({ is_completed: !is_completed })
+      .update({ is_completed: true })
       .eq("id", taskID)
       .select();
 
@@ -271,20 +271,20 @@ function Task() {
           ) : null}
         </div>
         <div className="task-card-buttons">
-          <button onClick={() => toggleTask(task)}>
-            {" "}
-            {task.is_completed ? (
-              <Undo size={25} strokeWidth={3} />
-            ) : (
+          {!task.is_completed && !task.has_expired && (
+            <button onClick={() => toggleTask(task)}>
               <SquareCheckBig size={25} strokeWidth={3} />
-            )}
-          </button>
-          <button onClick={() => deleteTask(task.id, task.is_deleted)}>
-            <Trash2 size={25} strokeWidth={2} />
-          </button>
-          <button>
-            <SquarePen />
-          </button>
+            </button>
+          )}{" "}
+          {/* {task.is_completed ? (
+              <Undo size={25} strokeWidth={3} />
+            ) : ( */}
+          {/* )} */}
+          {!task.is_deleted && (
+            <button onClick={() => deleteTask(task.id, task.is_deleted)}>
+              <Trash2 size={25} strokeWidth={2} />
+            </button>
+          )}
         </div>
       </li>
     );
