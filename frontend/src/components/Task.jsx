@@ -78,7 +78,7 @@ function Task() {
   };
 
   const createExpirationTime = (customTime, taskType) => {
-    // Creates/calculates the correct expiration time depending on task type
+    // Calculates the correct expiration time depending on task type
     let expirationTime = customTime;
     let currentDay = dayjs();
 
@@ -101,7 +101,6 @@ function Task() {
         weeklyDate = weeklyDate.add(7, "day");
       }
       // first check the day difference, cause if customTime was yesterday it should be set up to 7 days from that day.
-
       return weeklyDate.toISOString();
     }
   };
@@ -127,11 +126,62 @@ function Task() {
     }
   };
 
+  function CalculateNewTaskExpirationTime(taskType, oldTime) {
+    // takes the old task time and refreshes it depending on type for reocurring quests
+    let refreshedTime = dayjs(oldTime);
+    if (taskType === "daily") {
+      refreshedTime = refreshedTime.add(1, "day");
+    } else if (taskType === "weekly") {
+      refreshedTime = refreshedTime.add(7, "day");
+    }
+
+    return refreshedTime.toISOString();
+  }
+
+  const recreateTask = async (oldTask) => {
+    // Takes the old tasks data and creates a new one with the expiration time of the old one
+    const refreshedExpirationTime = CalculateNewTaskExpirationTime(
+      oldTask.type,
+      oldTask.expiration_time
+    );
+
+    const newTaskData = {
+      name: oldTask.name,
+      is_completed: false,
+      description: oldTask.description,
+      type: oldTask.type,
+      expiration_time: refreshedExpirationTime, // calculate new expirationTime (old tasks plus new depending on their custom time)
+    };
+    const { data, error } = await supabase.from(`task`).insert([newTaskData]).select();
+
+    if (error) {
+      console.log("Error adding new task: ", error);
+    } else {
+      setTaskList((prev) => [...prev, ...data]);
+      // setNewTaskName("");
+      // setNewDescription("");
+      // await incrementQuestsCreated(currentUserID);
+      // await setCountdown(data[0].id, oldTask.type, refreshedExpirationTime);
+      // setExpirationTime(null);
+    }
+  };
+
   const handleExpired = (taskID) => {
     // update state when task becomes expired
-    setTaskList((prev) =>
-      prev.map((task) => (task.id === taskID ? { ...task, has_expired: true } : task))
-    );
+    const oldTask = taskList.find((t) => t.id === taskID);
+    if (oldTask.type === "daily" || oldTask.type === "weekly") {
+      recreateTask(oldTask);
+    }
+    // if one-time:
+    // quest expires as usual
+
+    // elseif task is daily or weekly
+    // recreate a new task with the old tasks data
+    if (!oldTask.is_completed) {
+      setTaskList((prev) =>
+        prev.map((task) => (task.id === taskID ? { ...task, has_expired: true } : task))
+      );
+    }
   };
 
   const toggleTask = async (task) => {
