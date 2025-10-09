@@ -29,19 +29,9 @@ const formatTime = (seconds) => {
   return `${hours}h ${minutes}m`;
 };
 
-const timeLeft = (expirationTime, currentTime, taskID, onExpired) => {
+const timeLeft = (expirationTime, currentTime) => {
   const seconds = calculateTimeLeft(expirationTime, currentTime);
-  if (seconds === 0) {
-    updateToExpired(taskID);
-    onExpired(taskID);
-  }
-
-  if (seconds === null) {
-    // if not time-based
-    return null;
-  } else {
-    return formatTime(seconds);
-  }
+  return formatTime(seconds);
 };
 
 async function updateToExpired(taskID) {
@@ -77,4 +67,4 @@ const removeExpirationTime = async (taskID) => {
   // }
 };
 
-export { calculateTimeLeft, formatTime, timeLeft, removeExpirationTime };
+export { calculateTimeLeft, formatTime, timeLeft, removeExpirationTime, updateToExpired };
