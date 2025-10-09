@@ -26,8 +26,15 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  width: 75%;
+  width: 100%;
   margin: 0 auto;
+}
+
+.guy-avatars,
+.girl-avatars {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 
 @media (min-width: 768px) {
@@ -46,6 +53,15 @@
 
   .items {
     display: flex;
+    flex-direction: column;
+
+    width: 75%;
+  }
+
+  .guy-avatars,
+  .girl-avatars {
+    display: flex;
     flex-direction: row;
+    justify-content: center;
   }
 }

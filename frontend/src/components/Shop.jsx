@@ -36,66 +36,75 @@ function Shop() {
       <div className="inventory-display">
         <h2>Check out my current inventory</h2>
         <div className="items">
-          <div className="item-and-price">
-            <img
-              src="/images/profile-pictures/adventurer-guy-1.png"
-              alt="Adventurer-guy-1"
-              className="profile-picture-option"
-              // onClick={() => updateProfilePicture("adventurer-guy-1")}
-            />
-            price: 10
-            <Coins size={15} />
+          <div className="guy-avatars">
+            <div className="item-and-price">
+              <img
+                src="/images/profile-pictures/adventurer-guy-1.png"
+                alt="Adventurer-guy-1"
+                className="profile-picture-option"
+                // onClick={() => updateProfilePicture("adventurer-guy-1")}
+              />
+              <div className="item-price">
+                10 <Coins size={15} />
+              </div>
+            </div>
+            <div className="item-and-price">
+              <img
+                src="/images/profile-pictures/adventurer-guy-2.png"
+                alt="Adventurer-guy-1"
+                className="profile-picture-option"
+                // onClick={() => updateProfilePicture("adventurer-guy-2")}
+              />
+              <div className="item-price">
+                15 <Coins size={15} />
+              </div>
+            </div>
+            <div className="item-and-price">
+              <img
+                src="/images/profile-pictures/adventurer-guy-3.png"
+                alt="Adventurer-guy-1"
+                className="profile-picture-option"
+                // onClick={() => updateProfilePicture("adventurer-guy-3")}
+              />
+              <div className="item-price">
+                20 <Coins size={15} />
+              </div>
+            </div>
           </div>
-          <div className="item-and-price">
-            <img
-              src="/images/profile-pictures/adventurer-guy-2.png"
-              alt="Adventurer-guy-1"
-              className="profile-picture-option"
-              // onClick={() => updateProfilePicture("adventurer-guy-2")}
-            />
-            price: 15
-            <Coins size={15} />
-          </div>
-          <div className="item-and-price">
-            <img
-              src="/images/profile-pictures/adventurer-guy-3.png"
-              alt="Adventurer-guy-1"
-              className="profile-picture-option"
-              // onClick={() => updateProfilePicture("adventurer-guy-3")}
-            />
-            price: 20
-            <Coins size={15} />
-          </div>
-
-          <div className="item-and-price">
-            <img
-              src="/images/profile-pictures/adventurer-girl-1.png"
-              alt="Adventurer-girl-1"
-              className="profile-picture-option"
-              // onClick={() => updateProfilePicture("adventurer-girl-1")}
-            />
-            price: 10
-            <Coins size={15} />
-          </div>
-          <div className="item-and-price">
-            <img
-              src="/images/profile-pictures/adventurer-girl-2.png"
-              alt="Adventurer-guy-1"
-              className="profile-picture-option"
-              // onClick={() => updateProfilePicture("adventurer-girl-2")}
-            />
-            price: 15
-            <Coins size={15} />
-          </div>
-          <div className="item-and-price">
-            <img
-              src="/images/profile-pictures/adventurer-girl-3.png"
-              alt="Adventurer-guy-1"
-              className="profile-picture-option"
-              // onClick={() => updateProfilePicture("adventurer-girl-3")}
-            />
-            price: 20
-            <Coins size={15} />
+          <div className="girl-avatars">
+            <div className="item-and-price">
+              <img
+                src="/images/profile-pictures/adventurer-girl-1.png"
+                alt="Adventurer-girl-1"
+                className="profile-picture-option"
+                // onClick={() => updateProfilePicture("adventurer-girl-1")}
+              />
+              <div className="item-price">
+                10 <Coins size={15} />
+              </div>
+            </div>
+            <div className="item-and-price">
+              <img
+                src="/images/profile-pictures/adventurer-girl-2.png"
+                alt="Adventurer-guy-1"
+                className="profile-picture-option"
+                // onClick={() => updateProfilePicture("adventurer-girl-2")}
+              />
+              <div className="item-price">
+                15 <Coins size={15} />
+              </div>
+            </div>
+            <div className="item-and-price">
+              <img
+                src="/images/profile-pictures/adventurer-girl-3.png"
+                alt="Adventurer-guy-1"
+                className="profile-picture-option"
+                // onClick={() => updateProfilePicture("adventurer-girl-3")}
+              />
+              <div className="item-price">
+                20 <Coins size={15} />
+              </div>
+            </div>
           </div>
         </div>
       </div>
