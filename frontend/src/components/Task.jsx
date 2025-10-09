@@ -9,7 +9,6 @@ import {
   formatTime,
   timeLeft,
   removeExpirationTime,
-  updateToExpired,
 } from "../utils/timeBasedTask.js";
 import HeroSection from "./HeroSection.jsx";
 import { useUser } from "../context/UserContext.jsx";
@@ -41,33 +40,6 @@ function Task() {
 
     return () => clearInterval(intervalID); // cleanup timer to prevent memory leaking
   }, []);
-
-  const handleExpired = async (taskID) => {
-    // update state when task becomes expired
-    await updateToExpired(taskID);
-
-    const oldTask = taskList.find((t) => t.id === taskID);
-    if (oldTask.type === "daily" || oldTask.type === "weekly") {
-      recreateTask(oldTask);
-    }
-
-    if (!oldTask.is_completed) {
-      setTaskList((prev) =>
-        prev.map((task) => (task.id === taskID ? { ...task, has_expired: true } : task))
-      );
-    }
-  };
-
-  useEffect(() => {
-    taskList.forEach((task) => {
-      if (task.expiration_time && !task.is_completed && !task.has_expired && !task.is_deleted) {
-        const secondsRemaining = calculateTimeLeft(task.expiration_time, currentTime);
-        if (secondsRemaining <= 0) {
-          handleExpired(task.id);
-        }
-      }
-    });
-  }, [currentTime, taskList, handleExpired]);
 
   useEffect(() => {
     fetchTasks();
@@ -179,7 +151,6 @@ function Task() {
       description: oldTask.description,
       type: oldTask.type,
       expiration_time: refreshedExpirationTime, // calculate new expirationTime (old tasks plus new depending on their custom time)
-      has_awarded: false,
     };
     const { data, error } = await supabase.from(`task`).insert([newTaskData]).select();
 
@@ -195,9 +166,27 @@ function Task() {
     }
   };
 
+  const handleExpired = (taskID) => {
+    // update state when task becomes expired
+    const oldTask = taskList.find((t) => t.id === taskID);
+    if (oldTask.type === "daily" || oldTask.type === "weekly") {
+      recreateTask(oldTask);
+    }
+    // if one-time:
+    // quest expires as usual
+
+    // elseif task is daily or weekly
+    // recreate a new task with the old tasks data
+    if (!oldTask.is_completed) {
+      setTaskList((prev) =>
+        prev.map((task) => (task.id === taskID ? { ...task, has_expired: true } : task))
+      );
+    }
+  };
+
   const toggleTask = async (task) => {
     // Can be toggled many times, but completed and get rewards from once.
-    const { id: taskID, is_completed, type } = task; // from refactoring
+    const { id: taskID, is_completed } = task; // from refactoring
 
     const { data, error } = await supabase
       .from("task")
@@ -277,7 +266,7 @@ function Task() {
             <div className="time-left">
               {task.is_deleted || task.has_expired || task.is_completed
                 ? ""
-                : timeLeft(task.expiration_time, currentTime)}
+                : timeLeft(task.expiration_time, currentTime, task.id, handleExpired)}
             </div>
           ) : null}
         </div>
