@@ -59,7 +59,10 @@ function Task() {
     } else {
       await updateToExpired(taskID);
       await setHasAwardedToTrue(taskID);
-      if (!oldTask.is_deleted && (oldTask.type === "daily" || oldTask.type === "weekly")) {
+      if (
+        !oldTask.is_deleted &&
+        (oldTask.type === "daily" || oldTask.type === "weekly")
+      ) {
         await recreateTask(oldTask);
       }
     }
@@ -68,8 +71,16 @@ function Task() {
 
   useEffect(() => {
     taskList.forEach((task) => {
-      if (task.expiration_time && !task.is_completed && !task.has_expired && !task.is_deleted) {
-        const secondsRemaining = calculateTimeLeft(task.expiration_time, currentTime);
+      if (
+        task.expiration_time &&
+        !task.is_completed &&
+        !task.has_expired &&
+        !task.is_deleted
+      ) {
+        const secondsRemaining = calculateTimeLeft(
+          task.expiration_time,
+          currentTime
+        );
         if (secondsRemaining <= 0) {
           handleExpired(task.id);
         }
@@ -99,7 +110,10 @@ function Task() {
       type: newType,
       expiration_time: null,
     };
-    const { data, error } = await supabase.from(`task`).insert([newTaskData]).select();
+    const { data, error } = await supabase
+      .from(`task`)
+      .insert([newTaskData])
+      .select();
 
     if (error) {
       console.log("Error adding new task: ", error);
@@ -183,7 +197,10 @@ function Task() {
       has_awarded: false,
       status: "upcoming",
     };
-    const { data, error } = await supabase.from(`task`).insert([newTaskData]).select();
+    const { data, error } = await supabase
+      .from(`task`)
+      .insert([newTaskData])
+      .select();
     if (error) {
       console.log("Error adding new task: ", error);
     } else {
@@ -253,7 +270,8 @@ function Task() {
     return (
       <li
         className={`task-card${task.is_completed ? "-completed" : ""}`} // if task is completed, change look in css
-        key={task.id}>
+        key={task.id}
+      >
         <h2>{task.name}</h2>
         <p>{task.description}</p>
         <p className="card-task-type">{task.type}</p>
@@ -267,11 +285,13 @@ function Task() {
           ) : null}
         </div>
         <div className="task-card-buttons">
-          {!task.is_completed && !task.has_expired && task.status !== "upcoming" && (
-            <button onClick={() => toggleTask(task)}>
-              <SquareCheckBig size={25} strokeWidth={3} />
-            </button>
-          )}{" "}
+          {!task.is_completed &&
+            !task.has_expired &&
+            task.status !== "upcoming" && (
+              <button onClick={() => toggleTask(task)}>
+                <SquareCheckBig size={25} strokeWidth={3} />
+              </button>
+            )}{" "}
           {/* {task.is_completed ? (
               <Undo size={25} strokeWidth={3} />
             ) : ( */}
@@ -300,7 +320,10 @@ function Task() {
     return (
       <ul className="tasks-active">
         <li className="task-section-heading">
-          <button className="show-button" onClick={() => setShowActiveTasks((prev) => !prev)}>
+          <button
+            className="show-button"
+            onClick={() => setShowActiveTasks((prev) => !prev)}
+          >
             Active Quests
           </button>
         </li>
@@ -323,7 +346,10 @@ function Task() {
     return (
       <ul className="tasks-upcoming">
         <li className="task-section-heading">
-          <button className="show-button" onClick={() => setShowUpcomingTasks((prev) => !prev)}>
+          <button
+            className="show-button"
+            onClick={() => setShowUpcomingTasks((prev) => !prev)}
+          >
             Upcoming Quests
           </button>
         </li>
@@ -340,13 +366,19 @@ function Task() {
     return (
       <ul className="tasks-completed">
         <li className="task-section-heading">
-          <button className="show-button" onClick={() => setShowCompletedTasks((prev) => !prev)}>
+          <button
+            className="show-button"
+            onClick={() => setShowCompletedTasks((prev) => !prev)}
+          >
             Completed Quests
           </button>
         </li>
         {showCompletedTasks &&
           taskList
-            .filter((task) => task.is_completed && !task.is_deleted && !task.has_expired)
+            .filter(
+              (task) =>
+                task.is_completed && !task.is_deleted && !task.has_expired
+            )
             .sort((a, b) => a.id - b.id)
             .map((task) => taskCard(task))}
       </ul>
@@ -357,13 +389,19 @@ function Task() {
     return (
       <ul className="tasks-expired">
         <li className="task-section-heading">
-          <button className="show-button" onClick={() => setShowExpiredTasks((prev) => !prev)}>
+          <button
+            className="show-button"
+            onClick={() => setShowExpiredTasks((prev) => !prev)}
+          >
             Expired Quests
           </button>
         </li>
         {showExpiredTasks &&
           taskList
-            .filter((task) => task.has_expired && !task.is_deleted && !task.is_completed)
+            .filter(
+              (task) =>
+                task.has_expired && !task.is_deleted && !task.is_completed
+            )
             .sort((a, b) => a.id - b.id)
             .map((task) => taskCard(task))}
       </ul>
@@ -374,7 +412,10 @@ function Task() {
     return (
       <ul className="tasks-deleted">
         <li className="task-section-heading">
-          <button className="show-button" onClick={() => setShowDeletedTasks((prev) => !prev)}>
+          <button
+            className="show-button"
+            onClick={() => setShowDeletedTasks((prev) => !prev)}
+          >
             Deleted Quests
           </button>
         </li>
@@ -428,7 +469,9 @@ function Task() {
         </div>
         {newType === "one-time" && (
           <div className="custom-expiration">
-            <label htmlFor="expiration-datetime">Set expiration date & time</label>
+            <label htmlFor="expiration-datetime">
+              Set expiration date & time
+            </label>
             <input
               id="expiration-datetime"
               type="datetime-local"
@@ -440,7 +483,9 @@ function Task() {
         )}
         {newType === "weekly" && (
           <div className="custom-expiration">
-            <label htmlFor="expiration-datetime">Set expiration day & time</label>
+            <label htmlFor="expiration-datetime">
+              Set expiration day & time
+            </label>
             <input
               id="expiration-datetime"
               type="datetime-local"
@@ -474,11 +519,26 @@ function Task() {
       <div className="create-task">
         <h2>Create new quest</h2>
         <div className="input-fields">
-          {taskInput("text", "Enter name...", newTaskName, setNewTaskName, true)}
-          {taskInput("text", "Enter description...", newDescription, setNewDescription)}
+          {taskInput(
+            "text",
+            "Enter name...",
+            newTaskName,
+            setNewTaskName,
+            true
+          )}
+          {taskInput(
+            "text",
+            "Enter description...",
+            newDescription,
+            setNewDescription
+          )}
           {chooseTaskType()}
         </div>
-        <button className="add-quest-button" onClick={addTask} disabled={!newTaskName}>
+        <button
+          className="add-quest-button"
+          onClick={addTask}
+          disabled={!newTaskName}
+        >
           Add quest
         </button>
       </div>
