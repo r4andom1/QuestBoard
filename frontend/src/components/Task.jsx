@@ -186,6 +186,8 @@ function Task() {
     const { data, error } = await supabase.from(`task`).insert([newTaskData]).select();
     if (error) {
       console.log("Error adding new task: ", error);
+    } else {
+      await incrementQuestsCreated(currentUserID);
     }
   };
 
@@ -498,10 +500,15 @@ function Task() {
   const incrementQuestsCreated = async (userID) => {
     const currentQuestsCreated = userStats.quests_created;
 
-    await supabase
+    const { data, error } = await supabase
       .from("user_stats")
       .update({ quests_created: currentQuestsCreated + 1 })
       .eq("user_id", userID);
+    if (error) {
+      console.log("error incrementing quests created", error);
+    } else {
+      // console.log("quest created");
+    }
   };
 
   const incrementQuestsCompleted = async (userID) => {
@@ -514,6 +521,8 @@ function Task() {
       .select();
     if (error) {
       console.log(error);
+    } else {
+      // console.log("quest completed");
     }
   };
 
