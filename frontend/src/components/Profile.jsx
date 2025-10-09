@@ -9,8 +9,7 @@ export default function HeroSection() {
   // const [userStats, setUserStats] = useState({});
   const { currentUserID, currentUserData } = getCurrentUserData();
   // const authContext = UserAuth();
-  const { userStats, updateUserStats, profilePicture, updateProfilePicture } =
-    useUser();
+  const { userStats, updateUserStats, profilePicture, updateProfilePicture } = useUser();
 
   useEffect(() => {
     fetchUserData();

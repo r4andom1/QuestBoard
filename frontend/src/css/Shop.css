@@ -16,6 +16,20 @@
   border-radius: 25px;
 }
 
+.inventory-display {
+  display: flex;
+  flex-direction: column;
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 75%;
+  margin: 0 auto;
+}
+
 @media (min-width: 768px) {
   .shop-content {
     margin-top: 5rem;
@@ -28,5 +42,10 @@
     width: 800px;
     height: 400px;
     margin: 0 auto;
+  }
+
+  .items {
+    display: flex;
+    flex-direction: row;
   }
 }
