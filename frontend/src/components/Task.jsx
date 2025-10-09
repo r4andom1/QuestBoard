@@ -46,7 +46,7 @@ function Task() {
   }, []);
 
   const fetchTasks = async () => {
-    const { data, error } = await supabase.from(`task`).select(`*`);
+    const { data, error } = await supabase.from("task").select("*");
     // console.log(data)
     if (error) {
       console.log("Error fetching tasks: ", error);
