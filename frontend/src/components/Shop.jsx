@@ -116,7 +116,7 @@ function Shop() {
         <h2>{user.username}</h2>
         <div className="user-currency">
           <p>
-            <Coins size={20} /> {userStats.coins}
+            <Coins size={25} /> {userStats.coins}
           </p>
         </div>
       </div>
@@ -128,7 +128,13 @@ function Shop() {
   };
 
   function displayShopKeeper() {
-    return <img src="/images/shop/shopkeeper.png" alt="shopkeeper" className="shop-keeper" />;
+    return (
+      <img
+        src="/images/shop/shopkeeper.png"
+        alt="shopkeeper"
+        className="shop-keeper"
+      />
+    );
   }
 
   return (
