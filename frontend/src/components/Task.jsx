@@ -59,10 +59,7 @@ function Task() {
     } else {
       await updateToExpired(taskID);
       await setHasAwardedToTrue(taskID);
-      if (
-        !oldTask.is_deleted &&
-        (oldTask.type === "daily" || oldTask.type === "weekly")
-      ) {
+      if (!oldTask.is_deleted && (oldTask.type === "daily" || oldTask.type === "weekly")) {
         await recreateTask(oldTask);
       }
     }
@@ -71,16 +68,8 @@ function Task() {
 
   useEffect(() => {
     taskList.forEach((task) => {
-      if (
-        task.expiration_time &&
-        !task.is_completed &&
-        !task.has_expired &&
-        !task.is_deleted
-      ) {
-        const secondsRemaining = calculateTimeLeft(
-          task.expiration_time,
-          currentTime
-        );
+      if (task.expiration_time && !task.is_completed && !task.has_expired && !task.is_deleted) {
+        const secondsRemaining = calculateTimeLeft(task.expiration_time, currentTime);
         if (secondsRemaining <= 0) {
           handleExpired(task.id);
         }
@@ -103,6 +92,10 @@ function Task() {
   };
 
   const addTask = async () => {
+    if (newExpirationTime === null) {
+      alert("Please enter an expiration time");
+      return;
+    }
     const newTaskData = {
       name: newTaskName,
       is_completed: false,
@@ -110,10 +103,7 @@ function Task() {
       type: newType,
       expiration_time: null,
     };
-    const { data, error } = await supabase
-      .from(`task`)
-      .insert([newTaskData])
-      .select();
+    const { data, error } = await supabase.from(`task`).insert([newTaskData]).select();
 
     if (error) {
       console.log("Error adding new task: ", error);
@@ -130,6 +120,8 @@ function Task() {
     // Calculates the correct expiration time depending on task type
     let expirationTime = customTime;
     let currentDay = dayjs();
+
+    // console.log(customTime);
 
     if (taskType === "one-time" && customTime) {
       expirationTime = dayjs(customTime).toISOString();
@@ -197,10 +189,7 @@ function Task() {
       has_awarded: false,
       status: "upcoming",
     };
-    const { data, error } = await supabase
-      .from(`task`)
-      .insert([newTaskData])
-      .select();
+    const { data, error } = await supabase.from(`task`).insert([newTaskData]).select();
     if (error) {
       console.log("Error adding new task: ", error);
     } else {
@@ -270,21 +259,14 @@ function Task() {
     return (
       <li
         className={`task-card${task.is_completed ? "-completed" : ""}`} // if task is completed, change look in css
-        key={task.id}
-      >
+        key={task.id}>
         <h2>{task.name}</h2>
         <p>{task.description}</p>
         <p className="card-task-type">{task.type}</p>
         <div className="task-time">
           <div className="refresh-text">
-            {task.status === "upcoming" && !task.is_deleted ? (
-              <p>refreshes in: </p>
-            ) : (
-              ""
-            )}
-            {!task.is_completed &&
-            task.status !== "upcoming" &&
-            !task.has_expired ? (
+            {task.status === "upcoming" && !task.is_deleted ? <p>refreshes in: </p> : ""}
+            {!task.is_completed && task.status !== "upcoming" && !task.has_expired ? (
               <p>expires in:</p>
             ) : (
               ""
@@ -302,13 +284,11 @@ function Task() {
           ) : null}
         </div>
         <div className="task-card-buttons">
-          {!task.is_completed &&
-            !task.has_expired &&
-            task.status !== "upcoming" && (
-              <button onClick={() => toggleTask(task)}>
-                <SquareCheckBig size={25} strokeWidth={3} />
-              </button>
-            )}{" "}
+          {!task.is_completed && !task.has_expired && task.status !== "upcoming" && (
+            <button onClick={() => toggleTask(task)}>
+              <SquareCheckBig size={25} strokeWidth={3} />
+            </button>
+          )}{" "}
           {/* {task.is_completed ? (
               <Undo size={25} strokeWidth={3} />
             ) : ( */}
@@ -337,11 +317,8 @@ function Task() {
     return (
       <ul className="tasks-active">
         <li className="task-section-heading">
-          <button
-            className="show-button"
-            onClick={() => setShowActiveTasks((prev) => !prev)}
-          >
-            Active Quests
+          <button className="show-button" onClick={() => setShowActiveTasks((prev) => !prev)}>
+            Current Quests
           </button>
         </li>
         {showActiveTasks &&
@@ -363,10 +340,7 @@ function Task() {
     return (
       <ul className="tasks-upcoming">
         <li className="task-section-heading">
-          <button
-            className="show-button"
-            onClick={() => setShowUpcomingTasks((prev) => !prev)}
-          >
+          <button className="show-button" onClick={() => setShowUpcomingTasks((prev) => !prev)}>
             Upcoming Quests
           </button>
         </li>
@@ -383,19 +357,13 @@ function Task() {
     return (
       <ul className="tasks-completed">
         <li className="task-section-heading">
-          <button
-            className="show-button"
-            onClick={() => setShowCompletedTasks((prev) => !prev)}
-          >
+          <button className="show-button" onClick={() => setShowCompletedTasks((prev) => !prev)}>
             Completed Quests
           </button>
         </li>
         {showCompletedTasks &&
           taskList
-            .filter(
-              (task) =>
-                task.is_completed && !task.is_deleted && !task.has_expired
-            )
+            .filter((task) => task.is_completed && !task.is_deleted && !task.has_expired)
             .sort((a, b) => a.id - b.id)
             .map((task) => taskCard(task))}
       </ul>
@@ -406,19 +374,13 @@ function Task() {
     return (
       <ul className="tasks-expired">
         <li className="task-section-heading">
-          <button
-            className="show-button"
-            onClick={() => setShowExpiredTasks((prev) => !prev)}
-          >
+          <button className="show-button" onClick={() => setShowExpiredTasks((prev) => !prev)}>
             Expired Quests
           </button>
         </li>
         {showExpiredTasks &&
           taskList
-            .filter(
-              (task) =>
-                task.has_expired && !task.is_deleted && !task.is_completed
-            )
+            .filter((task) => task.has_expired && !task.is_deleted && !task.is_completed)
             .sort((a, b) => a.id - b.id)
             .map((task) => taskCard(task))}
       </ul>
@@ -429,10 +391,7 @@ function Task() {
     return (
       <ul className="tasks-deleted">
         <li className="task-section-heading">
-          <button
-            className="show-button"
-            onClick={() => setShowDeletedTasks((prev) => !prev)}
-          >
+          <button className="show-button" onClick={() => setShowDeletedTasks((prev) => !prev)}>
             Deleted Quests
           </button>
         </li>
@@ -461,6 +420,7 @@ function Task() {
               checked={newType === "daily"}
               onChange={(event) => {
                 setNewType(event.target.value);
+                setExpirationTime(null);
               }}
             />
             Daily
@@ -470,7 +430,10 @@ function Task() {
               type="radio"
               value="one-time"
               checked={newType === "one-time"}
-              onChange={(event) => setNewType(event.target.value)}
+              onChange={(event) => {
+                setNewType(event.target.value);
+                setExpirationTime(null);
+              }}
             />
             One-time
           </label>
@@ -479,30 +442,30 @@ function Task() {
               type="radio"
               value="weekly"
               checked={newType === "weekly"}
-              onChange={(event) => setNewType(event.target.value)}
+              onChange={(event) => {
+                setNewType(event.target.value);
+                setExpirationTime(null);
+              }}
             />
             Weekly
           </label>
         </div>
         {newType === "one-time" && (
           <div className="custom-expiration">
-            <label htmlFor="expiration-datetime">
-              Set expiration date & time
-            </label>
+            <label htmlFor="expiration-datetime">Set expiration date & time</label>
             <input
               id="expiration-datetime"
               type="datetime-local"
               value={newExpirationTime || ""}
               onChange={(event) => setExpirationTime(event.target.value)}
               min={new Date().toISOString().slice(0, 16)} // adds a min so user cant pick a date before today and use slice to format for html
+              required
             />
           </div>
         )}
         {newType === "weekly" && (
           <div className="custom-expiration">
-            <label htmlFor="expiration-datetime">
-              Set expiration day & time
-            </label>
+            <label htmlFor="expiration-datetime">Set expiration day & time</label>
             <input
               id="expiration-datetime"
               type="datetime-local"
@@ -510,6 +473,7 @@ function Task() {
               onChange={(event) => setExpirationTime(event.target.value)}
               min={monday.format("YYYY-MM-DDTHH:mm")}
               max={sunday.format("YYYY-MM-DDTHH:mm")}
+              required
             />
           </div>
         )}
@@ -521,6 +485,7 @@ function Task() {
               type="time"
               value={newExpirationTime || ""}
               onChange={(event) => setExpirationTime(event.target.value)}
+              required
             />
           </div>
         )}
@@ -536,26 +501,11 @@ function Task() {
       <div className="create-task">
         <h2>Create new quest</h2>
         <div className="input-fields">
-          {taskInput(
-            "text",
-            "Enter name...",
-            newTaskName,
-            setNewTaskName,
-            true
-          )}
-          {taskInput(
-            "text",
-            "Enter description...",
-            newDescription,
-            setNewDescription
-          )}
+          {taskInput("text", "Enter name...", newTaskName, setNewTaskName, true)}
+          {taskInput("text", "Enter description...", newDescription, setNewDescription)}
           {chooseTaskType()}
         </div>
-        <button
-          className="add-quest-button"
-          onClick={addTask}
-          disabled={!newTaskName}
-        >
+        <button className="add-quest-button" onClick={addTask} disabled={!newTaskName}>
           Add quest
         </button>
       </div>
