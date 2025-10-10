@@ -275,12 +275,29 @@ function Task() {
         <h2>{task.name}</h2>
         <p>{task.description}</p>
         <p className="card-task-type">{task.type}</p>
-        <div>
+        <div className="task-time">
+          <div className="refresh-text">
+            {task.status === "upcoming" && !task.is_deleted ? (
+              <p>refreshes in: </p>
+            ) : (
+              ""
+            )}
+            {!task.is_completed &&
+            task.status !== "upcoming" &&
+            !task.has_expired ? (
+              <p>expires in:</p>
+            ) : (
+              ""
+            )}
+            {/* {task.has_expired ? <p>expired</p> : ""} */}
+          </div>
           {task.expiration_time ? (
             <div className="time-left">
-              {task.is_deleted || task.has_expired || task.is_completed
-                ? ""
-                : timeLeft(task.expiration_time, currentTime)}
+              {task.is_deleted || task.has_expired || task.is_completed ? (
+                ""
+              ) : (
+                <p>{timeLeft(task.expiration_time, currentTime)}</p>
+              )}
             </div>
           ) : null}
         </div>

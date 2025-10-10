@@ -160,6 +160,26 @@ p {
   /* gap: 5rem; */
 }
 
+.task-time {
+  display: flex;
+  flex-direction: row;
+  /* gap: 1rem; */
+  justify-content: center;
+  align-items: center;
+}
+
+.time-left p,
+.refresh-text p {
+  margin: 0;
+  padding: 0;
+  gap: 0;
+}
+
+.time-left,
+.refresh-text {
+  font-size: small;
+}
+
 .task-card {
   border-color: rgb(187, 187, 36);
 }
@@ -345,6 +365,21 @@ p.card-task-type {
     gap: 0;
     width: 20rem;
     height: 15rem;
+  }
+
+  .refresh-text p {
+    margin: 0 !important;
+    gap: 0 !important;
+
+    padding: 0 !important;
+  }
+
+  .time-left p,
+  .refresh-text p {
+    font-size: 0.8rem !important;
+    margin: 0 !important;
+    padding: 0;
+    gap: 0;
   }
 
   .task-type {
