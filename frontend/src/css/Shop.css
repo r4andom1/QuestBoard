@@ -16,6 +16,33 @@
   border-radius: 25px;
 }
 
+.inventory-display {
+  display: flex;
+  flex-direction: column;
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin: 0 auto;
+  gap: 2rem;
+}
+
+.guy-avatars,
+.girl-avatars {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.user-details {
+  font-size: x-large;
+}
+
 @media (min-width: 768px) {
   .shop-content {
     margin-top: 5rem;
@@ -28,5 +55,19 @@
     width: 800px;
     height: 400px;
     margin: 0 auto;
+  }
+
+  .items {
+    display: flex;
+    flex-direction: column;
+
+    width: 75%;
+  }
+
+  .guy-avatars,
+  .girl-avatars {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
   }
 }

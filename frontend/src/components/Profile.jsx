@@ -9,8 +9,7 @@ export default function HeroSection() {
   // const [userStats, setUserStats] = useState({});
   const { currentUserID, currentUserData } = getCurrentUserData();
   // const authContext = UserAuth();
-  const { userStats, updateUserStats, profilePicture, updateProfilePicture } =
-    useUser();
+  const { userStats, updateUserStats, profilePicture, updateProfilePicture } = useUser();
 
   useEffect(() => {
     fetchUserData();
@@ -104,20 +103,20 @@ export default function HeroSection() {
         <div className="progression-container">
           <div className="streaks">
             <h2>Streaks</h2>
-            <p>Current Login streak:</p>
-            <p>Longest login streak: </p>
+            <p>Current Login Streak:</p>
+            <p>Longest Login Streak: </p>
             <p>Quests completed for X nr of days</p>
           </div>
           <div className="quest-data">
             <h2>Quests</h2>
-            <p>Quests created: {user.quests_created}</p>{" "}
-            <p> quests completed: {user.quests_completed}</p>
+            <p>Quests Created: {user.quests_created}</p>{" "}
+            <p>Quests Completed: {user.quests_completed}</p>
           </div>
           <div className="badges">
             <h2>Badges</h2>
-            <p>7-day streak badge</p>
-            <p>Completing 10 quests</p>
-            <p>Finish a weekly quest</p>
+            <p>7-day Streak Badge</p>
+            <p>Completing 10 Quests</p>
+            <p>Finish a weekly Quest</p>
           </div>
         </div>
         {customizeCharacter()}

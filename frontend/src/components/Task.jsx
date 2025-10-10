@@ -9,9 +9,11 @@ import {
   formatTime,
   timeLeft,
   removeExpirationTime,
+  updateToExpired,
 } from "../utils/timeBasedTask.js";
 import HeroSection from "./HeroSection.jsx";
 import { useUser } from "../context/UserContext.jsx";
+import dayjs from "dayjs";
 
 function Task() {
   const [newTaskName, setNewTaskName] = useState("");
@@ -24,10 +26,12 @@ function Task() {
   const [showCompletedTasks, setShowCompletedTasks] = useState(false);
   const [showExpiredTasks, setShowExpiredTasks] = useState(false);
   const [showDeletedTasks, setShowDeletedTasks] = useState(false);
+  const [showUpcomingTasks, setShowUpcomingTasks] = useState(true);
   const { fetchUserData, userStats } = useUser();
 
   const currentUserData = UserAuth().session.user; // gets current user session, use it to get ID
   const currentUserID = currentUserData.id;
+
   // console.log(taskList); // test
   // console.log(userStats);
 
@@ -39,12 +43,46 @@ function Task() {
     return () => clearInterval(intervalID); // cleanup timer to prevent memory leaking
   }, []);
 
+  const handleExpired = async (taskID) => {
+    const oldTask = taskList.find((t) => t.id === taskID);
+    if (!oldTask) return;
+
+    if (oldTask.status === "upcoming") {
+      const nextExpirationTime = CalculateNewTaskExpirationTime(
+        oldTask.type,
+        oldTask.expiration_time
+      );
+      await supabase
+        .from("task")
+        .update({ status: null, expiration_time: nextExpirationTime })
+        .eq("id", taskID);
+    } else {
+      await updateToExpired(taskID);
+      await setHasAwardedToTrue(taskID);
+      if (!oldTask.is_deleted && (oldTask.type === "daily" || oldTask.type === "weekly")) {
+        await recreateTask(oldTask);
+      }
+    }
+    await fetchTasks();
+  };
+
+  useEffect(() => {
+    taskList.forEach((task) => {
+      if (task.expiration_time && !task.is_completed && !task.has_expired && !task.is_deleted) {
+        const secondsRemaining = calculateTimeLeft(task.expiration_time, currentTime);
+        if (secondsRemaining <= 0) {
+          handleExpired(task.id);
+        }
+      }
+    });
+  }, [currentTime, taskList, handleExpired]);
+
   useEffect(() => {
     fetchTasks();
   }, []);
 
   const fetchTasks = async () => {
-    const { data, error } = await supabase.from(`task`).select(`*`);
+    const { data, error } = await supabase.from("task").select("*");
     // console.log(data)
     if (error) {
       console.log("Error fetching tasks: ", error);
@@ -54,37 +92,63 @@ function Task() {
   };
 
   const addTask = async () => {
+    if (newExpirationTime === null) {
+      alert("Please enter an expiration time");
+      return;
+    }
     const newTaskData = {
       name: newTaskName,
       is_completed: false,
       description: newDescription,
       type: newType,
-      expiration_time: newExpirationTime,
+      expiration_time: null,
     };
     const { data, error } = await supabase.from(`task`).insert([newTaskData]).select();
 
     if (error) {
       console.log("Error adding new task: ", error);
     } else {
-      setTaskList((prev) => [...prev, ...data]);
       setNewTaskName("");
       setNewDescription("");
       await incrementQuestsCreated(currentUserID);
-      await setCountdown(data[0].id, newType);
+      await setCountdown(data[0].id, newType, newExpirationTime);
+      // setExpirationTime(null);
     }
   };
 
-  const setCountdown = async (taskID, taskType) => {
-    // sets expiration time in the tasks expiration time column so we can calculate how much time is left
-    let expirationTime;
+  const createExpirationTime = (customTime, taskType) => {
+    // Calculates the correct expiration time depending on task type
+    let expirationTime = customTime;
+    let currentDay = dayjs();
 
-    if (taskType === "daily") {
-      expirationTime = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(); // ISOString so that its the correct type for database timestampz
+    // console.log(customTime);
+
+    if (taskType === "one-time" && customTime) {
+      expirationTime = dayjs(customTime).toISOString();
+      return expirationTime;
+    } else if (taskType === "daily") {
+      // set expiration time to expire the custom time and extract the HH:SS so that we can format it back to a datetime and then calculate the correct expirationTime
+      const [hours, minutes] = customTime.split(":");
+      let tomorrow = dayjs().hour(hours).minute(minutes).second(0); // for correct HH:SS format
+      if (tomorrow.isBefore(currentDay)) {
+        tomorrow = tomorrow.add(1, "day");
+      }
+      return tomorrow.toISOString();
     } else if (taskType === "weekly") {
-      expirationTime = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
-    } else {
-      expirationTime = null;
+      // set expiration time to expire the custom time and date, this should be formatted with toISOString
+
+      let weeklyDate = dayjs(customTime);
+      if (weeklyDate.isBefore(currentDay)) {
+        weeklyDate = weeklyDate.add(7, "day");
+      }
+      // first check the day difference, cause if customTime was yesterday it should be set up to 7 days from that day.
+      return weeklyDate.toISOString();
     }
+  };
+
+  const setCountdown = async (taskID, taskType, customExpirationTime) => {
+    // sets expiration time in the tasks expiration time column so we can calculate how much time is left
+    const expirationTime = createExpirationTime(customExpirationTime, taskType);
 
     const { data, error } = await supabase
       .from("task")
@@ -95,28 +159,49 @@ function Task() {
     if (error) {
       console.log("error updating expiration time", error);
     } else {
-      setTaskList((prev) =>
-        prev.map((task) =>
-          task.id === taskID ? { ...task, expiration_time: expirationTime } : task
-        )
-      );
+      await fetchTasks();
     }
   };
 
-  const handleExpired = (taskID) => {
-    // update state when task becomes expired
-    setTaskList((prev) =>
-      prev.map((task) => (task.id === taskID ? { ...task, has_expired: true } : task))
-    );
+  function CalculateNewTaskExpirationTime(taskType, oldTime) {
+    // takes the old task time and refreshes it depending on type for reocurring quests
+    let refreshedTime = dayjs(oldTime);
+    if (taskType === "daily") {
+      refreshedTime = refreshedTime.add(1, "day");
+    } else if (taskType === "weekly") {
+      refreshedTime = refreshedTime.add(7, "day");
+    }
+
+    return refreshedTime.toISOString();
+  }
+
+  const recreateTask = async (oldTask) => {
+    // const refreshedExpirationTime = CalculateNewTaskExpirationTime(
+    //   oldTask.type,
+    //   oldTask.expiration_time
+    // );
+    const newTaskData = {
+      name: oldTask.name,
+      is_completed: false,
+      description: oldTask.description,
+      type: oldTask.type,
+      expiration_time: oldTask.expiration_time,
+      has_awarded: false,
+      status: "upcoming",
+    };
+    const { data, error } = await supabase.from(`task`).insert([newTaskData]).select();
+    if (error) {
+      console.log("Error adding new task: ", error);
+    } else {
+      await incrementQuestsCreated(currentUserID);
+    }
   };
 
   const toggleTask = async (task) => {
-    // Can be toggled many times, but completed and get rewards from once.
-    const { id: taskID, is_completed } = task; // from refactoring
-
+    const { id: taskID, type } = task;
     const { data, error } = await supabase
       .from("task")
-      .update({ is_completed: !is_completed })
+      .update({ is_completed: true, has_awarded: true })
       .eq("id", taskID)
       .select();
 
@@ -125,21 +210,12 @@ function Task() {
     } else {
       await Promise.all([
         awardUser(currentUserID, task),
-        removeExpirationTime(taskID),
-        incrementQuestsCompleted(currentUserID),
+        !task.has_expired ? incrementQuestsCompleted(currentUserID) : "",
       ]);
-
+      if (type === "daily" || type === "weekly") {
+        await recreateTask(task);
+      }
       await Promise.all([fetchUserData(), fetchTasks()]);
-
-      // add back this if scaling is an issue
-      //   const toggledTaskList = taskList.map((task) => {
-      //     if (task.id === taskID) {
-      //       return { ...task, is_completed: !is_completed };
-      //     } else {
-      //       return task;
-      //     }
-      //   });
-      //   setTaskList(toggledTaskList);
     }
   };
 
@@ -187,30 +263,41 @@ function Task() {
         <h2>{task.name}</h2>
         <p>{task.description}</p>
         <p className="card-task-type">{task.type}</p>
-        <div>
+        <div className="task-time">
+          <div className="refresh-text">
+            {task.status === "upcoming" && !task.is_deleted ? <p>refreshes in: </p> : ""}
+            {!task.is_completed && task.status !== "upcoming" && !task.has_expired ? (
+              <p>expires in:</p>
+            ) : (
+              ""
+            )}
+            {/* {task.has_expired ? <p>expired</p> : ""} */}
+          </div>
           {task.expiration_time ? (
             <div className="time-left">
-              {task.is_deleted || task.has_expired || task.is_completed
-                ? ""
-                : timeLeft(task.expiration_time, currentTime, task.id, handleExpired)}
+              {task.is_deleted || task.has_expired || task.is_completed ? (
+                ""
+              ) : (
+                <p>{timeLeft(task.expiration_time, currentTime)}</p>
+              )}
             </div>
           ) : null}
         </div>
         <div className="task-card-buttons">
-          <button onClick={() => toggleTask(task)}>
-            {" "}
-            {task.is_completed ? (
-              <Undo size={25} strokeWidth={3} />
-            ) : (
+          {!task.is_completed && !task.has_expired && task.status !== "upcoming" && (
+            <button onClick={() => toggleTask(task)}>
               <SquareCheckBig size={25} strokeWidth={3} />
-            )}
-          </button>
-          <button onClick={() => deleteTask(task.id, task.is_deleted)}>
-            <Trash2 size={25} strokeWidth={2} />
-          </button>
-          <button>
-            <SquarePen />
-          </button>
+            </button>
+          )}{" "}
+          {/* {task.is_completed ? (
+              <Undo size={25} strokeWidth={3} />
+            ) : ( */}
+          {/* )} */}
+          {!task.is_deleted && (
+            <button onClick={() => deleteTask(task.id, task.is_deleted)}>
+              <Trash2 size={25} strokeWidth={2} />
+            </button>
+          )}
         </div>
       </li>
     );
@@ -231,19 +318,35 @@ function Task() {
       <ul className="tasks-active">
         <li className="task-section-heading">
           <button className="show-button" onClick={() => setShowActiveTasks((prev) => !prev)}>
-            Active Quests
+            Current Quests
           </button>
         </li>
         {showActiveTasks &&
           taskList
             .filter(
               (task) =>
-                task.is_active &&
                 !task.is_completed &&
                 !task.is_deleted &&
-                !task.has_awarded &&
-                !task.has_expired
+                !task.has_expired &&
+                task.status !== "upcoming"
             )
+            .sort((a, b) => a.id - b.id)
+            .map((task) => taskCard(task))}
+      </ul>
+    );
+  }
+
+  function listUpcomingTasks() {
+    return (
+      <ul className="tasks-upcoming">
+        <li className="task-section-heading">
+          <button className="show-button" onClick={() => setShowUpcomingTasks((prev) => !prev)}>
+            Upcoming Quests
+          </button>
+        </li>
+        {showUpcomingTasks &&
+          taskList
+            .filter((task) => task.status === "upcoming" && !task.is_deleted)
             .sort((a, b) => a.id - b.id)
             .map((task) => taskCard(task))}
       </ul>
@@ -260,7 +363,7 @@ function Task() {
         </li>
         {showCompletedTasks &&
           taskList
-            .filter((task) => task.has_awarded === true && !task.is_deleted)
+            .filter((task) => task.is_completed && !task.is_deleted && !task.has_expired)
             .sort((a, b) => a.id - b.id)
             .map((task) => taskCard(task))}
       </ul>
@@ -277,7 +380,7 @@ function Task() {
         </li>
         {showExpiredTasks &&
           taskList
-            .filter((task) => task.has_expired && !task.is_deleted && !task.has_awarded)
+            .filter((task) => task.has_expired && !task.is_deleted && !task.is_completed)
             .sort((a, b) => a.id - b.id)
             .map((task) => taskCard(task))}
       </ul>
@@ -302,37 +405,90 @@ function Task() {
   }
 
   function chooseTaskType() {
+    const today = dayjs(); // to calculate min and max values so user cant choose a date other than current week
+    const monday = today.startOf("week").add(1, "day");
+    const sunday = today.endOf("week").subtract(-1, "day");
+    // console.log(monday);
+
     return (
       <>
         <div className="radio-buttons">
           <label>
             <input
               type="radio"
-              value="one-time"
-              checked={newType === "one-time"}
-              onChange={(event) => setNewType(event.target.value)}
-            />
-            One-time
-          </label>
-          <label>
-            <input
-              type="radio"
               value="daily"
               checked={newType === "daily"}
-              onChange={(event) => setNewType(event.target.value)}
+              onChange={(event) => {
+                setNewType(event.target.value);
+                setExpirationTime(null);
+              }}
             />
             Daily
           </label>
           <label>
             <input
               type="radio"
+              value="one-time"
+              checked={newType === "one-time"}
+              onChange={(event) => {
+                setNewType(event.target.value);
+                setExpirationTime(null);
+              }}
+            />
+            One-time
+          </label>
+          <label>
+            <input
+              type="radio"
               value="weekly"
               checked={newType === "weekly"}
-              onChange={(event) => setNewType(event.target.value)}
+              onChange={(event) => {
+                setNewType(event.target.value);
+                setExpirationTime(null);
+              }}
             />
             Weekly
           </label>
         </div>
+        {newType === "one-time" && (
+          <div className="custom-expiration">
+            <label htmlFor="expiration-datetime">Set expiration date & time</label>
+            <input
+              id="expiration-datetime"
+              type="datetime-local"
+              value={newExpirationTime || ""}
+              onChange={(event) => setExpirationTime(event.target.value)}
+              min={new Date().toISOString().slice(0, 16)} // adds a min so user cant pick a date before today and use slice to format for html
+              required
+            />
+          </div>
+        )}
+        {newType === "weekly" && (
+          <div className="custom-expiration">
+            <label htmlFor="expiration-datetime">Set expiration day & time</label>
+            <input
+              id="expiration-datetime"
+              type="datetime-local"
+              value={newExpirationTime || ""}
+              onChange={(event) => setExpirationTime(event.target.value)}
+              min={monday.format("YYYY-MM-DDTHH:mm")}
+              max={sunday.format("YYYY-MM-DDTHH:mm")}
+              required
+            />
+          </div>
+        )}
+        {newType === "daily" && (
+          <div className="custom-expiration">
+            <label htmlFor="expiration-time">Set expiration time</label>
+            <input
+              id="expiration-time"
+              type="time"
+              value={newExpirationTime || ""}
+              onChange={(event) => setExpirationTime(event.target.value)}
+              required
+            />
+          </div>
+        )}
       </>
     );
   }
@@ -360,6 +516,7 @@ function Task() {
     return (
       <>
         {listActiveTasks()}
+        {listUpcomingTasks()}
         {listCompletedTasks()}
         {listExpiredTasks()}
         {listDeletedTasks()}
@@ -370,10 +527,15 @@ function Task() {
   const incrementQuestsCreated = async (userID) => {
     const currentQuestsCreated = userStats.quests_created;
 
-    await supabase
+    const { data, error } = await supabase
       .from("user_stats")
       .update({ quests_created: currentQuestsCreated + 1 })
       .eq("user_id", userID);
+    if (error) {
+      console.log("error incrementing quests created", error);
+    } else {
+      // console.log("quest created");
+    }
   };
 
   const incrementQuestsCompleted = async (userID) => {
@@ -386,6 +548,8 @@ function Task() {
       .select();
     if (error) {
       console.log(error);
+    } else {
+      // console.log("quest completed");
     }
   };
 
