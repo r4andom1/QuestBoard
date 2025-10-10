@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import supabase from "../../services/supabase-client";
 import "../css/Task.css";
 import { UserAuth } from "../context/Authentication";
-import { Trash2, Check, Undo, SquarePen, SquareCheckBig } from "lucide-react";
+import { Trash2, Check, Undo, SquarePen, SquareCheckBig, PenBox } from "lucide-react";
 import { awardUser, setHasAwardedToTrue } from "../utils/progression.js";
 import {
   calculateTimeLeft,
@@ -289,10 +289,11 @@ function Task() {
               <SquareCheckBig size={25} strokeWidth={3} />
             </button>
           )}{" "}
-          {/* {task.is_completed ? (
-              <Undo size={25} strokeWidth={3} />
-            ) : ( */}
-          {/* )} */}
+          {!task.has_expired && !task.is_deleted && (
+            <button onClick={() => editTask(task)}>
+              <SquarePen size={25} strokeWidth={2} />
+            </button>
+          )}
           {!task.is_deleted && (
             <button onClick={() => deleteTask(task.id, task.is_deleted)}>
               <Trash2 size={25} strokeWidth={2} />
