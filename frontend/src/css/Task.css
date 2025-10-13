@@ -287,6 +287,29 @@ p.card-task-type {
   width: 100%;
 }
 
+.modal-background {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+  /* border: solid; */
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.7);
+  top: 0;
+  left: 0;
+}
+
+.modal-window {
+  border: solid;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: grey;
+}
+
 @media (min-width: 768px) {
   .task-content {
     display: flex;

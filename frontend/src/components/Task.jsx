@@ -29,6 +29,14 @@ function Task() {
   const [showUpcomingTasks, setShowUpcomingTasks] = useState(true);
   const { fetchUserData, userStats } = useUser();
 
+  // for editing task
+  const [openEditWindow, setOpenEditWindow] = useState(false);
+  const [editingTask, setEditingTask] = useState(null);
+  const [editName, setEditName] = useState("");
+  const [editDescription, setEditDescription] = useState("");
+  const [editType, setEditType] = useState("");
+  const [editExpirationTime, setEditExpirationTime] = useState(null);
+
   const processingTasksRef = useRef(new Set());
 
   const currentUserData = UserAuth().session.user; // gets current user session, use it to get ID
@@ -305,11 +313,11 @@ function Task() {
         <div className="task-card-buttons">
           {!task.is_completed && !task.has_expired && task.status !== "upcoming" && (
             <button onClick={() => toggleTask(task)}>
-              <SquareCheckBig size={25} strokeWidth={3} />
+              <SquareCheckBig size={25} strokeWidth={2} />
             </button>
           )}{" "}
-          {!task.has_expired && !task.is_deleted && (
-            <button onClick={() => editTask(task)}>
+          {!task.has_expired && !task.is_deleted && !task.is_completed && (
+            <button onClick={() => openEditModal(task)}>
               <SquarePen size={25} strokeWidth={2} />
             </button>
           )}
@@ -513,7 +521,61 @@ function Task() {
     );
   }
 
-  function editTask() {}
+  const openEditModal = (task) => {
+    // Opens the edit window and fills in current task data
+    setEditingTask(task);
+    setEditName(task.name);
+    setEditDescription(task.description);
+    setEditType(task.type);
+    setEditExpirationTime(task.expiration_time);
+    setOpenEditWindow(true);
+  };
+
+  const closeEditModal = () => {
+    // closes window and resets edit variables
+    setOpenEditWindow(false);
+    setEditingTask(null);
+    setEditName("");
+    setEditDescription("");
+    setEditType("");
+    setEditExpirationTime(null);
+  };
+
+  const saveTaskEdits = async (event) => {
+    // Updates database, updates taskLists state and closes edit window
+    event.preventDefault();
+  };
+
+  function EditTask() {
+    const handleContentClick = (event) => {
+      event.stopPropagation();
+    };
+
+    return (
+      <div className="modal-background" onClick={closeEditModal}>
+        <div className="modal-window" onClick={handleContentClick}>
+          <h3>Edit task: {editName}</h3>
+
+          <form onSubmit={saveTaskEdits} className="edit-form">
+            <label>Name</label>
+
+            <label>Description</label>
+
+            <label>Type</label>
+
+            <label>Time</label>
+
+            <div className="modal-buttons">
+              <button type="button" onClick={closeEditModal}>
+                Cancel
+              </button>
+              <button>Save changes X</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   function createTask() {
     // Main function for creating a task
@@ -576,6 +638,7 @@ function Task() {
   return (
     <div className="task-content">
       {createTask()}
+      {openEditWindow && editingTask && <EditTask />}
       {/* <HeroSection /> */}
       <div className="all-tasks">{listAllTasks()}</div>
     </div>
