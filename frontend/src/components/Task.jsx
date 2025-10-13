@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import supabase from "../../services/supabase-client";
 import "../css/Task.css";
 import { UserAuth } from "../context/Authentication";
-import { Trash2, Check, Undo, SquarePen, SquareCheckBig, PenBox } from "lucide-react";
+import { Trash2, Check, Undo, SquarePen, SquareCheckBig, PenBox, Save, Ban } from "lucide-react";
 import { awardUser, setHasAwardedToTrue } from "../utils/progression.js";
 import {
   calculateTimeLeft,
@@ -549,10 +549,125 @@ function Task() {
   const saveTaskEdits = async (event) => {
     // Updates database, updates taskLists state and closes edit window
     event.preventDefault();
+    const taskID = editingTask.id;
+
+    if (newExpirationTime === null) {
+      alert("Please enter an expiration time");
+      return;
+    }
+
+    const editedData = {
+      name: editName,
+      description: editDescription,
+      type: editType,
+      expiration_time: editExpirationTime,
+    };
+
+    const { data, error } = await supabase
+      .from("task")
+      .update([editedData])
+      .eq("id", taskID)
+      .select();
+
+    if (error) {
+      console.log("Error saving edited task", error);
+      return;
+    }
+    await fetchTasks();
+    closeEditModal();
   };
+
+  function chooseEditedTaskType() {
+    const today = dayjs();
+    const monday = today.startOf("week").add(1, "day");
+    const sunday = today.endOf("week").subtract(-1, "day");
+
+    return (
+      <>
+        <div className="radio-buttons">
+          <label>
+            <input
+              type="radio"
+              value="daily"
+              checked={editType === "daily"}
+              onChange={(e) => {
+                setEditType(e.target.value);
+                setEditExpirationTime(null);
+              }}
+            />
+            Daily
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="one-time"
+              checked={editType === "one-time"}
+              onChange={(e) => {
+                setEditType(e.target.value);
+                setEditExpirationTime(null);
+              }}
+            />
+            One-time
+          </label>
+          <label>
+            <input
+              type="radio"
+              value="weekly"
+              checked={editType === "weekly"}
+              onChange={(e) => {
+                setEditType(e.target.value);
+                setEditExpirationTime(null);
+              }}
+            />
+            Weekly
+          </label>
+        </div>
+        {editType === "one-time" && (
+          <div className="custom-expiration">
+            <label htmlFor="expiration-datetime">Set expiration date & time</label>
+            <input
+              id="expiration-datetime"
+              type="datetime-local"
+              value={editExpirationTime || ""}
+              onChange={(e) => setEditExpirationTime(e.target.value)}
+              min={new Date().toISOString().slice(0, 16)} // adds a min so user cant pick a date before today and use slice to format for html
+              required
+            />
+          </div>
+        )}
+        {editType === "weekly" && (
+          <div className="custom-expiration">
+            <label htmlFor="expiration-datetime">Set expiration day & time</label>
+            <input
+              id="expiration-datetime"
+              type="datetime-local"
+              value={editExpirationTime || ""}
+              onChange={(e) => setEditExpirationTime(e.target.value)}
+              min={monday.format("YYYY-MM-DDTHH:mm")}
+              max={sunday.format("YYYY-MM-DDTHH:mm")}
+              required
+            />
+          </div>
+        )}
+        {editType === "daily" && (
+          <div className="custom-expiration">
+            <label htmlFor="expiration-time">Set expiration time</label>
+            <input
+              id="expiration-time"
+              type="time"
+              value={editExpirationTime || ""}
+              onChange={(e) => setEditExpirationTime(e.target.value)}
+              required
+            />
+          </div>
+        )}
+      </>
+    );
+  }
 
   function EditTask() {
     const handleContentClick = (event) => {
+      // so the user can click inside the window and not affect stuff outside
       event.stopPropagation();
     };
 
@@ -562,19 +677,30 @@ function Task() {
           <h3>Edit task: {editName}</h3>
 
           <form onSubmit={saveTaskEdits} className="edit-form">
-            <label>Name</label>
+            {/* <label>Name</label> */}
+            <input
+              type="text"
+              placeholder="Enter name..."
+              value={editName}
+              onChange={(e) => setEditName(e.target.value)}
+              required
+            />
 
-            <label>Description</label>
-
-            <label>Type</label>
-
-            <label>Time</label>
-
+            {/* <label>Description</label> */}
+            <input
+              type="text"
+              placeholder="Enter description..."
+              value={editDescription}
+              onChange={(e) => setEditDescription(e.target.value)}
+            />
+            {chooseEditedTaskType()}
             <div className="modal-buttons">
               <button type="button" onClick={closeEditModal}>
-                Cancel
+                <Ban width={15} strokeWidth={3} />
               </button>
-              <button>Save changes X</button>
+              <button>
+                <Save width={15} strokeWidth={3} /> X
+              </button>
             </div>
           </form>
         </div>

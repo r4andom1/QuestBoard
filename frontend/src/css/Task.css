@@ -296,18 +296,46 @@ p.card-task-type {
   height: 100vh;
   /* border: solid; */
   z-index: 1000;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.829);
   top: 0;
   left: 0;
 }
 
 .modal-window {
-  border: solid;
+  border: solid rgba(199, 199, 29, 0.774);
+  display: flex;
+  border-radius: 12px;
+  flex-direction: column;
+  /* justify-content: center; */
+  align-items: center;
+  background-color: rgb(34, 30, 30);
+  width: 90%;
+  height: 75%;
+}
+
+.edit-form {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  /* justify-content: center; */
+  gap: 1rem;
   align-items: center;
-  background-color: grey;
+  width: 75%;
+  height: 75%;
+}
+
+.edit-form input {
+  font-size: 1.5rem;
+}
+
+.modal-buttons {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.modal-window .custom-expiration {
+  display: flex;
+  flex-direction: column;
 }
 
 @media (min-width: 768px) {
@@ -501,5 +529,16 @@ p.card-task-type {
   .all-tasks .show-button {
     font-size: 1.3rem;
     width: 20%;
+  }
+
+  .modal-window {
+    width: 25%;
+    height: 50%;
+  }
+
+  .edit-form {
+  }
+
+  .modal-buttons {
   }
 }
