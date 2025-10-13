@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import supabase from "../../services/supabase-client";
 import "../css/Task.css";
 import { UserAuth } from "../context/Authentication";
@@ -29,6 +29,8 @@ function Task() {
   const [showUpcomingTasks, setShowUpcomingTasks] = useState(true);
   const { fetchUserData, userStats } = useUser();
 
+  const processingTasksRef = useRef(new Set());
+
   const currentUserData = UserAuth().session.user; // gets current user session, use it to get ID
   const currentUserID = currentUserData.id;
 
@@ -44,26 +46,42 @@ function Task() {
   }, []);
 
   const handleExpired = async (taskID) => {
-    const oldTask = taskList.find((t) => t.id === taskID);
-    if (!oldTask) return;
-
-    if (oldTask.status === "upcoming") {
-      const nextExpirationTime = CalculateNewTaskExpirationTime(
-        oldTask.type,
-        oldTask.expiration_time
-      );
-      await supabase
-        .from("task")
-        .update({ status: null, expiration_time: nextExpirationTime })
-        .eq("id", taskID);
-    } else {
-      await updateToExpired(taskID);
-      await setHasAwardedToTrue(taskID);
-      if (!oldTask.is_deleted && (oldTask.type === "daily" || oldTask.type === "weekly")) {
-        await recreateTask(oldTask);
-      }
+    if (processingTasksRef.current.has(taskID)) {
+      // if task is being processed, do not process it again basically
+      return;
     }
-    await fetchTasks();
+    processingTasksRef.current.add(taskID); // else add it to currently processing set
+
+    try {
+      // always remove task from processing so it doesnt get stuck if an error occurs in this func
+      const oldTask = taskList.find((t) => t.id === taskID);
+      if (!oldTask) {
+        processingTasksRef.current.delete(taskID);
+        return;
+      }
+
+      if (oldTask.status === "upcoming") {
+        const nextExpirationTime = CalculateNewTaskExpirationTime(
+          oldTask.type,
+          oldTask.expiration_time
+        );
+        await supabase
+          .from("task")
+          .update({ status: null, expiration_time: nextExpirationTime })
+          .eq("id", taskID);
+      } else {
+        await updateToExpired(taskID);
+        await setHasAwardedToTrue(taskID);
+        if (!oldTask.is_deleted && (oldTask.type === "daily" || oldTask.type === "weekly")) {
+          await recreateTask(oldTask);
+        }
+      }
+      await fetchTasks();
+    } catch (error) {
+      console.log("Error processing expired task", error);
+    } finally {
+      processingTasksRef.current.delete(taskID); // processing is complete
+    }
   };
 
   useEffect(() => {
@@ -75,7 +93,7 @@ function Task() {
         }
       }
     });
-  }, [currentTime, taskList, handleExpired]);
+  }, [currentTime]);
 
   useEffect(() => {
     fetchTasks();
@@ -180,6 +198,7 @@ function Task() {
     //   oldTask.type,
     //   oldTask.expiration_time
     // );
+
     const newTaskData = {
       name: oldTask.name,
       is_completed: false,
@@ -189,7 +208,7 @@ function Task() {
       has_awarded: false,
       status: "upcoming",
     };
-    const { data, error } = await supabase.from(`task`).insert([newTaskData]).select();
+    const { data, error } = await supabase.from("task").insert([newTaskData]).select();
     if (error) {
       console.log("Error adding new task: ", error);
     } else {
