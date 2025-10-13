@@ -46,12 +46,17 @@ function Task() {
   // console.log(userStats);
 
   useEffect(() => {
+    if (openEditWindow) {
+      // pause timer to prevent the timer to constantly refresh the dev tools in browser
+      return;
+    }
+
     const intervalID = setInterval(() => {
       setCurrentTime(new Date());
     }, 1000); // every second
 
     return () => clearInterval(intervalID); // cleanup timer to prevent memory leaking
-  }, []);
+  }, [openEditWindow]);
 
   const handleExpired = async (taskID) => {
     if (processingTasksRef.current.has(taskID)) {
@@ -101,7 +106,7 @@ function Task() {
         }
       }
     });
-  }, [currentTime]);
+  }, [currentTime, taskList, handleExpired]);
 
   useEffect(() => {
     fetchTasks();
