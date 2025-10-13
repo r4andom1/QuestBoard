@@ -42,6 +42,36 @@ function Task() {
   const currentUserData = UserAuth().session.user; // gets current user session, use it to get ID
   const currentUserID = currentUserData.id;
 
+  const createExpirationTime = (customTime, taskType) => {
+    // Calculates the correct expiration time depending on task type
+    let expirationTime = customTime;
+    let currentDay = dayjs();
+
+    // console.log(customTime);
+
+    if (taskType === "one-time" && customTime) {
+      expirationTime = dayjs(customTime).toISOString();
+      return expirationTime;
+    } else if (taskType === "daily") {
+      // set expiration time to expire the custom time and extract the HH:SS so that we can format it back to a datetime and then calculate the correct expirationTime
+      const [hours, minutes] = customTime.split(":");
+      let tomorrow = dayjs().hour(hours).minute(minutes).second(0); // for correct HH:SS format
+      if (tomorrow.isBefore(currentDay)) {
+        tomorrow = tomorrow.add(1, "day");
+      }
+      return tomorrow.toISOString();
+    } else if (taskType === "weekly") {
+      // set expiration time to expire the custom time and date, this should be formatted with toISOString
+
+      let weeklyDate = dayjs(customTime);
+      if (weeklyDate.isBefore(currentDay)) {
+        weeklyDate = weeklyDate.add(7, "day");
+      }
+      // first check the day difference, cause if customTime was yesterday it should be set up to 7 days from that day.
+      return weeklyDate.toISOString();
+    }
+  };
+
   // console.log(taskList); // test
   // console.log(userStats);
 
@@ -127,72 +157,47 @@ function Task() {
       alert("Please enter an expiration time");
       return;
     }
+
+    const calculatedExpirationTime = createExpirationTime(newExpirationTime, newType);
+
     const newTaskData = {
       name: newTaskName,
       is_completed: false,
       description: newDescription,
       type: newType,
-      expiration_time: null,
+      expiration_time: calculatedExpirationTime,
     };
-    const { data, error } = await supabase.from(`task`).insert([newTaskData]).select();
+    const { data, error } = await supabase.from("task").insert([newTaskData]).select();
 
     if (error) {
       console.log("Error adding new task: ", error);
     } else {
       setNewTaskName("");
       setNewDescription("");
+      setExpirationTime(null);
       await incrementQuestsCreated(currentUserID);
-      await setCountdown(data[0].id, newType, newExpirationTime);
+      await fetchTasks();
+      // await setCountdown(data[0].id, newType, newExpirationTime);
       // setExpirationTime(null);
     }
   };
 
-  const createExpirationTime = (customTime, taskType) => {
-    // Calculates the correct expiration time depending on task type
-    let expirationTime = customTime;
-    let currentDay = dayjs();
+  // const setCountdown = async (taskID, taskType, customExpirationTime) => {
+  //   // sets expiration time in the tasks expiration time column so we can calculate how much time is left
+  //   const expirationTime = createExpirationTime(customExpirationTime, taskType);
 
-    // console.log(customTime);
+  //   const { data, error } = await supabase
+  //     .from("task")
+  //     .update({ expiration_time: expirationTime })
+  //     .eq("id", taskID)
+  //     .select();
 
-    if (taskType === "one-time" && customTime) {
-      expirationTime = dayjs(customTime).toISOString();
-      return expirationTime;
-    } else if (taskType === "daily") {
-      // set expiration time to expire the custom time and extract the HH:SS so that we can format it back to a datetime and then calculate the correct expirationTime
-      const [hours, minutes] = customTime.split(":");
-      let tomorrow = dayjs().hour(hours).minute(minutes).second(0); // for correct HH:SS format
-      if (tomorrow.isBefore(currentDay)) {
-        tomorrow = tomorrow.add(1, "day");
-      }
-      return tomorrow.toISOString();
-    } else if (taskType === "weekly") {
-      // set expiration time to expire the custom time and date, this should be formatted with toISOString
-
-      let weeklyDate = dayjs(customTime);
-      if (weeklyDate.isBefore(currentDay)) {
-        weeklyDate = weeklyDate.add(7, "day");
-      }
-      // first check the day difference, cause if customTime was yesterday it should be set up to 7 days from that day.
-      return weeklyDate.toISOString();
-    }
-  };
-
-  const setCountdown = async (taskID, taskType, customExpirationTime) => {
-    // sets expiration time in the tasks expiration time column so we can calculate how much time is left
-    const expirationTime = createExpirationTime(customExpirationTime, taskType);
-
-    const { data, error } = await supabase
-      .from("task")
-      .update({ expiration_time: expirationTime })
-      .eq("id", taskID)
-      .select();
-
-    if (error) {
-      console.log("error updating expiration time", error);
-    } else {
-      await fetchTasks();
-    }
-  };
+  //   if (error) {
+  //     console.log("error updating expiration time", error);
+  //   } else {
+  //     await fetchTasks();
+  //   }
+  // };
 
   function CalculateNewTaskExpirationTime(taskType, oldTime) {
     // takes the old task time and refreshes it depending on type for reocurring quests
@@ -551,16 +556,17 @@ function Task() {
     event.preventDefault();
     const taskID = editingTask.id;
 
-    if (newExpirationTime === null) {
+    if (editExpirationTime === null) {
       alert("Please enter an expiration time");
       return;
     }
+    const editedExpirationTime = createExpirationTime(editExpirationTime, editType);
 
     const editedData = {
       name: editName,
       description: editDescription,
       type: editType,
-      expiration_time: editExpirationTime,
+      expiration_time: editedExpirationTime,
     };
 
     const { data, error } = await supabase
@@ -699,7 +705,7 @@ function Task() {
                 <Ban width={15} strokeWidth={3} />
               </button>
               <button>
-                <Save width={15} strokeWidth={3} /> X
+                <Save width={15} strokeWidth={3} />
               </button>
             </div>
           </form>
