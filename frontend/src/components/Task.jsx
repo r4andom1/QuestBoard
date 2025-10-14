@@ -177,27 +177,8 @@ function Task() {
       setExpirationTime(null);
       await incrementQuestsCreated(currentUserID);
       await fetchTasks();
-      // await setCountdown(data[0].id, newType, newExpirationTime);
-      // setExpirationTime(null);
     }
   };
-
-  // const setCountdown = async (taskID, taskType, customExpirationTime) => {
-  //   // sets expiration time in the tasks expiration time column so we can calculate how much time is left
-  //   const expirationTime = createExpirationTime(customExpirationTime, taskType);
-
-  //   const { data, error } = await supabase
-  //     .from("task")
-  //     .update({ expiration_time: expirationTime })
-  //     .eq("id", taskID)
-  //     .select();
-
-  //   if (error) {
-  //     console.log("error updating expiration time", error);
-  //   } else {
-  //     await fetchTasks();
-  //   }
-  // };
 
   function CalculateNewTaskExpirationTime(taskType, oldTime) {
     // takes the old task time and refreshes it depending on type for reocurring quests
