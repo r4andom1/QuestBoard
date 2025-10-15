@@ -15,6 +15,57 @@ import HeroSection from "./HeroSection.jsx";
 import { useUser } from "../context/UserContext.jsx";
 import dayjs from "dayjs";
 
+function EditTask({
+  editName,
+  setEditName,
+  editDescription,
+  setEditDescription,
+  chooseEditedTaskType,
+  saveTaskEdits,
+  closeEditModal,
+}) {
+  const handleContentClick = (event) => {
+    // so the user can click inside the window and not affect stuff outside
+    event.stopPropagation();
+  };
+
+  return (
+    <div className="modal-background" onClick={closeEditModal}>
+      <div className="modal-window" onClick={handleContentClick}>
+        <h3>Edit task: {editName}</h3>
+
+        <form onSubmit={saveTaskEdits} className="edit-form">
+          {/* <label>Name</label> */}
+          <input
+            type="text"
+            placeholder="Enter name..."
+            value={editName}
+            onChange={(e) => setEditName(e.target.value)}
+            required
+          />
+
+          {/* <label>Description</label> */}
+          <input
+            type="text"
+            placeholder="Enter description..."
+            value={editDescription}
+            onChange={(e) => setEditDescription(e.target.value)}
+          />
+          {chooseEditedTaskType()}
+          <div className="modal-buttons">
+            <button type="button" onClick={closeEditModal}>
+              <Ban width={15} strokeWidth={3} />
+            </button>
+            <button>
+              <Save width={15} strokeWidth={3} />
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 function Task() {
   const [newTaskName, setNewTaskName] = useState("");
   const [taskList, setTaskList] = useState([]);
@@ -652,49 +703,6 @@ function Task() {
     );
   }
 
-  function EditTask() {
-    const handleContentClick = (event) => {
-      // so the user can click inside the window and not affect stuff outside
-      event.stopPropagation();
-    };
-
-    return (
-      <div className="modal-background" onClick={closeEditModal}>
-        <div className="modal-window" onClick={handleContentClick}>
-          <h3>Edit task: {editName}</h3>
-
-          <form onSubmit={saveTaskEdits} className="edit-form">
-            {/* <label>Name</label> */}
-            <input
-              type="text"
-              placeholder="Enter name..."
-              value={editName}
-              onChange={(e) => setEditName(e.target.value)}
-              required
-            />
-
-            {/* <label>Description</label> */}
-            <input
-              type="text"
-              placeholder="Enter description..."
-              value={editDescription}
-              onChange={(e) => setEditDescription(e.target.value)}
-            />
-            {chooseEditedTaskType()}
-            <div className="modal-buttons">
-              <button type="button" onClick={closeEditModal}>
-                <Ban width={15} strokeWidth={3} />
-              </button>
-              <button>
-                <Save width={15} strokeWidth={3} />
-              </button>
-            </div>
-          </form>
-        </div>
-      </div>
-    );
-  }
-
   function createTask() {
     // Main function for creating a task
     return (
@@ -756,8 +764,17 @@ function Task() {
   return (
     <div className="task-content">
       {createTask()}
-      {openEditWindow && editingTask && <EditTask />}
-      {/* <HeroSection /> */}
+      {openEditWindow && editingTask && (
+        <EditTask // Ugly and temporary fix but nessecary for the way React re-renders the component
+          editName={editName}
+          setEditName={setEditName}
+          editDescription={editDescription}
+          setEditDescription={setEditDescription}
+          chooseEditedTaskType={chooseEditedTaskType}
+          saveTaskEdits={saveTaskEdits}
+          closeEditModal={closeEditModal}
+        />
+      )}
       <div className="all-tasks">{listAllTasks()}</div>
     </div>
   );
