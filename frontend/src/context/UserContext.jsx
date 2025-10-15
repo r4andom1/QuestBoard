@@ -65,8 +65,7 @@ export const UserProvider = ({ children }) => {
         updateProfilePicture,
         updateUserStats,
         fetchUserData,
-      }}
-    >
+      }}>
       {children}
     </UserContext.Provider>
   );
