@@ -323,51 +323,58 @@ function Task() {
     );
   }
 
-  // implement so that taskCard can either be viewed in edit mode or as view mode
   function taskCard(task) {
     return (
       <li
         className={`task-card${task.is_completed ? "-completed" : ""}`} // if task is completed, change look in css
         key={task.id}>
-        <h2>{task.name}</h2>
-        <p>{task.description}</p>
-        <p className="card-task-type">{task.type}</p>
-        <div className="task-time">
-          <div className="refresh-text">
-            {task.status === "upcoming" && !task.is_deleted ? <p>refreshes in: </p> : ""}
-            {!task.is_completed && task.status !== "upcoming" && !task.has_expired ? (
-              <p>expires in:</p>
-            ) : (
-              ""
-            )}
-            {/* {task.has_expired ? <p>expired</p> : ""} */}
-          </div>
-          {task.expiration_time ? (
-            <div className="time-left">
-              {task.is_deleted || task.has_expired || task.is_completed ? (
-                ""
-              ) : (
-                <p>{timeLeft(task.expiration_time, currentTime)}</p>
-              )}
-            </div>
-          ) : null}
+        <div className="name-and-type">
+          <h2 className="task-name">{task.name}</h2>
+          <p className="card-task-type">{task.type}</p>
         </div>
-        <div className="task-card-buttons">
-          {!task.is_completed && !task.has_expired && task.status !== "upcoming" && (
-            <button onClick={() => toggleTask(task)}>
-              <SquareCheckBig size={25} strokeWidth={2} />
-            </button>
-          )}{" "}
-          {!task.has_expired && !task.is_deleted && !task.is_completed && (
-            <button onClick={() => openEditModal(task)}>
-              <SquarePen size={25} strokeWidth={2} />
-            </button>
-          )}
-          {!task.is_deleted && (
-            <button onClick={() => deleteTask(task.id, task.is_deleted)}>
-              <Trash2 size={25} strokeWidth={2} />
-            </button>
-          )}
+        <p className="task-description">{task.description}</p>
+        <div className="time-and-buttons">
+          <div className="task-time">
+            <div className="refresh-text">
+              {task.status === "upcoming" && !task.is_deleted ? (
+                <p>refreshes on {dayjs(task.expiration_time).format("DD/MM")} in: </p>
+              ) : (
+                ""
+              )}
+              {!task.is_completed && task.status !== "upcoming" && !task.has_expired ? (
+                <p>expires on {dayjs(task.expiration_time).format("DD/MM")} in:</p>
+              ) : (
+                ""
+              )}
+              {/* {task.has_expired ? <p>expired</p> : ""} */}
+            </div>
+            {task.expiration_time ? (
+              <div className="time-left">
+                {task.is_deleted || task.has_expired || task.is_completed ? (
+                  ""
+                ) : (
+                  <p>{timeLeft(task.expiration_time, currentTime)}</p>
+                )}
+              </div>
+            ) : null}
+          </div>
+          <div className="task-card-buttons">
+            {!task.is_completed && !task.has_expired && task.status !== "upcoming" && (
+              <button onClick={() => toggleTask(task)}>
+                <SquareCheckBig size={25} strokeWidth={2} />
+              </button>
+            )}{" "}
+            {!task.has_expired && !task.is_deleted && !task.is_completed && (
+              <button onClick={() => openEditModal(task)}>
+                <SquarePen size={25} strokeWidth={2} />
+              </button>
+            )}
+            {!task.is_deleted && (
+              <button onClick={() => deleteTask(task.id, task.is_deleted)}>
+                <Trash2 size={25} strokeWidth={2} />
+              </button>
+            )}
+          </div>
         </div>
       </li>
     );
@@ -391,17 +398,17 @@ function Task() {
             Current Quests
           </button>
         </li>
-        {showActiveTasks &&
-          taskList
-            .filter(
-              (task) =>
-                !task.is_completed &&
-                !task.is_deleted &&
-                !task.has_expired &&
-                task.status !== "upcoming"
-            )
-            .sort((a, b) => dayjs(a.expiration_time) - dayjs(b.expiration_time))
-            .map((task) => taskCard(task))}
+        {/* {showActiveTasks && */}
+        {taskList
+          .filter(
+            (task) =>
+              !task.is_completed &&
+              !task.is_deleted &&
+              !task.has_expired &&
+              task.status !== "upcoming"
+          )
+          .sort((a, b) => dayjs(a.expiration_time) - dayjs(b.expiration_time))
+          .map((task) => taskCard(task))}
       </ul>
     );
   }
