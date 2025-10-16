@@ -1,10 +1,25 @@
-import { useState, useEffect } from "react";
-import supabase from "../../services/supabase-client";
+// import React from "react";
+// import supabase from "../../services/supabase-client";
 
-function Item() {
-  const [name, setName] = useState("");
+function Item({ item, isEquipped, onEquip }) {
+  const { id, name, path_name } = item;
 
-  return;
+  const handleClick = () => {
+    if (onEquip) {
+      onEquip(id);
+    }
+  };
+
+  return (
+    <div className={`item-container ${isEquipped ? "-equipped" : ""}`}>
+      <img
+        src={`/images/profile-pictures/${path_name}`}
+        alt={name}
+        className="profile-picture-option"
+        onClick={handleClick}
+      />
+    </div>
+  );
 }
 
 export default Item;

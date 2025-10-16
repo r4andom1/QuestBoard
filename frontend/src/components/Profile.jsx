@@ -4,29 +4,48 @@ import supabase from "../../services/supabase-client";
 import { getCurrentUserData } from "../utils/getCurrentUser.js";
 import { Coins, SquareCheckBig } from "lucide-react";
 import { useUser } from "../context/UserContext.jsx";
+import Item from "./Item.jsx";
 
 export default function HeroSection() {
-  // const [userStats, setUserStats] = useState({});
+  const [itemList, setItemList] = useState([]);
   const { currentUserID, currentUserData } = getCurrentUserData();
   // const authContext = UserAuth();
-  const { userStats, updateUserStats, profilePicture, updateProfilePicture } = useUser();
+  const {
+    userStats,
+    updateUserStats,
+    profilePicture,
+    updateProfilePicture,
+    userStatsID,
+    fetchUserData,
+  } = useUser();
+
+  // console.log(userStats.id);
+
+  // useEffect(() => {
+  //   if (currentUserID) {
+  //     fetchUserData();
+  //   }
+  // }, [currentUserID]);
 
   useEffect(() => {
-    fetchUserData();
-  }, []);
-
-  const fetchUserData = async () => {
-    const { data, error } = await supabase
-      .from("user_stats")
-      .select("*")
-      .eq("user_id", currentUserID)
-      .single();
-    if (error) {
-      console.log("Error fetching user", error);
-    } else {
-      updateUserStats(data);
+    if (userStats.id) {
+      fetchUserItems();
     }
-  };
+  }, [userStats.id]);
+
+  async function fetchUserItems() {
+    const { data, error } = await supabase
+      .from("user_inventory")
+      .select(`item (id, name, path_name, price)`)
+      .eq("profile_id", userStats.id);
+
+    if (error) {
+      console.log("Error fetching users owned items", error);
+    } else {
+      // console.log(data);
+      setItemList(data);
+    }
+  }
 
   const customizeCharacter = () => {
     return (
@@ -34,8 +53,27 @@ export default function HeroSection() {
         <h2>Customize your character!</h2>
         <h3>Choose a profile picture:</h3>
         <div className="character-pictures">
-          <div className="guy-pictures">
-            <img
+          {itemList.map((item) => {
+            const itemData = item.item;
+            const isEquipped = profilePicture === itemData.name;
+
+            return (
+              <Item
+                key={itemData.id}
+                item={itemData}
+                isEquipped={isEquipped}
+                onEquip={() => updateProfilePicture(itemData.name)}
+              />
+            );
+            // <img
+            //   key={item.id}
+            //   src={`/images/profile-pictures/${item.name}.png`}
+            //   alt={item.name}
+            //   className="profile-picture-option"
+            //   onClick={() => handleProfilePicture(item.name)}
+            // />;
+          })}
+          {/* <img
               src="/images/profile-pictures/adventurer-guy-1.png"
               alt="Adventurer-guy-1"
               className="profile-picture-option"
@@ -72,8 +110,7 @@ export default function HeroSection() {
               alt="Adventurer-guy-1"
               className="profile-picture-option"
               onClick={() => updateProfilePicture("adventurer-girl-3")}
-            />
-          </div>
+            /> */}
         </div>
       </div>
     );
