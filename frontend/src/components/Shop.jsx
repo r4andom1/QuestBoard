@@ -26,7 +26,7 @@ function Shop() {
     }
   };
 
-  const subtractCoinsFromUser = () => {
+  const subtractCoinsFromUser = (user, itemPrice) => {
     // subtracts users coins from the database.
     // checks their current coins first so coins never reach negative values
   };
@@ -38,7 +38,7 @@ function Shop() {
         <div className="items">
           <div className="guy-avatars">
             <div className="item-and-price">
-              <img
+              {/* <img
                 src="/images/profile-pictures/adventurer-guy-1.png"
                 alt="Adventurer-guy-1"
                 className="profile-picture-option"
@@ -46,7 +46,7 @@ function Shop() {
               />
               <div className="item-price">
                 10 <Coins size={15} />
-              </div>
+              </div> */}
             </div>
             <div className="item-and-price">
               <img
@@ -73,7 +73,7 @@ function Shop() {
           </div>
           <div className="girl-avatars">
             <div className="item-and-price">
-              <img
+              {/* <img
                 src="/images/profile-pictures/adventurer-girl-1.png"
                 alt="Adventurer-girl-1"
                 className="profile-picture-option"
@@ -81,7 +81,7 @@ function Shop() {
               />
               <div className="item-price">
                 10 <Coins size={15} />
-              </div>
+              </div> */}
             </div>
             <div className="item-and-price">
               <img
@@ -128,13 +128,7 @@ function Shop() {
   };
 
   function displayShopKeeper() {
-    return (
-      <img
-        src="/images/shop/shopkeeper.png"
-        alt="shopkeeper"
-        className="shop-keeper"
-      />
-    );
+    return <img src="/images/shop/shopkeeper.png" alt="shopkeeper" className="shop-keeper" />;
   }
 
   return (

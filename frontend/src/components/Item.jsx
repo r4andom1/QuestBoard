@@ -11,13 +11,14 @@ function Item({ item, isEquipped, onEquip }) {
   };
 
   return (
-    <div className={`item-container ${isEquipped ? "-equipped" : ""}`}>
+    <div className={`item-container${isEquipped ? "-equipped" : ""}`}>
       <img
         src={`/images/profile-pictures/${path_name}`}
         alt={name}
         className="profile-picture-option"
         onClick={handleClick}
       />
+      {isEquipped ? <p>Equipped</p> : ""}
     </div>
   );
 }

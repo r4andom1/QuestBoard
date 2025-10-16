@@ -65,52 +65,7 @@ export default function HeroSection() {
                 onEquip={() => updateProfilePicture(itemData.name)}
               />
             );
-            // <img
-            //   key={item.id}
-            //   src={`/images/profile-pictures/${item.name}.png`}
-            //   alt={item.name}
-            //   className="profile-picture-option"
-            //   onClick={() => handleProfilePicture(item.name)}
-            // />;
           })}
-          {/* <img
-              src="/images/profile-pictures/adventurer-guy-1.png"
-              alt="Adventurer-guy-1"
-              className="profile-picture-option"
-              onClick={() => updateProfilePicture("adventurer-guy-1")}
-            />
-            <img
-              src="/images/profile-pictures/adventurer-guy-2.png"
-              alt="Adventurer-guy-1"
-              className="profile-picture-option"
-              onClick={() => updateProfilePicture("adventurer-guy-2")}
-            />
-            <img
-              src="/images/profile-pictures/adventurer-guy-3.png"
-              alt="Adventurer-guy-1"
-              className="profile-picture-option"
-              onClick={() => updateProfilePicture("adventurer-guy-3")}
-            />
-          </div>
-          <div className="girl_pictures">
-            <img
-              src="/images/profile-pictures/adventurer-girl-1.png"
-              alt="Adventurer-girl-1"
-              className="profile-picture-option"
-              onClick={() => updateProfilePicture("adventurer-girl-1")}
-            />
-            <img
-              src="/images/profile-pictures/adventurer-girl-2.png"
-              alt="Adventurer-guy-1"
-              className="profile-picture-option"
-              onClick={() => updateProfilePicture("adventurer-girl-2")}
-            />
-            <img
-              src="/images/profile-pictures/adventurer-girl-3.png"
-              alt="Adventurer-guy-1"
-              className="profile-picture-option"
-              onClick={() => updateProfilePicture("adventurer-girl-3")}
-            /> */}
         </div>
       </div>
     );
