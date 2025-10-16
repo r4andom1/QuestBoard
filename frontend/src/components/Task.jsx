@@ -400,7 +400,7 @@ function Task() {
                 !task.has_expired &&
                 task.status !== "upcoming"
             )
-            .sort((a, b) => a.id - b.id)
+            .sort((a, b) => dayjs(a.expiration_time) - dayjs(b.expiration_time))
             .map((task) => taskCard(task))}
       </ul>
     );
@@ -417,7 +417,7 @@ function Task() {
         {showUpcomingTasks &&
           taskList
             .filter((task) => task.status === "upcoming" && !task.is_deleted)
-            .sort((a, b) => a.id - b.id)
+            .sort((a, b) => dayjs(a.expiration_time) - dayjs(b.expiration_time))
             .map((task) => taskCard(task))}
       </ul>
     );

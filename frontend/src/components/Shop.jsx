@@ -73,7 +73,6 @@ function Shop() {
     const currentCoins = userStats.coins;
     if (currentCoins < item.price) {
       // checks their current coins first so coins never reach negative values
-      alert("Not enough money to buy item!");
       return;
     }
 
