@@ -53,19 +53,21 @@ export default function HeroSection() {
         <h2>Customize your character!</h2>
         <h3>Choose a profile picture:</h3>
         <div className="character-pictures">
-          {itemList.map((item) => {
-            const itemData = item.item;
-            const isEquipped = profilePicture === itemData.name;
+          {itemList
+            .sort((a, b) => a.item.price - b.item.price)
+            .map((item) => {
+              const itemData = item.item;
+              const isEquipped = profilePicture === itemData.name;
 
-            return (
-              <Item
-                key={itemData.id}
-                item={itemData}
-                isEquipped={isEquipped}
-                onEquip={() => updateProfilePicture(itemData.name)}
-              />
-            );
-          })}
+              return (
+                <Item
+                  key={itemData.id}
+                  item={itemData}
+                  isEquipped={isEquipped}
+                  onEquip={() => updateProfilePicture(itemData.name)}
+                />
+              );
+            })}
         </div>
       </div>
     );

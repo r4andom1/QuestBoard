@@ -31,8 +31,7 @@
   gap: 2rem;
 }
 
-.guy-avatars,
-.girl-avatars {
+.avatar {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -41,6 +40,33 @@
 
 .user-details {
   font-size: x-large;
+}
+
+.item-and-price {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.item-price {
+  position: absolute;
+  font-weight: bold;
+}
+
+.item-owned {
+  position: absolute;
+  font-weight: bold;
+}
+
+.profile-picture-option-owned {
+  width: 125px;
+  height: 125px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.avatar-owned {
+  opacity: 0.5;
 }
 
 @media (min-width: 768px) {
@@ -59,15 +85,19 @@
 
   .items {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
 
     width: 75%;
   }
 
-  .guy-avatars,
-  .girl-avatars {
+  .avatar {
     display: flex;
     flex-direction: row;
     justify-content: center;
+  }
+
+  .profile-picture-option-owned {
+    width: 175px;
+    height: 175px;
   }
 }
