@@ -20,7 +20,7 @@ export const UserProvider = ({ children }) => {
       .from("user_stats")
       .select("*")
       .eq("user_id", currentUserID)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.log("Error fetching user data", error);
