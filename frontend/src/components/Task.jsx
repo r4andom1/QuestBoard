@@ -166,11 +166,14 @@ function Task() {
       } else {
         await updateToExpired(taskID);
         await setHasAwardedToTrue(taskID);
+        // Here we should reset the quest streak depending on type
+
         if (!oldTask.is_deleted && (oldTask.type === "daily" || oldTask.type === "weekly")) {
           await recreateTask(oldTask);
         }
       }
       await fetchTasks();
+      // Also should fetchUserData since the streaks are tied to user??
     } catch (error) {
       console.log("Error processing expired task", error);
     } finally {
