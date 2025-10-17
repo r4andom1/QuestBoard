@@ -9,7 +9,7 @@ export default function HeroSection() {
   const { userStats, profilePicture } = useUser();
 
   if (!userStats) {
-    return;
+    return <div>Welcome user! Your questing journey starts now</div>;
   }
 
   function userDetails(user) {

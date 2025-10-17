@@ -7,14 +7,18 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [userStats, setUserStats] = useState(null); // will refresh affected components
   const [profilePicture, setProfilePicture] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const { currentUserID } = getCurrentUserData();
 
   const fetchUserData = async () => {
     // gotta check if userID has been fetched so it doesnt crash
     if (!currentUserID) {
+      setUserStats(null);
+      setIsLoading(false);
       return;
     }
+    setIsLoading(true);
 
     const { data, error } = await supabase
       .from("user_stats")
@@ -24,6 +28,7 @@ export const UserProvider = ({ children }) => {
 
     if (error) {
       console.log("Error fetching user data", error);
+      setIsLoading(false);
     } else {
       setUserStats(data); // triggers the refresh when calling function manually
       return data;
@@ -55,7 +60,12 @@ export const UserProvider = ({ children }) => {
     if (currentUserID) {
       fetchUserData();
     }
+    setIsLoading(false);
   }, [currentUserID]);
+
+  if (isLoading) {
+    return <div>Loading user data...</div>;
+  }
 
   return (
     <UserContext.Provider
