@@ -27,16 +27,54 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding-bottom: 2rem;
+  /* padding-bottom: 2rem; */
+}
+
+.user-container {
+  display: flex;
+  flex-direction: column;
 }
 
 .user-stats-container {
   justify-content: center;
-  margin: 0 auto;
+  margin: 0 0 auto;
   align-items: flex-start;
   gap: 2rem;
   /* border-right: 2px solid; */
   text-align: left;
+}
+
+.total-quests {
+  text-align: center;
+  font-size: larger;
+}
+
+.info-pic-achivements {
+  display: flex;
+  flex-direction: column;
+}
+
+.streaks-and-badges {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  font-size: small;
+}
+
+.streaks {
+  display: flex;
+  flex-direction: column;
+}
+
+.streaks-type {
+  display: flex;
+  flex-direction: row;
+}
+
+.badges-dashboard {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
 }
 
 @media (max-width: 768px) {
@@ -51,5 +89,10 @@
 
   .info-and-picture-container {
     padding-bottom: 1rem;
+  }
+
+  .streaks-and-badges {
+    display: flex;
+    /* flex-direction: column; */
   }
 }

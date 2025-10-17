@@ -16,6 +16,7 @@ export const UserProvider = ({ children }) => {
     if (!currentUserID) {
       setUserStats(null);
       setIsLoading(false);
+      console.log("Current userID not found?");
       return;
     }
     setIsLoading(true);
@@ -28,11 +29,22 @@ export const UserProvider = ({ children }) => {
 
     if (error) {
       console.log("Error fetching user data", error);
+      setUserStats(null);
       setIsLoading(false);
-    } else {
-      setUserStats(data); // triggers the refresh when calling function manually
-      return data;
+      return;
     }
+
+    if (!data || !data.id) {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      console.log("Users data was too late before accessed");
+      return fetchUserData();
+    }
+
+    // console.log("Users data was found correctly and set up UserStats ");
+    // console.log(currentUserID);
+    setUserStats(data);
+    setIsLoading(false);
+    return data;
   };
 
   const updateProfilePicture = async (picture) => {
@@ -59,13 +71,10 @@ export const UserProvider = ({ children }) => {
     // only fetch when we have userID
     if (currentUserID) {
       fetchUserData();
+    } else {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   }, [currentUserID]);
-
-  if (isLoading) {
-    return <div>Loading user data...</div>;
-  }
 
   return (
     <UserContext.Provider
