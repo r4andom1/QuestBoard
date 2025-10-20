@@ -56,14 +56,30 @@ export default function HeroSection() {
               </div>
             </div>
             <div className="badges-dashboard">
-              <p>
-                <Trophy size={20} />
-                Quest Completer
-              </p>
-              <p>
-                <Trophy size={20} />
-                Type Completer
-              </p>
+              {user.total_quests_badge && (
+                <p>
+                  <Trophy size={20} />
+                  Quest Completer
+                </p>
+              )}
+              {user.one_time_quests_badge && (
+                <p>
+                  <Trophy size={20} />
+                  One-time Completer
+                </p>
+              )}
+              {user.daily_quests_badge && (
+                <p>
+                  <Trophy size={20} />
+                  Daily Completer
+                </p>
+              )}
+              {user.weekly_quests_badge && (
+                <p>
+                  <Trophy size={20} />
+                  Weekly Completer
+                </p>
+              )}
             </div>
           </div>
         </div>

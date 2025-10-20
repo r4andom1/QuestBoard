@@ -12,7 +12,8 @@ async function incrementQuestStreak(user, type) {
     console.log("Error updating quest streak for quest type: ", type, "With error: ", error);
   }
 
-  checkAndAwardBadge(user, type);
+  const updatedUser = { ...user, ...streakToIncrement }; // to solve stale data issue
+  checkAndAwardBadge(updatedUser, type);
 }
 
 function checkTypeForStreak(user, type) {
@@ -43,11 +44,98 @@ function checkTypeForStreak(user, type) {
   return streakToIncrement;
 }
 
-async function checkAndAwardBadge(user, type) {
-  //
+function eligibleForBadge(user) {
+  const totalQuestsReq = 10;
+  const oneTimeReq = 5;
+  const dailyReq = 5;
+  const weeklyReq = 3;
+
+  let isEligible = false;
+
+  if (user.total_quest_streak >= totalQuestsReq) {
+    isEligible = true;
+  } else if (user.one_time_quest_streak >= oneTimeReq) {
+    isEligible = true;
+  } else if (user.daily_quest_streak >= dailyReq) {
+    isEligible = true;
+  } else if (user.weekly_quest_streak >= weeklyReq) {
+    isEligible = true;
+  }
+  return isEligible;
 }
 
-function findBadgeToAward(type) {}
+async function checkAndAwardBadge(user, type) {
+  //
+
+  if (!eligibleForBadge(user)) {
+    console.log("Need higher streak to award badge");
+    return;
+  }
+
+  if (checkBadgeAlreadyAwarded(user, type)) {
+    console.log("Badge already awarded for type: ", type);
+  } else {
+    const typeBadge = findBadgeToAward(type);
+    const { data, error } = await supabase.from("user_stats").update(typeBadge).eq("id", user.id);
+    if (error) {
+      console.log(
+        "error setting the correct badge to true based on type: ",
+        type,
+        " With error: ",
+        error
+      );
+    }
+  }
+
+  if (user.total_quest_streak >= 10 && !user.total_quests_badge) {
+    const { error } = await supabase
+      .from("user_stats")
+      .update({ total_quests_badge: true })
+      .eq("id", user.id);
+    if (error) {
+      console.log("Error awarding total_quests_badge", error);
+    } else {
+      // console.log("Total quests badge already awarded");
+    }
+  }
+}
+
+function checkBadgeAlreadyAwarded(user, type) {
+  //
+  // console.log(user.one_time_quests_badge);
+  // console.log(user.daily_quests_badge);
+  // console.log(user.weekly_quests_badge);
+  // console.log(type);
+
+  let badgeAlreadyAwarded = false;
+  if (type === "one-time" && user.one_time_quests_badge === true) {
+    badgeAlreadyAwarded = true;
+  } else if (type === "daily" && user.daily_quests_badge === true) {
+    badgeAlreadyAwarded = true;
+  } else if (type === "weekly" && user.weekly_quests_badge === true) {
+    badgeAlreadyAwarded = true;
+  } else if (user.total_quests_badge === true) {
+    badgeAlreadyAwarded = true;
+  }
+
+  return badgeAlreadyAwarded;
+}
+
+function findBadgeToAward(type) {
+  // Check that the badge isnt awarded yet first, then find the correct badge
+  let badgeToAward;
+
+  if (type === "one-time") {
+    badgeToAward = { one_time_quests_badge: true };
+  } else if (type === "daily") {
+    badgeToAward = { daily_quests_badge: true };
+  } else if (type === "weekly") {
+    badgeToAward = { weekly_quests_badge: true };
+  } else {
+    badgeToAward = { total_quests_badge: true };
+  }
+  return badgeToAward;
+}
 
 function findStreakTypeToReset(type) {
   let streakType;
