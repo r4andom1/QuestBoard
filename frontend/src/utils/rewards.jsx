@@ -1,7 +1,5 @@
 // Functions for calculating and setting up streaks and badges, reset logic etc
 import supabase from "../../services/supabase-client.js";
-// import { useUser } from "../context/UserContext.jsx";
-// const { fetchUserData, userStats } = useUser();
 
 async function incrementQuestStreak(user, type) {
   //
@@ -13,6 +11,8 @@ async function incrementQuestStreak(user, type) {
   if (error) {
     console.log("Error updating quest streak for quest type: ", type, "With error: ", error);
   }
+
+  checkAndAwardBadge(user, type);
 }
 
 function checkTypeForStreak(user, type) {
@@ -43,12 +43,37 @@ function checkTypeForStreak(user, type) {
   return streakToIncrement;
 }
 
-async function checkAndAwardBadge(userID, type, streakValue) {
+async function checkAndAwardBadge(user, type) {
   //
 }
 
-async function resetQuestStreak(userID, type) {
+function findBadgeToAward(type) {}
+
+function findStreakTypeToReset(type) {
+  let streakType;
+  if (type === "one-time") {
+    streakType = { one_time_quest_streak: 0, total_quest_streak: 0 };
+  } else if (type === "daily") {
+    streakType = { daily_quest_streak: 0, total_quest_streak: 0 };
+  } else {
+    streakType = { weekly_quest_streak: 0, total_quest_streak: 0 };
+  }
+  return streakType;
+}
+
+async function resetQuestStreak(user, type) {
   //
+  // console.log("Timer ran out, resetting streak");
+  // console.log("type: ", type, "userStats.id", user.id);
+  const streakTypeToReset = findStreakTypeToReset(type);
+  const { data, error } = await supabase
+    .from("user_stats")
+    .update(streakTypeToReset)
+    .eq("id", user.id);
+
+  if (error) {
+    console.log("Error resetting streak to 0", error);
+  }
 }
 
 export { incrementQuestStreak, checkAndAwardBadge, resetQuestStreak };

@@ -14,7 +14,7 @@ import {
 import HeroSection from "./HeroSection.jsx";
 import { useUser } from "../context/UserContext.jsx";
 import dayjs from "dayjs";
-import { incrementQuestStreak } from "../utils/rewards.jsx";
+import { incrementQuestStreak, resetQuestStreak } from "../utils/rewards.jsx";
 
 function EditTask({
   editName,
@@ -140,7 +140,7 @@ function Task() {
     return () => clearInterval(intervalID); // cleanup timer to prevent memory leaking
   }, [openEditWindow]);
 
-  const handleExpired = async (taskID) => {
+  const handleExpired = async (taskID, user, taskType) => {
     if (processingTasksRef.current.has(taskID)) {
       // if task is being processed, do not process it again basically
       return;
@@ -167,6 +167,7 @@ function Task() {
       } else {
         await updateToExpired(taskID);
         await setHasAwardedToTrue(taskID);
+        await resetQuestStreak(user, taskType);
         // Here we should reset the quest streak depending on type
 
         if (!oldTask.is_deleted && (oldTask.type === "daily" || oldTask.type === "weekly")) {
@@ -174,6 +175,7 @@ function Task() {
         }
       }
       await fetchTasks();
+      await fetchUserData();
       // Also should fetchUserData since the streaks are tied to user??
     } catch (error) {
       console.log("Error processing expired task", error);
@@ -187,7 +189,7 @@ function Task() {
       if (task.expiration_time && !task.is_completed && !task.has_expired && !task.is_deleted) {
         const secondsRemaining = calculateTimeLeft(task.expiration_time, currentTime);
         if (secondsRemaining <= 0) {
-          handleExpired(task.id);
+          handleExpired(task.id, userStats, task.type);
         }
       }
     });
