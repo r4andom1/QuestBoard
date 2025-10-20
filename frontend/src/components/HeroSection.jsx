@@ -43,15 +43,15 @@ export default function HeroSection() {
               <div className="streaks-type">
                 <p>
                   <Flame size={20} />
-                  One-times: 0
+                  One-times: {user.one_time_quest_streak}
                 </p>
                 <p>
                   <Flame size={20} />
-                  Dailies: 0
+                  Dailies: {user.daily_quest_streak}
                 </p>
                 <p>
                   <Flame size={20} />
-                  Weeklies: 0
+                  Weeklies: {user.weekly_quest_streak}
                 </p>
               </div>
             </div>

@@ -14,6 +14,7 @@ import {
 import HeroSection from "./HeroSection.jsx";
 import { useUser } from "../context/UserContext.jsx";
 import dayjs from "dayjs";
+import { incrementQuestStreak } from "../utils/rewards.jsx";
 
 function EditTask({
   editName,
@@ -283,6 +284,7 @@ function Task() {
       await Promise.all([
         awardUser(currentUserID, task),
         !task.has_expired ? incrementQuestsCompleted(currentUserID) : "",
+        incrementQuestStreak(userStats, type),
       ]);
       if (type === "daily" || type === "weekly") {
         await recreateTask(task);
