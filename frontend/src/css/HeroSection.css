@@ -69,12 +69,15 @@
 .streaks-type {
   display: flex;
   flex-direction: row;
+  justify-content: center;
 }
 
 .badges-dashboard {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 30rem;
 }
 
 @media (max-width: 768px) {
@@ -94,5 +97,14 @@
   .streaks-and-badges {
     display: flex;
     /* flex-direction: column; */
+  }
+
+  .streaks-type {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .badges-dashboard {
+    max-width: 20rem;
   }
 }
