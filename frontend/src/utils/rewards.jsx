@@ -7,9 +7,17 @@ async function incrementQuestStreak(user, type) {
   // console.log(streakToIncrement);
   // console.log("userID: ", user.id);
 
-  const { error } = await supabase.from("user_stats").update(streakToIncrement).eq("id", user.id);
+  const { error } = await supabase
+    .from("user_stats")
+    .update(streakToIncrement)
+    .eq("id", user.id);
   if (error) {
-    console.log("Error updating quest streak for quest type: ", type, "With error: ", error);
+    console.log(
+      "Error updating quest streak for quest type: ",
+      type,
+      "With error: ",
+      error
+    );
   }
 
   const updatedUser = { ...user, ...streakToIncrement }; // to solve stale data issue
@@ -68,15 +76,18 @@ async function checkAndAwardBadge(user, type) {
   //
 
   if (!eligibleForBadge(user)) {
-    console.log("Need higher streak to award badge");
+    // console.log("Need higher streak to award badge");
     return;
   }
 
   if (checkBadgeAlreadyAwarded(user, type)) {
-    console.log("Badge already awarded for type: ", type);
+    // console.log("Badge already awarded for type: ", type);
   } else {
     const typeBadge = findBadgeToAward(type);
-    const { data, error } = await supabase.from("user_stats").update(typeBadge).eq("id", user.id);
+    const { data, error } = await supabase
+      .from("user_stats")
+      .update(typeBadge)
+      .eq("id", user.id);
     if (error) {
       console.log(
         "error setting the correct badge to true based on type: ",

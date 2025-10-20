@@ -82,6 +82,16 @@
   font-weight: bold;
 }
 
+.badges {
+  display: flex;
+  flex-direction: column;
+}
+
+.quest-data {
+  display: flex;
+  flex-direction: column;
+}
+
 @media (min-width: 768px) {
   .user-container {
     margin-top: 4rem;

@@ -2,7 +2,7 @@ import "../css/Profile.css";
 import { useState, useEffect } from "react";
 import supabase from "../../services/supabase-client";
 import { getCurrentUserData } from "../utils/getCurrentUser.js";
-import { Coins, SquareCheckBig } from "lucide-react";
+import { Coins, SquareCheckBig, Trophy, Flame } from "lucide-react";
 import { useUser } from "../context/UserContext.jsx";
 import Item from "./Item.jsx";
 
@@ -97,9 +97,22 @@ export default function HeroSection() {
         <div className="progression-container">
           <div className="streaks">
             <h2>Streaks</h2>
-            <p>Current Login Streak:</p>
-            <p>Longest Login Streak: </p>
-            <p>Quests completed for X nr of days</p>
+            <p>
+              <Flame size={20} />
+              Total Quest Streak: {user.total_quest_streak}
+            </p>
+            <p>
+              <Flame size={20} />
+              One-time Quest Streak: {user.one_time_quest_streak}
+            </p>
+            <p>
+              <Flame size={20} />
+              Daily Quest Streak: {user.daily_quest_streak}
+            </p>
+            <p>
+              <Flame size={20} />
+              Weekly Quest Streak: {user.weekly_quest_streak}
+            </p>
           </div>
           <div className="quest-data">
             <h2>Quests</h2>
@@ -108,9 +121,30 @@ export default function HeroSection() {
           </div>
           <div className="badges">
             <h2>Badges</h2>
-            <p>7-day Streak Badge</p>
-            <p>Completing 10 Quests</p>
-            <p>Finish a weekly Quest</p>
+            {user.total_quests_badge && (
+              <p>
+                <Trophy size={20} />
+                Quest Completer
+              </p>
+            )}
+            {user.one_time_quests_badge && (
+              <p>
+                <Trophy size={20} />
+                One-time Completer
+              </p>
+            )}
+            {user.daily_quests_badge && (
+              <p>
+                <Trophy size={20} />
+                Daily Completer
+              </p>
+            )}
+            {user.weekly_quests_badge && (
+              <p>
+                <Trophy size={20} />
+                Weekly Completer
+              </p>
+            )}
           </div>
         </div>
         {customizeCharacter()}

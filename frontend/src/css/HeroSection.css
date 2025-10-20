@@ -27,6 +27,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: center;
   /* padding-bottom: 2rem; */
 }
 
@@ -70,6 +71,11 @@
   display: flex;
   flex-direction: row;
   justify-content: center;
+  /* max-width: 400px; */
+}
+
+.streaks-type p {
+  margin: 10px;
 }
 
 .badges-dashboard {
@@ -78,6 +84,10 @@
   flex-wrap: wrap;
   justify-content: center;
   max-width: 30rem;
+}
+
+.badges-dashboard p {
+  margin: 20px;
 }
 
 @media (max-width: 768px) {
@@ -106,5 +116,9 @@
 
   .badges-dashboard {
     max-width: 20rem;
+  }
+
+  .badges-dashboard p {
+    margin: 10px;
   }
 }
