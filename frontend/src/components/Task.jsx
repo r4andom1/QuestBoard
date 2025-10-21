@@ -176,7 +176,6 @@ function Task() {
       }
       await fetchTasks();
       await fetchUserData();
-      // Also should fetchUserData since the streaks are tied to user??
     } catch (error) {
       console.log("Error processing expired task", error);
     } finally {

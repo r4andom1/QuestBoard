@@ -90,6 +90,10 @@
   margin: 20px;
 }
 
+.horizontal-rule {
+  width: 80%;
+}
+
 @media (max-width: 768px) {
   .hero-container {
     width: 92%;
