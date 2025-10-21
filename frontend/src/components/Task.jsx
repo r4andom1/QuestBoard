@@ -332,7 +332,9 @@ function Task() {
   function taskCard(task) {
     return (
       <li
-        className={`task-card${task.is_completed ? "-completed" : ""}`} // if task is completed, change look in css
+        className={`task-card${
+          task.is_completed || task.is_deleted || task.has_expired ? "-completed" : ""
+        }`} // if task is completed, change look in css
         key={task.id}>
         <div className="name-and-type">
           <h2 className="task-name">{task.name}</h2>
@@ -347,7 +349,10 @@ function Task() {
               ) : (
                 ""
               )}
-              {!task.is_completed && task.status !== "upcoming" && !task.has_expired ? (
+              {!task.is_completed &&
+              task.status !== "upcoming" &&
+              !task.is_deleted &&
+              !task.has_expired ? (
                 <p>expires on {dayjs(task.expiration_time).format("DD/MM")} in:</p>
               ) : (
                 ""
@@ -365,11 +370,14 @@ function Task() {
             ) : null}
           </div>
           <div className="task-card-buttons">
-            {!task.is_completed && !task.has_expired && task.status !== "upcoming" && (
-              <button onClick={() => toggleTask(task)}>
-                <SquareCheckBig size={25} strokeWidth={2} />
-              </button>
-            )}{" "}
+            {!task.is_completed &&
+              !task.has_expired &&
+              !task.is_deleted &&
+              task.status !== "upcoming" && (
+                <button onClick={() => toggleTask(task)}>
+                  <SquareCheckBig size={25} strokeWidth={2} />
+                </button>
+              )}{" "}
             {!task.has_expired && !task.is_deleted && !task.is_completed && (
               <button onClick={() => openEditModal(task)}>
                 <SquarePen size={25} strokeWidth={2} />

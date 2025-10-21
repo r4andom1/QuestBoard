@@ -121,6 +121,12 @@ export default function HeroSection() {
           </div>
           <div className="badges">
             <h2>Badges</h2>
+            {user.total_quests_badge ||
+            user.daily_quests_badge ||
+            user.one_time_quests_badge ||
+            user.weekly_quests_badge
+              ? ""
+              : "No badges earned yet!"}
             {user.total_quests_badge && (
               <p>
                 <Trophy size={20} />

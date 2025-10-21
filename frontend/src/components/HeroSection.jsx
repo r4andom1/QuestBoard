@@ -56,7 +56,10 @@ export default function HeroSection() {
               </div>
             </div>
             <div>
-              <hr className="horizontal-rule"></hr>
+              {user.total_quests_badge ||
+                user.daily_quests_badge ||
+                user.one_time_quests_badge ||
+                (user.weekly_quests_badge && <hr className="horizontal-rule"></hr>)}
             </div>
             <div className="badges-dashboard">
               {user.total_quests_badge && (
