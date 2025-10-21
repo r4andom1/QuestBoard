@@ -59,7 +59,7 @@
 .character-pictures {
   display: flex;
   gap: 1rem;
-  flex-direction: column;
+  flex-direction: row;
 }
 
 .profile-picture-option {
@@ -69,6 +69,27 @@
   border-radius: 50%;
   gap: 1rem;
   cursor: pointer;
+}
+
+.item-container-equipped {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.item-container-equipped p {
+  position: absolute;
+  font-weight: bold;
+}
+
+.badges {
+  display: flex;
+  flex-direction: column;
+}
+
+.quest-data {
+  display: flex;
+  flex-direction: column;
 }
 
 @media (min-width: 768px) {

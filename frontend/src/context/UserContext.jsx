@@ -7,27 +7,44 @@ const UserContext = createContext();
 export const UserProvider = ({ children }) => {
   const [userStats, setUserStats] = useState(null); // will refresh affected components
   const [profilePicture, setProfilePicture] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
   const { currentUserID } = getCurrentUserData();
 
   const fetchUserData = async () => {
     // gotta check if userID has been fetched so it doesnt crash
     if (!currentUserID) {
+      setUserStats(null);
+      setIsLoading(false);
+      console.log("Current userID not found?");
       return;
     }
+    setIsLoading(true);
 
     const { data, error } = await supabase
       .from("user_stats")
       .select("*")
       .eq("user_id", currentUserID)
-      .single();
+      .maybeSingle();
 
     if (error) {
       console.log("Error fetching user data", error);
-    } else {
-      setUserStats(data); // triggers the refresh when calling function manually
-      return data;
+      setUserStats(null);
+      setIsLoading(false);
+      return;
     }
+
+    if (!data || !data.id) {
+      await new Promise((resolve) => setTimeout(resolve, 150));
+      console.log("Users data was too late before accessed");
+      return fetchUserData();
+    }
+
+    // console.log("Users data was found correctly and set up UserStats ");
+    // console.log(currentUserID);
+    setUserStats(data);
+    setIsLoading(false);
+    return data;
   };
 
   const updateProfilePicture = async (picture) => {
@@ -54,6 +71,8 @@ export const UserProvider = ({ children }) => {
     // only fetch when we have userID
     if (currentUserID) {
       fetchUserData();
+    } else {
+      setIsLoading(false);
     }
   }, [currentUserID]);
 
@@ -65,8 +84,7 @@ export const UserProvider = ({ children }) => {
         updateProfilePicture,
         updateUserStats,
         fetchUserData,
-      }}
-    >
+      }}>
       {children}
     </UserContext.Provider>
   );

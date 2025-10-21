@@ -2,31 +2,50 @@ import "../css/Profile.css";
 import { useState, useEffect } from "react";
 import supabase from "../../services/supabase-client";
 import { getCurrentUserData } from "../utils/getCurrentUser.js";
-import { Coins, SquareCheckBig } from "lucide-react";
+import { Coins, SquareCheckBig, Trophy, Flame } from "lucide-react";
 import { useUser } from "../context/UserContext.jsx";
+import Item from "./Item.jsx";
 
 export default function HeroSection() {
-  // const [userStats, setUserStats] = useState({});
+  const [itemList, setItemList] = useState([]);
   const { currentUserID, currentUserData } = getCurrentUserData();
   // const authContext = UserAuth();
-  const { userStats, updateUserStats, profilePicture, updateProfilePicture } = useUser();
+  const {
+    userStats,
+    updateUserStats,
+    profilePicture,
+    updateProfilePicture,
+    userStatsID,
+    fetchUserData,
+  } = useUser();
+
+  // console.log(userStats.id);
+
+  // useEffect(() => {
+  //   if (currentUserID) {
+  //     fetchUserData();
+  //   }
+  // }, [currentUserID]);
 
   useEffect(() => {
-    fetchUserData();
-  }, []);
-
-  const fetchUserData = async () => {
-    const { data, error } = await supabase
-      .from("user_stats")
-      .select("*")
-      .eq("user_id", currentUserID)
-      .single();
-    if (error) {
-      console.log("Error fetching user", error);
-    } else {
-      updateUserStats(data);
+    if (userStats.id) {
+      fetchUserItems();
     }
-  };
+  }, [userStats.id]);
+
+  async function fetchUserItems() {
+    const { data, error } = await supabase
+      .from("user_inventory")
+      .select(`item (id, name, path_name, price)`)
+      .eq("profile_id", userStats.id);
+
+    if (error) {
+      console.log("Error fetching users owned items", error);
+    } else {
+      // console.log(data);
+      setItemList(data);
+    }
+  }
 
   const customizeCharacter = () => {
     return (
@@ -34,46 +53,21 @@ export default function HeroSection() {
         <h2>Customize your character!</h2>
         <h3>Choose a profile picture:</h3>
         <div className="character-pictures">
-          <div className="guy-pictures">
-            <img
-              src="/images/profile-pictures/adventurer-guy-1.png"
-              alt="Adventurer-guy-1"
-              className="profile-picture-option"
-              onClick={() => updateProfilePicture("adventurer-guy-1")}
-            />
-            <img
-              src="/images/profile-pictures/adventurer-guy-2.png"
-              alt="Adventurer-guy-1"
-              className="profile-picture-option"
-              onClick={() => updateProfilePicture("adventurer-guy-2")}
-            />
-            <img
-              src="/images/profile-pictures/adventurer-guy-3.png"
-              alt="Adventurer-guy-1"
-              className="profile-picture-option"
-              onClick={() => updateProfilePicture("adventurer-guy-3")}
-            />
-          </div>
-          <div className="girl_pictures">
-            <img
-              src="/images/profile-pictures/adventurer-girl-1.png"
-              alt="Adventurer-girl-1"
-              className="profile-picture-option"
-              onClick={() => updateProfilePicture("adventurer-girl-1")}
-            />
-            <img
-              src="/images/profile-pictures/adventurer-girl-2.png"
-              alt="Adventurer-guy-1"
-              className="profile-picture-option"
-              onClick={() => updateProfilePicture("adventurer-girl-2")}
-            />
-            <img
-              src="/images/profile-pictures/adventurer-girl-3.png"
-              alt="Adventurer-guy-1"
-              className="profile-picture-option"
-              onClick={() => updateProfilePicture("adventurer-girl-3")}
-            />
-          </div>
+          {itemList
+            .sort((a, b) => a.item.price - b.item.price)
+            .map((item) => {
+              const itemData = item.item;
+              const isEquipped = profilePicture === itemData.name;
+
+              return (
+                <Item
+                  key={itemData.id}
+                  item={itemData}
+                  isEquipped={isEquipped}
+                  onEquip={() => updateProfilePicture(itemData.name)}
+                />
+              );
+            })}
         </div>
       </div>
     );
@@ -103,9 +97,22 @@ export default function HeroSection() {
         <div className="progression-container">
           <div className="streaks">
             <h2>Streaks</h2>
-            <p>Current Login Streak:</p>
-            <p>Longest Login Streak: </p>
-            <p>Quests completed for X nr of days</p>
+            <p>
+              <Flame size={20} />
+              Total Quest Streak: {user.total_quest_streak}
+            </p>
+            <p>
+              <Flame size={20} />
+              One-time Quest Streak: {user.one_time_quest_streak}
+            </p>
+            <p>
+              <Flame size={20} />
+              Daily Quest Streak: {user.daily_quest_streak}
+            </p>
+            <p>
+              <Flame size={20} />
+              Weekly Quest Streak: {user.weekly_quest_streak}
+            </p>
           </div>
           <div className="quest-data">
             <h2>Quests</h2>
@@ -114,9 +121,30 @@ export default function HeroSection() {
           </div>
           <div className="badges">
             <h2>Badges</h2>
-            <p>7-day Streak Badge</p>
-            <p>Completing 10 Quests</p>
-            <p>Finish a weekly Quest</p>
+            {user.total_quests_badge && (
+              <p>
+                <Trophy size={20} />
+                Quest Completer
+              </p>
+            )}
+            {user.one_time_quests_badge && (
+              <p>
+                <Trophy size={20} />
+                One-time Completer
+              </p>
+            )}
+            {user.daily_quests_badge && (
+              <p>
+                <Trophy size={20} />
+                Daily Completer
+              </p>
+            )}
+            {user.weekly_quests_badge && (
+              <p>
+                <Trophy size={20} />
+                Weekly Completer
+              </p>
+            )}
           </div>
         </div>
         {customizeCharacter()}
