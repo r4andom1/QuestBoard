@@ -2,6 +2,7 @@ import supabase from "../../services/supabase-client";
 import { setHasAwardedToTrue } from "./progression";
 
 const calculateTimeLeft = (expirationTime, currentTime) => {
+  // Calculates and then returns the difference between two dates in seconds
   if (!expirationTime) {
     return null;
   }

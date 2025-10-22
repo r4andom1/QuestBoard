@@ -730,11 +730,15 @@ function Task() {
       <div className="create-task">
         <h2>Create new quest</h2>
         <div className="input-fields">
-          {taskInput("text", "Enter name...", newTaskName, setNewTaskName, true)}
-          {taskInput("text", "Enter description...", newDescription, setNewDescription)}
+          {taskInput("text", "Task name", newTaskName, setNewTaskName, true)}
+          {taskInput("text", "Task description", newDescription, setNewDescription)}
           {chooseTaskType()}
         </div>
-        <button className="add-quest-button" onClick={addTask} disabled={!newTaskName}>
+        <button
+          className="add-quest-button"
+          onClick={addTask}
+          disabled={!newTaskName}
+          data-testid="add-quest-button">
           Add quest
         </button>
       </div>
