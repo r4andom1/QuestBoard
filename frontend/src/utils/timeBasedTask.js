@@ -2,6 +2,7 @@ import supabase from "../../services/supabase-client";
 import { setHasAwardedToTrue } from "./progression";
 
 const calculateTimeLeft = (expirationTime, currentTime) => {
+  // Calculates and then returns the difference between two dates in seconds
   if (!expirationTime) {
     return null;
   }
@@ -23,23 +24,15 @@ const formatTime = (seconds) => {
 
   if (days > 0) {
     return `${days} days`;
+  } else if (days <= 0 && hours <= 0) {
+    return `${minutes}m ${secs}s`;
   }
   return `${hours}h ${minutes}m`;
 };
 
-const timeLeft = (expirationTime, currentTime, taskID, onExpired) => {
+const timeLeft = (expirationTime, currentTime) => {
   const seconds = calculateTimeLeft(expirationTime, currentTime);
-  if (seconds === 0) {
-    updateToExpired(taskID);
-    onExpired(taskID);
-  }
-
-  if (seconds === null) {
-    // if not time-based
-    return null;
-  } else {
-    return formatTime(seconds);
-  }
+  return formatTime(seconds);
 };
 
 async function updateToExpired(taskID) {
@@ -75,4 +68,4 @@ const removeExpirationTime = async (taskID) => {
   // }
 };
 
-export { calculateTimeLeft, formatTime, timeLeft, removeExpirationTime };
+export { calculateTimeLeft, formatTime, timeLeft, removeExpirationTime, updateToExpired };

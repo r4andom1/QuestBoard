@@ -1,6 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
+import { UserProvider } from "./context/UserContext.jsx";
 
 import "./css/index.css";
 import { router } from "./router.jsx";
@@ -9,7 +10,9 @@ import { AuthContextProvider } from "./context/Authentication.jsx";
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <AuthContextProvider>
-      <RouterProvider router={router} />
+      <UserProvider>
+        <RouterProvider router={router} />
+      </UserProvider>
     </AuthContextProvider>
   </StrictMode>
 );

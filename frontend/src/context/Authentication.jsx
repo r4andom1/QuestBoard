@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState, useContext } from "react";
 import supabase from "../../services/supabase-client";
 import { createUserProfile } from "../utils/createUserProfile";
+import { createUserInventory } from "../utils/createUserInventory";
 
 // A lot of authentication code was borrowed from supabase documentation
 // And i borrowed elements from this guide to make it work: https://www.youtube.com/watch?v=1KBV8M0mpYI&ab_channel=CodeCommerce
@@ -21,7 +22,7 @@ export const AuthContextProvider = ({ children }) => {
     });
   }, []);
 
-  const signUpUser = async (email, password) => {
+  const signUpUser = async (email, password, username) => {
     // Signs up a new user by adding them to the supabase auth table
     // Also creats a corresponding the custom user_stats table thats linked with the auth table (so that we can give a user coins, xp etc)
     const { data, error } = await supabase.auth.signUp({
@@ -36,9 +37,17 @@ export const AuthContextProvider = ({ children }) => {
       return { success: false, error };
     } else {
       if (data.user) {
-        const result = await createUserProfile(data.user.id);
-        if (!result.success) {
+        // console.log("username: ", username);
+        const userCreationResult = await createUserProfile(data.user.id, username);
+        if (!userCreationResult.success) {
           console.log("Failed to create user profile: ", error);
+        }
+        const userStatsID = userCreationResult.data[0].id;
+        // console.log("user_stats id: ", userStatsID);
+
+        const inventoryCreationResult = await createUserInventory(userStatsID);
+        if (!inventoryCreationResult.success) {
+          console.log("Failed to create inventory for user", error);
         }
       }
       return { success: true, data };

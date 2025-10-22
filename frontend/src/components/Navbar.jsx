@@ -13,7 +13,7 @@ function Navbar() {
           <Link to="/">Dashboard</Link>
           <Link to="/profile">Profile</Link>
           <Link to="/shop">Shop</Link>
-          <Link to="/about">About</Link>
+          {/* <Link to="/about">About</Link> */}
         </div>
         <SignOut />
       </nav>
