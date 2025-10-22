@@ -4,7 +4,7 @@ QuestBoard is a web application that lets users create and track tasks and get r
 
 ## Website link
 
-**Link:** https://quest-board-eta.vercel.app/sign-up
+**Link:** quest-board-eta.vercel.app
 
 ## Features
 
@@ -62,7 +62,7 @@ QuestBoard is a web application that lets users create and track tasks and get r
 **NOTE:** This application is meant to be accessed in the browser as a regular website.
 If you want to run the app locally, you'll need to access my private API keys. Contact me using my contact information.
 
-**Link:** https://quest-board-eta.vercel.app/sign-up
+**Link:** quest-board-eta.vercel.app
 
 1.  **Clone Repository**
 
