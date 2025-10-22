@@ -345,7 +345,7 @@ function Task() {
           <div className="task-time">
             <div className="refresh-text">
               {task.status === "upcoming" && !task.is_deleted ? (
-                <p>refreshes on {dayjs(task.expiration_time).format("DD/MM")} in: </p>
+                <p>Refreshes on {dayjs(task.expiration_time).format("MMM D, h:mm")} in: </p>
               ) : (
                 ""
               )}
@@ -353,7 +353,7 @@ function Task() {
               task.status !== "upcoming" &&
               !task.is_deleted &&
               !task.has_expired ? (
-                <p>expires on {dayjs(task.expiration_time).format("DD/MM")} in:</p>
+                <p>Expires on {dayjs(task.expiration_time).format("MMM D, h:mm")} in:</p>
               ) : (
                 ""
               )}
