@@ -3,7 +3,7 @@
 QuestBoard is a web application that lets users create and track tasks and get rewarded for staying on track with their goals. The application is built with React and features authentication and the BaaS-database from supabase, a responsive mobile-friendly layout, deployment using vercel and finally unit and component tests.
 
 ## Website link
-**Link:** https://quest-board-eta.vercel.app/sign-up
+**Link:** https://quest-board-eta.vercel.app
 # Features
 
 ## Account
